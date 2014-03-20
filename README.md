@@ -1,4 +1,4 @@
-zendesk_app_framework_sdk
+Zendesk App Framework SDK
 =========================
 
 The ZAF SDK
