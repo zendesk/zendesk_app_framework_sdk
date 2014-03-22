@@ -1,18 +1,18 @@
 {
-  "name": "zendesk-app-framework-sdk",
+  "name": "zendesk_app_framework_sdk",
   "version": "0.0.1",
   "main": "lib/zendesk-app-framework-sdk.js",
-  "description": "The Zendesk App Framework SDK",
+  "description": "The Zendesk App Framework Iframe SDK",
   "homepage": "http://developer.zendesk.com",
-  "bugs": "user/repo/issues",
+  "bugs": "support@zendesk.com",
   "author": {
-    "name": "Daniel Breves Ribeiro",
-    "email": "dribeiro@zendesk.com",
+    "name": "Zendesk",
+    "email": "support@zendesk.com",
     "url": "http://developer.zendesk.com"
   },
   "repository": {
     "type": "git",
-    "url": "user/repo"
+    "url": "git://github.com/zendesk/zendesk_app_framework_sdk.git"
   },
   "licenses": [
     {
