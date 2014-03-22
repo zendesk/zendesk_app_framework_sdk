@@ -1,4 +1,7 @@
 {
+  "predef": [
+    "module", "require", "describe", "it"
+  ],
   "bitwise":  true,
   "newcap":   false,
   "eqeqeq":   false,

@@ -30,6 +30,11 @@
     "sdk"
   ],
   "devDependencies": {
+    "gluejs": "2.3.2",
+    "grunt-glue-js": "0.0.4",
+    "grunt-mocha": "~0.4.0",
+    "grunt-mocha-runner": "0.2.0",
+    "grunt-contrib-uglify": "0.4.0",
     "grunt-contrib-jshint": "~0.7.0",
     "grunt-contrib-watch": "~0.5.0",
     "load-grunt-tasks": "~0.2.0",
