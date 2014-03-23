@@ -1,5 +1,7 @@
 'use strict';
 
+var path = require('path');
+
 module.exports = function (grunt) {
   // Show elapsed time at the end
   require('time-grunt')(grunt);
@@ -26,7 +28,8 @@ module.exports = function (grunt) {
     gluejs: {
       options: {
         basepath: './lib/',
-        include: './lib/'
+        include: './lib/',
+        'cache-path': path.resolve('./tmp/.cache/gluejs/')
       },
       build: {
         options: {
