@@ -25,11 +25,22 @@ module.exports = function (grunt) {
     },
     gluejs: {
       options: {
-        export: 'ZAFClient'
+        basepath: './lib/',
+        include: './lib/'
       },
       build: {
+        options: {
+          export: 'ZAFClient'
+        },
         src: 'lib/**/*.js',
         dest: 'build/zaf_client.js'
+      },
+      test: {
+        options: {
+          globalRequire: true
+        },
+        src: '<%= gluejs.build.src %>',
+        dest: 'tmp/test_build.js'
       }
     },
     uglify: {
@@ -42,7 +53,7 @@ module.exports = function (grunt) {
     mochaRunner: {
       all: {
         scripts: [
-          'build/zaf_client.js',
+          '<%= gluejs.test.dest %>',
           'spec/**/*.js'
         ]
       }
@@ -65,17 +76,17 @@ module.exports = function (grunt) {
       },
       lib: {
         files: '<%= jshint.lib.src %>',
-        tasks: ['jshint:lib']
+        tasks: ['build']
       },
       test: {
         files: '<%= jshint.test.src %>',
-        tasks: ['jshint:test']
+        tasks: ['test']
       }
     }
   });
 
-  grunt.registerTask('test', ['jshint', 'gluejs', 'mochaRunner', 'mocha']);
-  grunt.registerTask('build', ['jshint', 'gluejs', 'uglify']);
+  grunt.registerTask('test', ['jshint', 'gluejs:test', 'mochaRunner', 'mocha']);
+  grunt.registerTask('build', ['jshint', 'gluejs:build', 'uglify']);
   grunt.registerTask('default', ['build']);
 
 };
