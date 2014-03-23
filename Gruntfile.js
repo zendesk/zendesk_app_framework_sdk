@@ -1,6 +1,7 @@
 'use strict';
 
-var path = require('path');
+var path = require('path'),
+    CACHE_PATH = path.resolve('./tmp/.cache') + '/';
 
 module.exports = function (grunt) {
   // Show elapsed time at the end
@@ -29,7 +30,7 @@ module.exports = function (grunt) {
       options: {
         basepath: './lib/',
         include: './lib/',
-        'cache-path': path.resolve('./tmp/.cache/gluejs/')
+        'cache-path': CACHE_PATH + 'gluejs'
       },
       build: {
         options: {
@@ -53,29 +54,32 @@ module.exports = function (grunt) {
         }
       }
     },
-    mochaRunner: {
-      all: {
-        scripts: [
+    testem: {
+      default: {
+        src: [
           '<%= gluejs.test.dest %>',
-          'spec/**/*.js'
-        ]
+          'node_modules/sinon/pkg/sinon.js',
+          'node_modules/sinon-chai/lib/sinon-chai.js',
+          'spec/spec_helper.js',
+          'spec/**/*_spec.js'
+        ],
+        options: {
+          framework: 'mocha+chai',
+          parallel: 8,
+          launch_in_ci: ['PhantomJS'],
+          launch_in_dev: ['PhantomJS', 'Chrome']
+        }
       }
     },
-    mocha: {
+    newer: {
       options: {
-        run: true,
-        reporter: 'Spec',
-      },
-      test: {
-        options: {
-          urls: ['http://localhost:8000']
-        }
+        cache: CACHE_PATH + 'newer'
       }
     },
     watch: {
       gruntfile: {
         files: '<%= jshint.gruntfile.src %>',
-        tasks: ['jshint:gruntfile']
+        tasks: ['default']
       },
       lib: {
         files: '<%= jshint.lib.src %>',
@@ -88,8 +92,7 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.registerTask('test', ['jshint', 'gluejs:test', 'mochaRunner', 'mocha']);
-  grunt.registerTask('build', ['jshint', 'gluejs:build', 'uglify']);
+  grunt.registerTask('test', ['newer:jshint', 'gluejs:test', 'testem']);
+  grunt.registerTask('build', ['newer:jshint', 'gluejs:build', 'uglify']);
   grunt.registerTask('default', ['build']);
-
 };
