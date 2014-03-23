@@ -48,7 +48,7 @@ module.exports = function (grunt) {
       }
     },
     uglify: {
-      my_target: {
+      build: {
         files: {
           'build/zaf_client.min.js': ['build/zaf_client.js']
         }
@@ -80,15 +80,14 @@ module.exports = function (grunt) {
       server: {
         options: {
           port: 9001,
-          base: 'public',
-          keepalive: true
+          base: 'public'
         }
       },
     },
     watch: {
       gruntfile: {
         files: '<%= jshint.gruntfile.src %>',
-        tasks: ['default']
+        tasks: ['build']
       },
       lib: {
         files: '<%= jshint.lib.src %>',
@@ -101,7 +100,8 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.registerTask('test', ['newer:jshint', 'gluejs:test', 'testem']);
-  grunt.registerTask('build', ['newer:jshint', 'gluejs:build', 'uglify']);
-  grunt.registerTask('default', ['build']);
+  grunt.registerTask('test', ['newer:jshint:test', 'gluejs:test', 'testem:ci']);
+  grunt.registerTask('build', ['newer:jshint:lib', 'gluejs:build', 'uglify:build']);
+  grunt.registerTask('server', ['connect', 'watch:lib']);
+  grunt.registerTask('default', 'server');
 };
