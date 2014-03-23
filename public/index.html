@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Iframe me!</title>
+</head>
+<body>
+  <script type="text/javascript" src="assets/zaf_client.js"></script>
+  <script>
+    window.ZAFClient.init(function(app) {
+      app.postMessage('hello', { foo: true });
+
+      app.on('app.activated', function(data) {
+        console.log('app.activated', data);
+      });
+
+      app.on('app.deactivated', function(data) {
+        console.log('app.deactivated', data);
+      });
+    });
+  </script>
+</body>
+</html>

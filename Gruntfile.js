@@ -76,6 +76,15 @@ module.exports = function (grunt) {
         cache: CACHE_PATH + 'newer'
       }
     },
+    connect: {
+      server: {
+        options: {
+          port: 9001,
+          base: 'public',
+          keepalive: true
+        }
+      },
+    },
     watch: {
       gruntfile: {
         files: '<%= jshint.gruntfile.src %>',
