@@ -1,5 +1,8 @@
 'use strict';
 
+var path = require('path'),
+    CACHE_PATH = path.resolve('./tmp/.cache');
+
 module.exports = function (grunt) {
   // Show elapsed time at the end
   require('time-grunt')(grunt);
@@ -8,9 +11,6 @@ module.exports = function (grunt) {
 
   // Project configuration.
   grunt.initConfig({
-    nodeunit: {
-      files: ['test/**/*_test.js']
-    },
     jshint: {
       options: {
         jshintrc: '.jshintrc',
@@ -23,8 +23,66 @@ module.exports = function (grunt) {
         src: ['lib/**/*.js']
       },
       test: {
-        src: ['test/**/*.js']
+        src: ['spec/**/*.js']
       }
+    },
+    gluejs: {
+      options: {
+        basepath: './lib/',
+        include: './lib/',
+        'cache-path': path.join(CACHE_PATH, 'gluejs')
+      },
+      build: {
+        options: {
+          export: 'ZAFClient'
+        },
+        src: 'lib/**/*.js',
+        dest: 'build/zaf_client.js'
+      },
+      test: {
+        options: {
+          globalRequire: true
+        },
+        src: '<%= gluejs.build.src %>',
+        dest: 'tmp/test_build.js'
+      }
+    },
+    uglify: {
+      build: {
+        files: {
+          'build/zaf_client.min.js': ['build/zaf_client.js']
+        }
+      }
+    },
+    testem: {
+      default: {
+        src: [
+          '<%= gluejs.test.dest %>',
+          'node_modules/sinon/pkg/sinon.js',
+          'node_modules/sinon-chai/lib/sinon-chai.js',
+          'spec/spec_helper.js',
+          'spec/**/*_spec.js'
+        ],
+        options: {
+          framework: 'mocha+chai',
+          parallel: 8,
+          launch_in_ci: ['PhantomJS'],
+          launch_in_dev: ['PhantomJS', 'Chrome']
+        }
+      }
+    },
+    newer: {
+      options: {
+        cache: path.join(CACHE_PATH, 'newer')
+      }
+    },
+    connect: {
+      server: {
+        options: {
+          port: 9001,
+          base: 'public'
+        }
+      },
     },
     watch: {
       gruntfile: {
@@ -33,16 +91,17 @@ module.exports = function (grunt) {
       },
       lib: {
         files: '<%= jshint.lib.src %>',
-        tasks: ['jshint:lib', 'nodeunit']
+        tasks: ['build']
       },
       test: {
         files: '<%= jshint.test.src %>',
-        tasks: ['jshint:test', 'nodeunit']
+        tasks: ['test']
       }
     }
   });
 
-  // Default task.
-  grunt.registerTask('default', ['jshint', 'nodeunit']);
-
+  grunt.registerTask('test', ['newer:jshint:test', 'gluejs:test', 'testem:ci']);
+  grunt.registerTask('build', ['newer:jshint:lib', 'gluejs:build', 'uglify:build']);
+  grunt.registerTask('server', ['connect', 'watch:lib']);
+  grunt.registerTask('default', 'server');
 };

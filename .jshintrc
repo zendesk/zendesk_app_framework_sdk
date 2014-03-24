@@ -1,4 +1,7 @@
 {
+  "predef": [
+    "module", "require", "chai", "sinon", "beforeEach", "afterEach", "describe", "it", "expect"
+  ],
   "bitwise":  true,
   "newcap":   false,
   "eqeqeq":   false,

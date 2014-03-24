@@ -1,18 +1,18 @@
 {
-  "name": "zendesk-app-framework-sdk",
+  "name": "zendesk_app_framework_sdk",
   "version": "0.0.1",
   "main": "lib/zendesk-app-framework-sdk.js",
-  "description": "The Zendesk App Framework SDK",
+  "description": "The Zendesk App Framework Iframe SDK",
   "homepage": "http://developer.zendesk.com",
-  "bugs": "user/repo/issues",
+  "bugs": "support@zendesk.com",
   "author": {
-    "name": "Daniel Breves Ribeiro",
-    "email": "dribeiro@zendesk.com",
+    "name": "Zendesk",
+    "email": "support@zendesk.com",
     "url": "http://developer.zendesk.com"
   },
   "repository": {
     "type": "git",
-    "url": "user/repo"
+    "url": "git://github.com/zendesk/zendesk_app_framework_sdk.git"
   },
   "licenses": [
     {
@@ -20,20 +20,29 @@
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     }
   ],
-  "files": [
-    ""
-  ],
-  "keywords":[
+  "directories": {
+    "lib": "./lib"
+  },
+  "keywords": [
+    "zendesk",
+    "apps",
+    "framework",
+    "sdk"
   ],
   "devDependencies": {
+    "grunt-gluejs2": "~0.3.0",
+    "grunt-newer": "~0.7.0",
+    "grunt-contrib-testem": "~0.5.0",
+    "grunt-contrib-uglify": "0.4.0",
     "grunt-contrib-jshint": "~0.7.0",
-    "grunt-contrib-nodeunit": "~0.2.0",
     "grunt-contrib-watch": "~0.5.0",
+    "grunt-contrib-connect": "~0.7.0",
+    "sinon-chai": "~2.5.0",
     "load-grunt-tasks": "~0.2.0",
     "time-grunt": "~0.2.0",
     "jshint-stylish": "~0.1.3"
   },
   "scripts": {
-    "test": "grunt"
+    "test": "grunt test"
   }
 }
