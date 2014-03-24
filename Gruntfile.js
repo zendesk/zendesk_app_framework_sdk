@@ -1,7 +1,7 @@
 'use strict';
 
 var path = require('path'),
-    CACHE_PATH = path.resolve('./tmp/.cache') + '/';
+    CACHE_PATH = path.resolve('./tmp/.cache');
 
 module.exports = function (grunt) {
   // Show elapsed time at the end
@@ -30,7 +30,7 @@ module.exports = function (grunt) {
       options: {
         basepath: './lib/',
         include: './lib/',
-        'cache-path': CACHE_PATH + 'gluejs'
+        'cache-path': path.join(CACHE_PATH, 'gluejs')
       },
       build: {
         options: {
@@ -73,7 +73,7 @@ module.exports = function (grunt) {
     },
     newer: {
       options: {
-        cache: CACHE_PATH + 'newer'
+        cache: path.join(CACHE_PATH, 'newer')
       }
     },
     connect: {
