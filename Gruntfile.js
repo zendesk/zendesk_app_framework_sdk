@@ -102,6 +102,6 @@ module.exports = function (grunt) {
 
   grunt.registerTask('test', ['newer:jshint:test', 'gluejs:test', 'testem:ci']);
   grunt.registerTask('build', ['newer:jshint:lib', 'gluejs:build', 'uglify:build']);
-  grunt.registerTask('server', ['connect', 'watch:lib']);
+  grunt.registerTask('server', ['build', 'connect', 'watch:lib']);
   grunt.registerTask('default', 'server');
 };
