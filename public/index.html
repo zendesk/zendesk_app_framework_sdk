@@ -7,16 +7,16 @@
 <body>
   <script type="text/javascript" src="assets/zaf_client.js"></script>
   <script>
-    window.ZAFClient.init(function(app) {
-      app.postMessage('hello', { foo: true });
+    var app = window.ZAFClient.init(function() {
+      this.postMessage('hello', { foo: true });
+    });
 
-      app.on('app.activated', function(data) {
-        console.log('app.activated', data);
-      });
+    app.on('app.activated', function(data) {
+      console.log('app.activated', data);
+    });
 
-      app.on('app.deactivated', function(data) {
-        console.log('app.deactivated', data);
-      });
+    app.on('app.deactivated', function(data) {
+      console.log('app.deactivated', data);
     });
   </script>
 </body>
