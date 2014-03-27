@@ -7,9 +7,9 @@
 <body>
   <script type="text/javascript" src="assets/zaf_client.js"></script>
   <script>
-    var app = window.ZAFClient.init(function() {
-      this.postMessage('hello', { foo: true });
-    });
+    var app = window.ZAFClient.init();
+
+    app.postMessage('hello', { foo: true });
 
     app.on('app.activated', function(data) {
       console.log('app.activated', data);
