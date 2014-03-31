@@ -7,16 +7,17 @@ The Zendesk App Framework (ZAF) SDK is a JavaScript micro-library that simplifie
 
 ## How does it work?
 
+### iframe.hdbs
+{{iframe "https://dashboard.myapp.com"}}
+
 ### app.js
 ```js
 events: {
-  'app.activated': 'appActivated'
+  'app.created': 'init'
 },
 
-appActivated: function(e) {
-  if (e.firstLoad) {
-    this.registerIframe('iframe:first', 'https://dashboard.myapp.com');
-  }
+init: function() {
+  this.switchTo('iframe');
 }
 ```
 
@@ -25,9 +26,12 @@ appActivated: function(e) {
 ```html
 <script type="text/javascript" src="vendor/zaf_client.js"></script>
 <script>
-  var app = window.ZAFClient.init(function() {
-    this.postMessage('hello app', { awesome: true });
+  var app = window.ZAFClient.init(function(context) {
+    var currentUser = context.currentUser;
+    console.log('Hi ' + currentUser.name);
   });
+
+  app.postMessage('hello app', { awesome: true });
 
   app.on('app.activated', function(data) {
     // go nuts
