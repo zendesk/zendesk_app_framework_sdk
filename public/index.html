@@ -7,7 +7,10 @@
 <body>
   <script type="text/javascript" src="assets/zaf_client.js"></script>
   <script>
-    var app = window.ZAFClient.init();
+    var app = window.ZAFClient.init(function(context) {
+      var currentUser = context.currentUser;
+      console.log('Hi ' + currentUser.name);
+    });
 
     app.postMessage('hello', { foo: true });
 
