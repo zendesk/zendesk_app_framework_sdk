@@ -63,4 +63,4 @@ Then run:
 
 `npm install` - Install dependencies
 
-`grunt server` - Serve the [public](../public) directory at [http://localhost:9001](http://localhost:9001)
+`grunt server` - Serve the [public](./public) directory at [http://localhost:9001](http://localhost:9001)
