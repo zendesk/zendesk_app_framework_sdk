@@ -60,6 +60,7 @@ module.exports = function (grunt) {
           '<%= gluejs.test.dest %>',
           'node_modules/sinon/pkg/sinon.js',
           'node_modules/sinon-chai/lib/sinon-chai.js',
+          'node_modules/es5-shim/es5-shim.js',
           'spec/spec_helper.js',
           'spec/**/*_spec.js'
         ],
