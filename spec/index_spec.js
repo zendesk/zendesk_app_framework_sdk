@@ -43,16 +43,9 @@ describe('ZAFClient', function() {
 
       it('validates the correct format of "origin" and "app_guid"', function() {
         var urlParams = {
-          'origin=foo':             true,   // valid
-          'origin=foo.zendesk.com': true,   // valid
-          'origin=':                false,  // invalid
-          'origin':                 false,  // invalid
-
-          'app_guid=ABC123':        true,   // valid
-          'app_guid=12':            true,   // valid
-          'app_guid=+':             false,  // invalid
-          'app_guid=':              false,  // invalid
-          'app_guid':               false   // invalid
+          'app_guid=A2':            false,  // invalid
+          'app_guid=A2&origin=foo': true,  // invalid
+          'origin=foo&app_guid=A2': true    // valid
         };
         Object.keys(urlParams).forEach(function(params) {
           location.search = params;
