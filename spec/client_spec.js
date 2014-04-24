@@ -1,4 +1,4 @@
-describe.only('Client', function() {
+describe('Client', function() {
 
   var Client  = require('client'),
       sandbox = sinon.sandbox.create(),
@@ -25,7 +25,7 @@ describe.only('Client', function() {
     expect(window.top.postMessage).to.have.been.calledWithMatch({"key":"iframe.handshake","appGuid":appGuid});
   });
 
-  describe.only('events', function() {
+  describe('events', function() {
 
     beforeEach(function() {
       callback = sandbox.spy();
