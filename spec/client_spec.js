@@ -5,7 +5,8 @@ describe.only('Client', function() {
       origin  = 'foo.zendesk.com',
       appGuid = 'ABC123',
       postMessage,
-      subject;
+      subject,
+      callback;
 
   beforeEach(function() {
     sandbox.stub(window.top, 'postMessage');
@@ -45,18 +46,18 @@ describe.only('Client', function() {
 
       it('registers a handler for a given event', function() {
         subject.on('foo', callback);
-        expect(subject._messageHandlers['foo']).to.exist;
+        expect(subject._messageHandlers.foo).to.exist;
       });
 
       it('registers multiple handlers for the same event', function() {
         subject.on('foo', callback);
         subject.on('foo', callback);
-        expect(subject._messageHandlers['foo'].length).to.equal(2);
+        expect(subject._messageHandlers.foo.length).to.equal(2);
       });
 
       it('only registers when handler is a function', function() {
         subject.on('foo', 2);
-        expect(subject._messageHandlers['foo']).to.not.exist;
+        expect(subject._messageHandlers.foo).to.not.exist;
       });
 
     });
@@ -65,9 +66,9 @@ describe.only('Client', function() {
 
       it('removes a previously registered handler', function() {
         subject.on('foo', callback);
-        expect(subject._messageHandlers['foo'].length).to.equal(1);
+        expect(subject._messageHandlers.foo.length).to.equal(1);
         subject.off('foo', callback);
-        expect(subject._messageHandlers['foo'].length).to.equal(0);
+        expect(subject._messageHandlers.foo.length).to.equal(0);
       });
 
       it('returns the handler that was removed', function() {
