@@ -17,9 +17,7 @@ describe('ZAFClient', function() {
 
   beforeEach(function() {
     sandbox.spy(window, 'addEventListener');
-    window.top = {
-      postMessage: sandbox.spy()
-    };
+    sandbox.spy(window.top, 'postMessage');
     location = {
       search: 'origin=foo.zendesk.com&app_guid=AOK2'
     };
