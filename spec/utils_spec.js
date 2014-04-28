@@ -4,7 +4,7 @@ describe('Utils', function() {
 
   describe('.location', function() {
 
-    it('returns the value of window.location.search', function() {
+    it('returns the value of window.location', function() {
       expect(Utils.location()).to.equal(window.location);
     });
 
