@@ -2,7 +2,7 @@ describe('Client', function() {
 
   var Client  = require('client'),
       sandbox = sinon.sandbox.create(),
-      origin  = 'foo.zendesk.com',
+      origin  = 'https://foo.zendesk.com',
       appGuid = 'ABC123',
       postMessage,
       subject,
