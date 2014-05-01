@@ -1,22 +1,22 @@
-## Iframed Apps
+## IFrames
 
-Iframed Apps are Apps, which are hosted on an external domain and included on a Zendesk App as an iframe. In order for Iframed Apps to interact with the Framework they may need to post and receive [messages](https://developer.mozilla.org/en-US/docs/Web/API/Window.postMessage) both from the Iframed App and the Zendesk App.
+Apps can use iframes to embed an external website within Zendesk. In order for your external website to interact with the app, the framework provides a set of APIs that allow you to post and receive messages both from you external website and the app.
 
 ## Introducing the Zendesk App Framework (ZAF) SDK
 
-ZAF SDK is a JavaScript micro-library that simplifies cross-frame communication between Iframed Apps and ZAF.
+ZAF SDK is a JavaScript library that simplifies cross-frame communication between an external website and the Zendesk app containing it.
 
-### How does it work?
+### Getting Started
 
-You can start by adding the following code to your Iframed website:
+You can start by adding the following code to your website:
 
-#### Iframed website (i.e. https://dashboard.myapp.com)
+#### External website, i.e. "https://dashboard.myapp.com"
 ```html
 <script type="text/javascript" src="https://assets.zendesk.com/assets/apps/zaf_client.js"></script>
 <script>
   var app = window.ZAFClient.init();
 
-  app.postMessage('hello', { awesome: true }); // post the message 'hello' to the Zendesk App along with some data
+  app.postMessage('hello', { awesome: true }); // post the message 'hello' to the Zendesk app along with some data
 
   app.on('app.activated', function(data) { // listen to the 'app.activated' Framework event from the iframe
     // go nuts
@@ -26,18 +26,20 @@ You can start by adding the following code to your Iframed website:
 
 The `src` attribute in the `<script>` element must point to a copy of [zaf_client.js](). Click [here]() to download it now or copy the above link to our CDN.
 
-Once you've included the SDK on your page you can call `ZAFClient.init()`, which will return a [ZAF SDK client]() object. The ZAF SDK client allows you to post and receive Framework events on your Iframed App, click [here]() to learn more about what you can do with the ZAF SDK client.
+Note: In order to benefit from automatic updates and caching we recommend you to always link to our CDN rather than including your own copy.
 
-#### Zendesk App
+Once you've included the SDK on your page you can call `ZAFClient.init()`, which will return a [ZAF SDK client]() object. The ZAF SDK client allows you to post and receive framework events on your external website. Click [here]() to learn more about what you can do with the ZAF SDK client.
 
-Once you have your website ready you will need to include it on one of your Zendesk App's templates using the Framework Handlebars helper `iframe`.
+#### App
+
+Once you have your website ready, you must load it from within your app using the ZAF Handlebars `iframe` helper. This will enable the communication between the app and the SDK.
 
 ##### iframe_template.hdbs
 ```html
 {{iframe "https://dashboard.myapp.com"}}
 ```
 
-As soon you switch to that template your Zendesk App can start receiving `iframe` events and also posting messages back to the iframe.
+As soon as you switch to that template your app can start receiving `iframe` events and also posting messages back to the iframe.
 
 ##### app.js
 ```js
@@ -57,4 +59,4 @@ handleHello: function(data) {
 }
 ```
 
-To learn more about `iframe` events and the `postMessage` API please see our [reference guide](). Alternatively, if you are an expert and would like to understand how all this magic works click [here]() to see our [Iframed Apps - Technical Overview]() blog post.
+To learn more about `iframe` events and the `postMessage` API please see our [reference guide](). Alternatively, if you are an expert and would like to understand how all this magic works click [here]() to see our [Technical Overview]() blog post.
