@@ -2,7 +2,7 @@ describe('ZAFClient', function() {
   var sandbox   = sinon.sandbox.create(),
       ZAFClient = require('index'),
       Utils     = require('utils'),
-      location;
+      params;
 
   function testInit(shouldInit) {
     shouldInit = 'undefined' === typeof shouldInit ?
@@ -18,15 +18,11 @@ describe('ZAFClient', function() {
   beforeEach(function() {
     sandbox.spy(window, 'addEventListener');
     sandbox.spy(window.top, 'postMessage');
-    location = {
-      search: 'origin=foo.zendesk.com&app_guid=AOK2'
-    };
-    sandbox
-      .stub(Utils, 'location')
-      .returns(location);
+    sandbox.stub(Utils, 'queryParameters');
   });
 
   afterEach(function() {
+    params = {};
     sandbox.restore();
   });
 
@@ -35,21 +31,12 @@ describe('ZAFClient', function() {
     describe('given origin and app_guid exist', function() {
 
       it('adds a listener for the postMessage API', function() {
-        ZAFClient.init();
-
-      });
-
-      it('validates the correct format of "origin" and "app_guid"', function() {
-        var urlParams = {
-          'app_guid=A2':            false,  // invalid
-          'app_guid=A2&origin=foo': true,  // invalid
-          'origin=foo&app_guid=A2': true    // valid
-        };
-        Object.keys(urlParams).forEach(function(params) {
-          location.search = params;
-          ZAFClient.init();
-          testInit(!!urlParams[params]);
+        Utils.queryParameters.returns({
+          origin:   'https://foo.com',
+          app_guid: 'A2'
         });
+        ZAFClient.init();
+        testInit();
       });
 
     });
@@ -57,7 +44,7 @@ describe('ZAFClient', function() {
     describe('given origin and app_guid are missing', function() {
 
       it("won't add a listener for the postMessage API", function() {
-        location.search = 'foo=bar&baz=quux';
+        Utils.queryParameters.returns({});
         ZAFClient.init();
         testInit(false);
       });
