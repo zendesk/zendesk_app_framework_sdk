@@ -1,8 +1,8 @@
-## IFrames
+## IFrames in Apps
 
 Apps can use iframes to embed an external website within Zendesk. In order for your external website to interact with the app, the framework provides a set of APIs that allow you to post and receive messages both from you external website and the app.
 
-## Introducing the Zendesk App Framework (ZAF) SDK
+### Introducing the Zendesk App Framework (ZAF) SDK
 
 ZAF SDK is a JavaScript library that simplifies cross-frame communication between an external website and the Zendesk app containing it.
 
@@ -28,7 +28,7 @@ The `src` attribute in the `<script>` element must point to a copy of [zaf_clien
 
 Note: In order to benefit from automatic updates and caching we recommend you to always link to our CDN rather than including your own copy.
 
-Once you've included the SDK on your page you can call `ZAFClient.init()`, which will return a [ZAF SDK client]() object. The ZAF SDK client allows you to post and receive framework events on your external website. Click [here]() to learn more about what you can do with the ZAF SDK client.
+Once you've included the SDK on your page you can call `ZAFClient.init()`, which will return a [ZAF SDK client](./reference/sdk.html) object. The ZAF SDK client allows you to post and receive framework events on your external website. Click [here]() to learn more about what you can do with the ZAF SDK client.
 
 #### App
 
