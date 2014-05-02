@@ -22,7 +22,7 @@ describe('Client', function() {
   });
 
   it('posts an "iframe.handshake" message when initialised', function() {
-    expect(window.top.postMessage).to.have.been.calledWithMatch({"key":"iframe.handshake","appGuid":appGuid});
+    expect(window.top.postMessage).to.have.been.calledWithMatch('{"key":"iframe.handshake","appGuid":"ABC123"}');
   });
 
   describe('events', function() {
@@ -35,9 +35,9 @@ describe('Client', function() {
 
       it('waits until the client is ready to post messages', function() {
         subject.postMessage('foo');
-        expect(window.top.postMessage).to.not.have.been.calledWithMatch({ "key": "foo" });
+        expect(window.top.postMessage).to.not.have.been.calledWithMatch('{"key":"foo","appGuid":"ABC123"}');
         subject.trigger('app.registered');
-        expect(window.top.postMessage).to.have.been.calledWithMatch({ "key": "foo" });
+        expect(window.top.postMessage).to.have.been.calledWithMatch('{"key":"foo","appGuid":"ABC123"}');
       });
 
     });
