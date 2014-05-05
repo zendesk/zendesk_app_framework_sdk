@@ -1,6 +1,6 @@
 ## IFrames in Apps
 
-Apps can use iframes to embed an external website within Zendesk. In order for your external website to interact with the app, the framework provides a set of APIs that allow you to post and receive messages both from you external website and the app.
+Apps can use iframes to embed external websites within Zendesk. In order for your external website to interact with your app, the framework provides a set of APIs that allow you to post and receive messages both from you external website and your app.
 
 ### Introducing the Zendesk App Framework (ZAF) SDK
 
@@ -16,9 +16,9 @@ You can start by adding the following code to your website:
 <script>
   var app = window.ZAFClient.init();
 
-  app.postMessage('hello', { awesome: true }); // post the message 'hello' to the Zendesk app along with some data
+  app.postMessage('hello', { awesome: true }); // post the message 'hello' to the Zendesk app
 
-  app.on('app.activated', function(data) { // listen to the 'app.activated' Framework event from the iframe
+  app.on('app.activated', function(data) { // listen to the 'app.activated' Framework event
     // go nuts
   });
 </script>
@@ -28,7 +28,7 @@ The `src` attribute in the `<script>` element must point to a copy of [zaf_clien
 
 Note: In order to benefit from automatic updates and caching we recommend you to always link to our CDN rather than including your own copy.
 
-Once you've included the SDK on your page you can call `ZAFClient.init()`, which will return a [ZAF SDK client](./reference/sdk.html) object. The ZAF SDK client allows you to post and receive framework events on your external website. Click [here]() to learn more about what you can do with the ZAF SDK client.
+Once you've included the SDK on your page you can call `ZAFClient.init()`, which will return a [ZAF SDK client](./reference/sdk.html#client-object) object. The ZAF SDK client allows you to post and receive framework events on your external website. To learn more about what you can do with the ZAF SDK please see [Reference: Zendesk App Framework (ZAF) SDK](./reference/sdk.html).
 
 #### App
 
@@ -59,4 +59,4 @@ handleHello: function(data) {
 }
 ```
 
-To learn more about `iframe` events and the `postMessage` API please see our [reference guide](). Alternatively, if you are an expert and would like to understand how all this magic works click [here]() to see our [Technical Overview]() blog post.
+To learn more about `iframe` events and the `postMessage` API please see [Reference: Events](./reference/events.html).
