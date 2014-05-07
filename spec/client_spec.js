@@ -4,6 +4,7 @@ describe('Client', function() {
       sandbox = sinon.sandbox.create(),
       origin  = 'https://foo.zendesk.com',
       appGuid = 'ABC123',
+      version = require('version'),
       postMessage,
       subject,
       callback;
@@ -22,7 +23,13 @@ describe('Client', function() {
   });
 
   it('posts an "iframe.handshake" message when initialised', function() {
-    expect(window.top.postMessage).to.have.been.calledWithMatch('{"key":"iframe.handshake","appGuid":"ABC123"}');
+    var data = {
+      key: "iframe.handshake",
+      message: { version: version },
+      appGuid: appGuid
+    };
+
+    expect(window.top.postMessage).to.have.been.calledWithMatch(JSON.stringify(data));
   });
 
   describe('events', function() {
