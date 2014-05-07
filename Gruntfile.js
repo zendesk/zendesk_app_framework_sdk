@@ -11,6 +11,7 @@ module.exports = function (grunt) {
 
   // Project configuration.
   grunt.initConfig({
+    pkg: grunt.file.readJSON('package.json'),
     jshint: {
       options: {
         jshintrc: '.jshintrc',
@@ -30,7 +31,10 @@ module.exports = function (grunt) {
       options: {
         basepath: './lib/',
         include: './lib/',
-        'cache-path': path.join(CACHE_PATH, 'gluejs')
+        'cache-path': path.join(CACHE_PATH, 'gluejs'),
+        replace: {
+          version: '"<%= pkg.version %>"'
+        }
       },
       build: {
         options: {
