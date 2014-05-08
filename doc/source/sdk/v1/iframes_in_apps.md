@@ -12,7 +12,7 @@ You can start by adding the following code to your website:
 
 #### External website, e.g. "https://dashboard.myapp.com"
 ```html
-<script type="text/javascript" src="https://assets.zendesk.com/assets/apps/zaf_client.js"></script>
+<script type="text/javascript" src="https://assets.zendesk.com/apps/sdk/zaf_sdk.js"></script>
 <script>
   var app = window.ZAFClient.init();
 
@@ -24,7 +24,7 @@ You can start by adding the following code to your website:
 </script>
 ```
 
-The `src` attribute in the `<script>` element must point to a copy of [zaf_client.js](). Click [here]() to download it now or copy the above link to our CDN.
+The `src` attribute in the `<script>` element must point to a copy of [zaf_sdk.js](https://assets.zendesk.com/apps/sdk/zaf_sdk.js). Click [here](https://assets.zendesk.com/apps/sdk/zaf_sdk.js) to download it now or copy the above link to our CDN.
 
 Note: In order to benefit from automatic updates and caching we recommend you to always link to our CDN rather than including your own copy.
 
