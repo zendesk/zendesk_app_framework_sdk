@@ -1,3 +1,5 @@
+.bundle
 /node_modules/
 /build
+vendor/bundle
 npm-debug.log
