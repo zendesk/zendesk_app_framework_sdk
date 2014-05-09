@@ -7,8 +7,8 @@ set :ruby_version, File.read(".ruby-version").chomp
 set :require_tag?, true
 set :email_notification, ["deploys@zendesk.com"]
 
-set(:apps_path) { File.join(deploy_to, 'apps') }
-set(:sdk_path) { File.join(apps_path, 'sdk') }
+set(:assets_path) { File.join(deploy_to, 'assets') }
+set(:sdk_path) { File.join(assets_path, 'sdk') }
 set(:latest_version_path) { File.join(sdk_path, 'latest') }
 set(:build_version) { (tag && tag.gsub(/^v/, '')) || fetch(:branch, nil) || local_head_revision }
 
