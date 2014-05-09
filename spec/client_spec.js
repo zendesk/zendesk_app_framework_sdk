@@ -4,14 +4,14 @@ describe('Client', function() {
       sandbox = sinon.sandbox.create(),
       origin  = 'https://foo.zendesk.com',
       appGuid = 'ABC123',
-      version = '1.2.3',
+      version = require('version'),
       postMessage,
       subject,
       callback;
 
   beforeEach(function() {
     sandbox.stub(window.top, 'postMessage');
-    subject = new Client(origin, appGuid, version);
+    subject = new Client(origin, appGuid);
   });
 
   afterEach(function() {
