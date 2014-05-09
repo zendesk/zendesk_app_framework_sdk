@@ -57,7 +57,7 @@ namespace :zendesk_app_framework_sdk do
     end
   end
 
-  desc "Update the 'live' version of zendesk_app_framework_sdk"
+  desc "Update the 'latest' version of zendesk_app_framework_sdk"
   task :update_latest do
     logger.info "Updating latest sdk version"
     begin
@@ -74,7 +74,7 @@ namespace :zendesk_app_framework_sdk do
   after 'zendesk_app_framework_sdk:update_latest ' do
     Zendesk::Deployment::Notify::Message.class_eval do
       def subject
-        "[ZD UPDATE] #{deployer} updated_latest for #{application} on #{environment}: #{revision_set.current}"
+        "[ZD SWITCH] #{deployer} updated_latest for #{application} on #{environment}: #{revision_set.current}"
       end
     end
     find_and_execute_task 'deploy:notify'
