@@ -31,15 +31,6 @@ end
 
 namespace :zendesk_app_framework_sdk do
 
-  desc "Prepare server(s) for deployment"
-  task :setup, :except => { :no_release => true } do
-    # create basic directories
-    dirs = [deploy_to, apps_path, sdk_path, latest_version_path, log_path] + release_paths
-
-    logger.info "Ensuring that the main directories are there"
-    run "sudo install -d -m 0775 -o #{user} -g #{fetch(:group, user)} #{dirs.join(' ')}"
-  end
-
   desc "Deploy zendesk_app_framework_sdk"
   task :deploy do
     logger.info "Generating assets"
@@ -64,9 +55,6 @@ namespace :zendesk_app_framework_sdk do
         abort(msg.join("\n"))
       end
     end
-
-    # Don't ask simple math if NOCHALLENGE in env
-    find_and_execute_task 'deploy:challenge' unless ENV['NOCHALLENGE']
   end
 
   desc "Update the 'live' version of zendesk_app_framework_sdk"
