@@ -21,14 +21,6 @@ def sh(command)
   result
 end
 
-namespace :deploy do
-  task :verify_local_git_status do
-    if local_head_revision != real_revision && !local_head_revision.match(/^#{real_revision}/)
-      confirm("You are currently not at #{revision}. Maybe you should run `git checkout #{revision}`")
-    end
-  end
-end
-
 namespace :zendesk_app_framework_sdk do
 
   desc "Deploy zendesk_app_framework_sdk"
