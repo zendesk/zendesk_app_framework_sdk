@@ -11,6 +11,7 @@ module.exports = function (grunt) {
 
   // Project configuration.
   grunt.initConfig({
+    pkg: grunt.file.readJSON('package.json'),
     jshint: {
       options: {
         jshintrc: '.jshintrc',
@@ -30,7 +31,10 @@ module.exports = function (grunt) {
       options: {
         basepath: './lib/',
         include: './lib/',
-        'cache-path': path.join(CACHE_PATH, 'gluejs')
+        'cache-path': path.join(CACHE_PATH, 'gluejs'),
+        replace: {
+          version: '"<%= pkg.version %>"'
+        }
       },
       build: {
         options: {
@@ -97,6 +101,21 @@ module.exports = function (grunt) {
       test: {
         files: '<%= jshint.test.src %>',
         tasks: ['test']
+      }
+    },
+    bump: {
+      options: {
+        files: ['package.json'],
+        updateConfigs: ['pkg'],
+        commit: true,
+        commitMessage: 'v%VERSION%',
+        commitFiles: ['package.json'],
+        createTag: true,
+        tagName: 'v%VERSION%',
+        tagMessage: 'v%VERSION%',
+        push: false,
+        pushTo: 'origin',
+        gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d'
       }
     }
   });

@@ -1,6 +1,6 @@
 {
   "name": "zendesk_app_framework_sdk",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "lib/zendesk-app-framework-sdk.js",
   "description": "The Zendesk App Framework Iframe SDK",
   "homepage": "http://developer.zendesk.com",
@@ -37,6 +37,7 @@
     "grunt-contrib-jshint": "~0.7.0",
     "grunt-contrib-watch": "~0.5.0",
     "grunt-contrib-connect": "~0.7.0",
+    "grunt-bump": "~0.0",
     "sinon-chai": "~2.5.0",
     "load-grunt-tasks": "~0.2.0",
     "time-grunt": "~0.2.0",
