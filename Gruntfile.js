@@ -48,9 +48,12 @@ module.exports = function (grunt) {
       }
     },
     uglify: {
+      options: {
+        sourceMap: true
+      },
       build: {
         files: {
-          'build/zaf_sdk.min.js': ['<%= gluejs.build.src %>']
+          'build/zaf_sdk.min.js': ['<%= gluejs.build.dest %>']
         }
       }
     },

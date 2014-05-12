@@ -43,6 +43,7 @@ namespace :zendesk_app_framework_sdk do
     run "mkdir -p #{sdk_path}/#{build_version}"
     upload "build/zaf_sdk.js",     "#{sdk_path}/#{build_version}/zaf_sdk.js", :via => :scp
     upload "build/zaf_sdk.min.js", "#{sdk_path}/#{build_version}/zaf_sdk.min.js", :via => :scp
+    upload "build/zaf_sdk.min.map", "#{sdk_path}/#{build_version}/zaf_sdk.min.map", :via => :scp
   end
 
   before 'zendesk_app_framework_sdk:update_latest' do
@@ -64,12 +65,14 @@ namespace :zendesk_app_framework_sdk do
     begin
       run "test -f #{sdk_path}/#{build_version}/zaf_sdk.js"
       run "test -f #{sdk_path}/#{build_version}/zaf_sdk.min.js"
+      run "test -f #{sdk_path}/#{build_version}/zaf_sdk.min.map"
     rescue Capistrano::CommandError
       logger.important "ERROR: One of the target release file does not exist!"
       exit
     end
     run "ln -snf #{sdk_path}/#{build_version}/zaf_sdk.js #{latest_version_path}/zaf_sdk.js"
     run "ln -snf #{sdk_path}/#{build_version}/zaf_sdk.min.js #{latest_version_path}/zaf_sdk.min.js"
+    run "ln -snf #{sdk_path}/#{build_version}/zaf_sdk.min.map #{latest_version_path}/zaf_sdk.min.map"
   end
 
   after 'zendesk_app_framework_sdk:update_latest ' do
