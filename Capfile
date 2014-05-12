@@ -23,6 +23,15 @@ end
 
 namespace :zendesk_app_framework_sdk do
 
+  desc "Prepare server(s) for deployment"
+  task :setup, :except => { :no_release => true } do
+    # create basic directories
+    dirs = [deploy_to, assets_path, sdk_path, latest_version_path, log_path] + release_paths
+
+    logger.info "Ensuring that the main directories are there"
+    run "sudo install -d -m 0775 -o #{user} -g #{fetch(:group, user)} #{dirs.join(' ')}"
+  end
+
   desc "Deploy zendesk_app_framework_sdk"
   task :deploy do
     logger.info "Generating assets"
