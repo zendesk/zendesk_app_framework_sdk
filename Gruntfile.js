@@ -41,7 +41,7 @@ module.exports = function (grunt) {
           export: 'ZAFClient'
         },
         src: 'lib/**/*.js',
-        dest: 'build/zaf_client.js'
+        dest: 'build/zaf_sdk.js'
       },
       test: {
         options: {
@@ -52,9 +52,12 @@ module.exports = function (grunt) {
       }
     },
     uglify: {
+      options: {
+        sourceMap: true
+      },
       build: {
         files: {
-          'build/zaf_client.min.js': ['build/zaf_client.js']
+          'build/zaf_sdk.min.js': ['<%= gluejs.build.dest %>']
         }
       }
     },

@@ -1,0 +1,39 @@
+GIT
+  remote: git@github.com:zendesk/zendesk_deployment.git
+  revision: 0852da85c1b95420e83984b4354e25995b7ff6dc
+  tag: v1.10.10
+  specs:
+    zendesk_deployment (1.10.10)
+      capistrano (< 3.0.0)
+      deep_merge
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    airbrake (3.1.16)
+      builder
+      multi_json
+    builder (3.2.2)
+    capistrano (2.15.5)
+      highline
+      net-scp (>= 1.0.0)
+      net-sftp (>= 2.0.0)
+      net-ssh (>= 2.0.14)
+      net-ssh-gateway (>= 1.1.0)
+    deep_merge (1.0.1)
+    highline (1.6.21)
+    multi_json (1.10.0)
+    net-scp (1.2.1)
+      net-ssh (>= 2.6.5)
+    net-sftp (2.1.2)
+      net-ssh (>= 2.6.5)
+    net-ssh (2.9.0)
+    net-ssh-gateway (1.2.0)
+      net-ssh (>= 2.6.5)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  airbrake
+  zendesk_deployment!
