@@ -12,7 +12,7 @@ You can start by adding the following code to your website:
 
 #### External website, e.g. "https://dashboard.myapp.com"
 ```html
-<script type="text/javascript" src="https://assets.zendesk.com/apps/sdk/zaf_sdk.js"></script>
+<script type="text/javascript" src="https://assets.zendesk.com/apps/sdk/latest/zaf_sdk.js"></script>
 <script>
   var app = window.ZAFClient.init();
 
@@ -24,9 +24,7 @@ You can start by adding the following code to your website:
 </script>
 ```
 
-The `src` attribute in the `<script>` element must point to a copy of [zaf_sdk.js](https://assets.zendesk.com/apps/sdk/zaf_sdk.js). Click [here](https://assets.zendesk.com/apps/sdk/zaf_sdk.js) to download it now or copy the above link to our CDN.
-
-Note: In order to benefit from automatic updates and caching we recommend you to always link to our CDN rather than including your own copy.
+The `src` attribute in the `<script>` element must point to a copy of [zaf_sdk.js](https://assets.zendesk.com/apps/sdk/latest/zaf_sdk.js) or the minified version [zaf_sdk.min.js](https://assets.zendesk.com/apps/sdk/latest/zaf_sdk.min.js). In order to benefit from automatic updates and caching we recommend you to always link to our CDN rather than including your own copy.
 
 Once you've included the SDK on your page you can call `ZAFClient.init()`, which will return a [ZAF SDK client](./reference/sdk.html#client-object) object. The ZAF SDK client allows you to post and receive framework events on your external website. To learn more about what you can do with the ZAF SDK please see [Reference: Zendesk App Framework (ZAF) SDK](./reference/sdk.html).
 
