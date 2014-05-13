@@ -9,7 +9,7 @@ The Zendesk App Framework (ZAF) SDK is a JavaScript micro-library that simplifie
 
 ### iframed website
 ```html
-<script type="text/javascript" src="vendor/zaf_sdk.js"></script>
+<script type="text/javascript" src="http://assets.zendesk.com/apps/sdk/latest/zaf_sdk.js"></script>
 <script>
   var app = window.ZAFClient.init(function(context) {
     var currentUser = context.currentUser;
