@@ -21,6 +21,12 @@ You can start by adding the following code to your website:
   app.on('app.activated', function(data) { // listen to the 'app.activated' Framework event
     // go nuts
   });
+
+  app.on('helloIframe', function(data) { // listen to the 'helloIframe' message sent from app
+    if (data.omg) {
+      // omg! app says hello
+    }
+  });
 </script>
 ```
 
@@ -52,7 +58,7 @@ init: function() {
 
 handleHello: function(data) {
   if (data.awesome) {
-    this.postMessage('hello to you too iframe friend!');
+    this.postMessage('helloIframe', { omg: true });
   }
 }
 ```
