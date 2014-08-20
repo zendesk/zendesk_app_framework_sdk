@@ -16,10 +16,16 @@ You can start by adding the following code to your website:
 <script>
   var app = window.ZAFClient.init();
 
-  app.postMessage('hello', { awesome: true }); // post the message 'hello' to the Zendesk app
+  app.postMessage('hello', { foo: true }); // post the message 'hello' to the Zendesk app
 
   app.on('app.activated', function(data) { // listen to the 'app.activated' Framework event
     // go nuts
+  });
+
+  app.on('helloIframe', function(data) { // listen to the 'helloIframe' message sent from the app
+    if (data.bar) {
+      // app says hello
+    }
   });
 </script>
 ```
@@ -51,8 +57,8 @@ init: function() {
 },
 
 handleHello: function(data) {
-  if (data.awesome) {
-    this.postMessage('hello to you too iframe friend!');
+  if (data.foo) {
+    this.postMessage('helloIframe', { bar: true });
   }
 }
 ```
