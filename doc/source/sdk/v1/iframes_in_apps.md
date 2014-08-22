@@ -64,3 +64,12 @@ handleHello: function(data) {
 ```
 
 To learn more about `iframe` events and the `postMessage` API please see [Reference: Events](./reference/events.html).
+
+
+### API Reference
+
+When you include the ZAF SDK on your website you get access to the `ZAFClient` object.
+
+@import lib/index.js
+
+@import lib/client.js
