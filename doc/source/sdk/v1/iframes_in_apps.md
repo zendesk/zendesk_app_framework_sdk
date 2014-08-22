@@ -66,7 +66,7 @@ handleHello: function(data) {
 To learn more about `iframe` events and the `postMessage` API please see [Reference: Events](./reference/events.html).
 
 
-### Reference
+### API Reference
 
 ZAF SDK is a JavaScript library that simplifies cross-frame communication between an external website and the Zendesk app containing it.
 
