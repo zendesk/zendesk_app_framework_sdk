@@ -32,7 +32,7 @@ You can start by adding the following code to your website:
 
 The `src` attribute in the `<script>` element must point to a copy of [zaf_sdk.js](https://assets.zendesk.com/apps/sdk/latest/zaf_sdk.js) or the minified version [zaf_sdk.min.js](https://assets.zendesk.com/apps/sdk/latest/zaf_sdk.min.js). In order to benefit from automatic updates and caching we recommend you to always link to our CDN rather than including your own copy.
 
-Once you've included the SDK on your page you can call `ZAFClient.init()`, which will return a [ZAF SDK client](./reference/sdk.html#client-object) object. The ZAF SDK client allows you to post and receive framework events on your external website. To learn more about what you can do with the ZAF SDK please see [Reference: Zendesk App Framework (ZAF) SDK](./reference/sdk.html).
+Once you've included the SDK on your page you can call `ZAFClient.init()`, which will return a [ZAF SDK client](./iframes_in_apps#zafclient-api) object. The ZAF SDK client allows you to post and receive framework events on your external website. To learn more about what you can do with the ZAF SDK please see [Reference: Zendesk App Framework (ZAF) SDK](./reference/sdk.html).
 
 #### App
 
@@ -63,7 +63,7 @@ handleHello: function(data) {
 }
 ```
 
-To learn more about `iframe` events and the `postMessage` API please see [Reference: Events](./reference/events.html).
+To learn more about `iframe` events and the `postMessage` API please see [Reference: Events](./events).
 
 
 ### API Reference
