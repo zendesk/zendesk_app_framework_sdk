@@ -1,6 +1,6 @@
 {
   "name": "zendesk_app_framework_sdk",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "main": "lib/zendesk-app-framework-sdk.js",
   "description": "The Zendesk App Framework Iframe SDK",
   "homepage": "http://developer.zendesk.com",
