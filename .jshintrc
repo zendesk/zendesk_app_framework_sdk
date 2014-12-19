@@ -1,0 +1,35 @@
+{
+  "predef": [
+    "module", "require", "chai", "sinon", "beforeEach", "afterEach", "describe", "it", "expect"
+  ],
+  "bitwise":  true,
+  "newcap":   false,
+  "eqeqeq":   false,
+  "eqnull":   true,
+  "immed":    true,
+  "nomen":    false,
+  "onevar":   false,
+  "plusplus": false,
+  "regexp":   false,
+  "strict":   false,
+  "undef":    true,
+  "white":    false,
+
+  "debug":    false,
+  "evil":     false,
+  "forin":    false,
+  "laxbreak": false,
+  "sub":      false,
+
+  "maxlen":    200,
+  "indent":    2,
+  "maxerr":    50,
+  "passfail":  false,
+  "browser":   true,
+  "node":      true,
+  "rhino":     false,
+  "devel":     true,
+  "lastsemic": false,
+  "expr":      true,
+  "esnext":    true
+}
