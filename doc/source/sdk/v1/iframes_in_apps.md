@@ -4,7 +4,7 @@ Apps can use iframes to embed external websites within Zendesk. In order for you
 
 ### Introducing the Zendesk App Framework (ZAF) SDK
 
-ZAF SDK is a JavaScript library that simplifies cross-frame communication between an external website and the Zendesk app containing it.
+ZAF SDK is an open-source JavaScript library that simplifies cross-frame communication between an external website and the Zendesk app containing it. You can view and contribute to the source code in [GitHub](https://github.com/zendesk/zendesk_app_framework_sdk).
 
 ### Getting Started
 
