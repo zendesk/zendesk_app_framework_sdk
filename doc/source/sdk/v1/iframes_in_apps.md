@@ -1,10 +1,10 @@
 ## Iframes in Apps
 
-You can use iframes to embed external websites in your apps. The Apps framework provides a set of APIs that allow you to post and receive messages from both your external website and your app.
+You can embed websites in your apps with iframes. The Apps framework provides a set of APIs that allow you to post and receive messages from both your website and your app.
 
 ### Getting Started
 
-Suppose you want to embed the website "https://dashboard.myapp.com" in a Zendesk app. To embed the site, make the following changes to the website and the app.
+Suppose you want to embed the website "https://dashboard.myapp.com" in a Zendesk app. To embed the site, make the following changes to your website and your app.
 
 #### Website
 
