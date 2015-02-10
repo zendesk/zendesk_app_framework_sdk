@@ -1,16 +1,15 @@
-## IFrames in Apps
+## Iframes in Apps
 
-Apps can use iframes to embed external websites within Zendesk. In order for your external website to interact with your app, the framework provides a set of APIs that allow you to post and receive messages both from your external website and your app.
-
-### Introducing the Zendesk App Framework (ZAF) SDK
-
-ZAF SDK is an open-source JavaScript library that simplifies cross-frame communication between an external website and the Zendesk app containing it. You can view and contribute to the source code in [GitHub](https://github.com/zendesk/zendesk_app_framework_sdk).
+You can embed websites in your apps with iframes. The Apps framework provides a set of APIs that allow you to post and receive messages from both your website and your app.
 
 ### Getting Started
 
-You can start by adding the following code to your website:
+Suppose you want to embed the website "https://dashboard.myapp.com" in a Zendesk app. To embed the site, make the following changes to your website and your app.
 
-#### External website, e.g. "https://dashboard.myapp.com"
+#### Website
+
+Start by adding the following code to your website:
+
 ```html
 <script type="text/javascript" src="https://assets.zendesk.com/apps/sdk/latest/zaf_sdk.js"></script>
 <script>
@@ -30,20 +29,23 @@ You can start by adding the following code to your website:
 </script>
 ```
 
-The `src` attribute in the `<script>` element must point to a copy of [zaf_sdk.js](https://assets.zendesk.com/apps/sdk/latest/zaf_sdk.js) or the minified version [zaf_sdk.min.js](https://assets.zendesk.com/apps/sdk/latest/zaf_sdk.min.js). In order to benefit from automatic updates and caching we recommend you to always link to our CDN rather than including your own copy.
+The code imports the Zendesk App Framework (ZAF) SDK. The ZAF SDK is an open-source JavaScript library that simplifies cross-frame communication between an external website and the Zendesk app containing it. You can view and contribute to the source code on [GitHub](https://github.com/zendesk/zendesk_app_framework_sdk).
 
-Once you've included the SDK on your page you can call `ZAFClient.init()`, which will return a [ZAF SDK client](./iframes_in_apps#zafclient-api) object. The ZAF SDK client allows you to post and receive framework events on your external website.
+The `src` attribute in the `<script>` element must point to a copy of [zaf_sdk.js](https://assets.zendesk.com/apps/sdk/latest/zaf_sdk.js) or the minified version [zaf_sdk.min.js](https://assets.zendesk.com/apps/sdk/latest/zaf_sdk.min.js). To benefit from automatic updates and caching, we recommend you always link to our CDN rather than including your own copy.
+
+After importing the SDK, you call `ZAFClient.init()`, which returns a [ZAF SDK client](#zafclient-api) object. The client allows you to post and receive framework events on your external website. See the [Client Object](#client-object) reference below.
 
 #### App
 
-Once you have your website ready, you must load it from within your app using the ZAF Handlebars `iframe` helper. This will enable the communication between the app and the SDK.
+Switch to your app and use the `iframe` template helper to load the website in a template. Example:
 
-##### iframe_template.hdbs
+##### my_template.hdbs
+
 ```html
 {{iframe "https://dashboard.myapp.com"}}
 ```
 
-As soon as you switch to that template your app can start receiving `iframe` events and also posting messages back to the iframe.
+As soon as you switch to the template, your app can start receiving `iframe` events and posting messages back to the iframe. Example:
 
 ##### app.js
 ```js
@@ -53,7 +55,7 @@ events: {
 },
 
 init: function() {
-  this.switchTo('iframe_template');
+  this.switchTo('my_template');
 },
 
 handleHello: function(data) {
@@ -63,12 +65,7 @@ handleHello: function(data) {
 }
 ```
 
-To learn more about `iframe` events and the `postMessage` API please see [Reference: Events](./events).
-
-
-### API Reference
-
-When you include the ZAF SDK on your website you get access to the `ZAFClient` object.
+To learn more about `iframe` events and the `postMessage` API, see the [Events](./events) reference.
 
 @import lib/index.js
 
