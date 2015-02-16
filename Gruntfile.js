@@ -15,8 +15,7 @@ module.exports = function (grunt) {
     jshint: {
       options: {
         jshintrc: '.jshintrc',
-        reporter: require('jshint-stylish'),
-        ignores: ['lib/vendor/**']
+        reporter: require('jshint-stylish')
       },
       gruntfile: {
         src: 'Gruntfile.js'
