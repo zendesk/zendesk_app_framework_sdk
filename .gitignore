@@ -1,5 +1,6 @@
 .bundle
 /node_modules/
+/bower_components/
 /build
 vendor/bundle
 npm-debug.log

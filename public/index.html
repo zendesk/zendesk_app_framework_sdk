@@ -26,9 +26,14 @@
       console.log('app.deactivated', data);
     });
 
-    app.request('/api/v2/tickets.json', function(tickets) {
-      console.log(tickets);
-    });
+    app.request('/api/v2/tickets.json').then(
+      function(args) {
+        console.log('success:', args);
+      },
+      function(args) {
+        console.log('fail:', args);
+      }
+    );
   </script>
 </body>
 </html>
