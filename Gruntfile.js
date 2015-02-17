@@ -36,7 +36,7 @@ module.exports = function (grunt) {
     gluejs: {
       options: {
         basepath: './lib/',
-        include: ['./lib/'],
+        include: './lib/',
         'cache-path': path.join(CACHE_PATH, 'gluejs'),
         replace: {
           version: '"<%= pkg.version %>"'
