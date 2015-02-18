@@ -20,15 +20,13 @@ The Zendesk App Framework (ZAF) SDK is a JavaScript micro-library that simplifie
     console.log('Hi ' + currentUser.name);
   });
 
-  app.postMessage('hello', { awesome: true });
-
-  app.on('app.activated', function(data) {
-    // go nuts
+  app.on('helloIframe', function(data) {
+    if (data.omg) {
+      console.log('app says hello');
+    }
   });
 
-  app.on('app.willDestroy', function(data) {
-    // clean up your mess
-  });
+  app.postMessage('helloApp', { awesome: true });
 </script>
 ```
 
@@ -40,12 +38,17 @@ The Zendesk App Framework (ZAF) SDK is a JavaScript micro-library that simplifie
 ### app.js
 ```js
 events: {
-  'app.created':  'init',
-  'iframe.hello': 'handleHello'
+  'app.created':     'init',
+  'app.registered':  'onAppRegistered',
+  'iframe.helloApp': 'handleHello'
 },
 
 init: function() {
   this.switchTo('iframe');
+},
+
+onAppRegistered: function() {
+  this.postMessage('helloIframe', { omg: true })
 },
 
 handleHello: function(data) {
