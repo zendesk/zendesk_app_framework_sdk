@@ -27,6 +27,12 @@ module.exports = function (grunt) {
         src: ['spec/**/*.js']
       }
     },
+    copy: {
+      vendor: {
+        src: ['bower_components/ayepromise/ayepromise.js'],
+        dest: 'lib/vendor/ayepromise.js'
+      }
+    },
     gluejs: {
       options: {
         basepath: './lib/',
@@ -124,8 +130,8 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.registerTask('test', ['newer:jshint:test', 'gluejs:test', 'testem:ci']);
-  grunt.registerTask('build', ['newer:jshint:lib', 'gluejs:build', 'uglify:build']);
+  grunt.registerTask('test', ['newer:jshint:test', 'copy:vendor', 'gluejs:test', 'testem:ci']);
+  grunt.registerTask('build', ['newer:jshint:lib', 'copy:vendor', 'gluejs:build', 'uglify:build']);
   grunt.registerTask('server', ['build', 'connect', 'watch:lib']);
   grunt.registerTask('default', 'server');
 };
