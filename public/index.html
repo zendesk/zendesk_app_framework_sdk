@@ -12,19 +12,13 @@
       console.log('Hi ' + currentUser.name);
     });
 
-    app.postMessage('handshake');
-
-    app.on('app.activated', function(data) {
-      console.log('app.activated', data);
+    app.on('helloIframe', function(data) {
+      if (data.omg) {
+        console.log('app says hello');
+      }
     });
 
-    app.on('app.message', function(data) {
-      app.postMessage('messageReceived', { message: data.message });
-    });
-
-    app.on('app.deactivated', function(data) {
-      console.log('app.deactivated', data);
-    });
+    app.postMessage('helloApp', { awesome: true });
 
     app.request('/api/v2/tickets.json').then(
       function(args) {
