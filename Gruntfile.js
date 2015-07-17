@@ -31,8 +31,8 @@ module.exports = function (grunt) {
     },
     copy: {
       vendor: {
-        src: ['bower_components/es6-promise/promise.min.js'],
-        dest: 'lib/vendor/es6-promise.js'
+        src: ['bower_components/ayepromise/ayepromise.js'],
+        dest: 'lib/vendor/ayepromise.js'
       }
     },
     gluejs: {
