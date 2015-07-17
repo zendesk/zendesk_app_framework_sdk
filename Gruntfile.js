@@ -1,6 +1,7 @@
 'use strict';
 
 var path = require('path'),
+    babelify = require('babelify'),
     CACHE_PATH = path.resolve('./tmp/.cache');
 
 module.exports = function (grunt) {
@@ -41,7 +42,12 @@ module.exports = function (grunt) {
         'cache-path': path.join(CACHE_PATH, 'gluejs'),
         replace: {
           version: '"<%= pkg.version %>"'
-        }
+        },
+        command: [
+          function (filename) {
+            return babelify(filename, { sourceMap: false });
+          }
+        ]
       },
       build: {
         options: {
