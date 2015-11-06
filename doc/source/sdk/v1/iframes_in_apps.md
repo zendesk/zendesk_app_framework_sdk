@@ -17,7 +17,8 @@ Start by adding the following code to your website:
 
   app.postMessage('hello', { foo: true }); // post the message 'hello' to the Zendesk app
 
-  app.on('app.activated', function(data) { // listen to the 'app.activated' Framework event
+  // listen to the 'app.registered' event, which is fired by the framework once the iframe is registered with the app
+  app.on('app.registered', function(data) {
     // go nuts
   });
 
