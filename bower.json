@@ -22,6 +22,6 @@
     "tests"
   ],
   "dependencies": {
-    "ayepromise": "~1.1.1"
+    "ayepromise": "~1.1.2"
   }
 }

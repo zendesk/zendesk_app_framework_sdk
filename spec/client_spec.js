@@ -9,6 +9,7 @@ describe('Client', function() {
       callback;
 
   beforeEach(function() {
+    sandbox.stub(window, 'addEventListener');
     sandbox.stub(window.top, 'postMessage');
     subject = new Client(origin, appGuid);
   });
@@ -19,6 +20,10 @@ describe('Client', function() {
 
   it('can be instantiated', function() {
     expect(subject).to.exist;
+  });
+
+  it('adds a listener for the message event', function() {
+    expect(window.addEventListener).to.have.been.calledWith('message');
   });
 
   it('posts an "iframe.handshake" message when initialised', function() {
@@ -37,12 +42,65 @@ describe('Client', function() {
       callback = sandbox.spy();
     });
 
+    describe('when a message is received', function() {
+      var message, evt, trigger;
+
+      beforeEach(function() {
+        message = { awesome: true };
+
+        evt = {
+          data: {
+            key: 'zaf.hello',
+            message: message
+          }
+        };
+
+        trigger = sandbox.stub(subject, 'trigger');
+      });
+
+      describe('when the event is valid', function() {
+        beforeEach(function() {
+          evt.origin = subject._origin;
+          evt.source = subject._source;
+        });
+
+        it("passes the message to the client", function() {
+          window.addEventListener.callArgWith(1, evt);
+          expect(trigger).to.have.been.calledWithExactly('hello', message);
+        });
+
+        describe('when the message is a stringified JSON', function() {
+          it("passes the parsed message to the client", function() {
+            evt.data = JSON.stringify(evt.data);
+            window.addEventListener.callArgWith(1, evt);
+            expect(trigger).to.have.been.calledWithExactly('hello', message);
+          });
+        });
+
+        describe('when the message is not from zaf', function() {
+          it("does not pass the message to the client", function() {
+            evt.data.key = 'hello';
+            window.addEventListener.callArgWith(1, evt);
+            expect(trigger).to.not.have.been.called;
+          });
+        });
+      });
+
+      describe('when the event is not valid', function() {
+        it("does not pass the message to the client", function() {
+          evt.origin = 'https://foo.com';
+          window.addEventListener.callArgWith(1, evt);
+          expect(trigger).to.not.have.been.called;
+        });
+      });
+    });
+
     describe('#postMessage', function() {
 
       it('waits until the client is ready to post messages', function() {
         subject.postMessage('foo');
         expect(window.top.postMessage).to.not.have.been.calledWithMatch('{"key":"foo","appGuid":"ABC123"}');
-        subject.trigger('app.registered');
+        subject.trigger('app.registered', { context: {}, metadata: {} });
         expect(window.top.postMessage).to.have.been.calledWithMatch('{"key":"foo","appGuid":"ABC123"}');
       });
 
