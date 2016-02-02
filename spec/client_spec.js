@@ -43,7 +43,7 @@ describe('Client', function() {
       it('waits until the client is ready to post messages', function() {
         subject.postMessage('foo');
         expect(window.top.postMessage).to.not.have.been.calledWithMatch('{"key":"foo","appGuid":"ABC123"}');
-        subject.trigger('app.registered');
+        subject.trigger('app.registered', { context: {}, metadata: {} });
         expect(window.top.postMessage).to.have.been.calledWithMatch('{"key":"foo","appGuid":"ABC123"}');
       });
 

@@ -40,6 +40,7 @@ describe('ZAFClient', function() {
 
       describe('when a callback is passed', function() {
         var callback = function() { return 'abcxyz'; };
+        callback.bind = function() { return callback; };
 
         beforeEach(function() {
           sandbox.spy(Client.prototype, 'on');
@@ -48,7 +49,8 @@ describe('ZAFClient', function() {
 
         it('binds the callback to app.registered', function() {
           var callbackMatcher = sinon.match(function (cb) {
-            return cb() === callback();
+            // performs an identity check, meaning that bind must be stubbed to return the same method
+            return cb === callback;
           }, 'wrong callback');
           expect(Client.prototype.on).to.have.been.calledWith('app.registered', callbackMatcher);
         });
