@@ -13,6 +13,9 @@ module.exports = function (grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     eslint: {
+      options: {
+        ignorePattern: ['lib/vendor/*']
+      },
       gruntfile: {
         src: 'Gruntfile.js'
       },
@@ -93,7 +96,7 @@ module.exports = function (grunt) {
           port: 9001,
           base: 'public'
         }
-      },
+      }
     },
     watch: {
       gruntfile: {
