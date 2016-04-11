@@ -5,7 +5,6 @@ describe('Client', function() {
       origin  = 'https://foo.zendesk.com',
       appGuid = 'ABC123',
       version = require('version'),
-      postMessage,
       subject,
       callback;
 

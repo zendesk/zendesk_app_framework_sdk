@@ -1,7 +1,13 @@
 {
   "env": {
     "browser": true,
-    "commonjs": true
+    "commonjs": true,
+    "mocha": true
+  },
+  "globals": {
+    "expect": false,
+    "sinon": false,
+    "chai": false
   },
   "extends": "eslint:recommended",
   "rules": {
