@@ -8,7 +8,7 @@ describe('ZAFClient', function() {
     shouldInit = 'undefined' === typeof shouldInit ?
       true :
       shouldInit;
-    if (!!shouldInit) {
+    if (shouldInit) {
       expect(window.addEventListener).to.have.been.calledWith('message');
     } else {
       expect(window.addEventListener).to.not.have.been.calledWith('message');
