@@ -39,6 +39,7 @@
     "grunt-contrib-jshint": "^1.0.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-contrib-connect": "^1.0.1",
+    "grunt-eslint": "^18.0.0",
     "grunt-bump": "^0.7.0",
     "sinon-chai": "^2.8.0",
     "load-grunt-tasks": "^3.5.0",
