@@ -231,6 +231,33 @@ describe('Client', function() {
 
     });
 
+    describe('#get', function() {
+      beforeEach(function() {
+        sandbox.spy(window, 'setTimeout');
+      });
+
+      it('returns a promise', function() {
+        expect(subject.get('ticket.subject')).to.be.a.promise;
+      });
+
+      it('rejects the promise after 5 seconds', function() {
+        subject.get('ticket.subject');
+        expect(setTimeout).to.have.been.calledWith(sinon.match.func, 5000);
+      });
+    });
+
+    describe('#set', function() {
+      it('returns a promise', function() {
+        expect(subject.set('ticket.subject', 'value')).to.be.a.promise;
+      });
+    });
+
+    describe('#invoke', function() {
+      it('returns a promise', function() {
+        expect(subject.invoke('iframe.resize')).to.be.a.promise;
+      });
+    });
+
   });
 
 });
