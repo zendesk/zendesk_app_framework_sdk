@@ -6,9 +6,11 @@ describe('Client', function() {
       appGuid = 'ABC123',
       version = require('version'),
       subject,
-      callback;
+      callback,
+      requestsCount = 0;
 
   beforeEach(function() {
+    sandbox.stub(window, 'addEventListener');
     sandbox.stub(window.top, 'postMessage');
     subject = new Client(origin, appGuid);
   });
@@ -19,6 +21,10 @@ describe('Client', function() {
 
   it('can be instantiated', function() {
     expect(subject).to.exist;
+  });
+
+  it('adds a listener for the message event', function() {
+    expect(window.addEventListener).to.have.been.calledWith('message');
   });
 
   it('posts an "iframe.handshake" message when initialised', function() {
@@ -37,12 +43,65 @@ describe('Client', function() {
       callback = sandbox.spy();
     });
 
+    describe('when a message is received', function() {
+      var message, evt, trigger;
+
+      beforeEach(function() {
+        message = { awesome: true };
+
+        evt = {
+          data: {
+            key: 'zaf.hello',
+            message: message
+          }
+        };
+
+        trigger = sandbox.stub(subject, 'trigger');
+      });
+
+      describe('when the event is valid', function() {
+        beforeEach(function() {
+          evt.origin = subject._origin;
+          evt.source = subject._source;
+        });
+
+        it("passes the message to the client", function() {
+          window.addEventListener.callArgWith(1, evt);
+          expect(trigger).to.have.been.calledWithExactly('hello', message);
+        });
+
+        describe('when the message is a stringified JSON', function() {
+          it("passes the parsed message to the client", function() {
+            evt.data = JSON.stringify(evt.data);
+            window.addEventListener.callArgWith(1, evt);
+            expect(trigger).to.have.been.calledWithExactly('hello', message);
+          });
+        });
+
+        describe('when the message is not from zaf', function() {
+          it("does not pass the message to the client", function() {
+            evt.data.key = 'hello';
+            window.addEventListener.callArgWith(1, evt);
+            expect(trigger).to.not.have.been.called;
+          });
+        });
+      });
+
+      describe('when the event is not valid', function() {
+        it("does not pass the message to the client", function() {
+          evt.origin = 'https://foo.com';
+          window.addEventListener.callArgWith(1, evt);
+          expect(trigger).to.not.have.been.called;
+        });
+      });
+    });
+
     describe('#postMessage', function() {
 
       it('waits until the client is ready to post messages', function() {
         subject.postMessage('foo');
         expect(window.top.postMessage).to.not.have.been.calledWithMatch('{"key":"foo","appGuid":"ABC123"}');
-        subject.trigger('app.registered');
+        subject.trigger('app.registered', { context: {}, metadata: {} });
         expect(window.top.postMessage).to.have.been.calledWithMatch('{"key":"foo","appGuid":"ABC123"}');
       });
 
@@ -126,7 +185,7 @@ describe('Client', function() {
     });
 
     describe('#request', function() {
-      var promise, doneHandler, failHandler, requestsCount = 0;
+      var promise, doneHandler, failHandler;
 
       beforeEach(function() {
         sandbox.spy(subject, 'postMessage');
@@ -146,31 +205,64 @@ describe('Client', function() {
       });
 
       describe('promise', function() {
-        var response = { responseArgs: [ {} ] },
-            clock;
+        var response = { responseArgs: [ {} ] };
 
-        beforeEach(function () {
-          clock = sinon.useFakeTimers();
-        });
-
-        afterEach(function () {
-          clock.restore();
-        });
-
-        it('resolves when the request succeeds', function() {
+        it('resolves when the request succeeds', function(done) {
           subject.trigger('request:' + (requestsCount - 1) + '.done', response);
-          clock.tick(1);
-          expect(doneHandler).to.have.been.calledWith(response.responseArgs[0]);
+          promise.then(function() {
+            expect(doneHandler).to.have.been.calledWith(response.responseArgs[0]);
+            done();
+          });
         });
 
-        it('rejects when the request fails', function() {
+        it('rejects when the request fails', function(done) {
           subject.trigger('request:' + (requestsCount - 1) + '.fail', response);
-          clock.tick(1);
-          expect(failHandler).to.have.been.calledWith(response.responseArgs[0]);
+          promise.then(function() {
+            expect(failHandler).to.have.been.calledWith(response.responseArgs[0]);
+            done();
+          });
         });
+      });
+    });
 
+    describe('#get', function() {
+      beforeEach(function() {
+        sandbox.spy(window, 'setTimeout');
       });
 
+      it('returns a promise', function() {
+        expect(subject.get('ticket.subject')).to.be.a.promise;
+      });
+
+      it('rejects the promise after 5 seconds', function() {
+        subject.get('ticket.subject');
+        expect(setTimeout).to.have.been.calledWith(sinon.match.func, 5000);
+      });
+
+      it('resolves the promise when the expected message is received', function(done) {
+        var promise = subject.get('ticket.subject');
+
+        expect(promise).to.eventually.become({a: 'b'}).and.notify(done);
+
+        window.addEventListener.callArgWith(1, {
+          origin: subject._origin,
+          source: subject._source,
+          data: { id: requestsCount - 1, result: {a: 'b'} }
+        });
+        ++requestsCount;
+      });
+    });
+
+    describe('#set', function() {
+      it('returns a promise', function() {
+        expect(subject.set('ticket.subject', 'value')).to.be.a.promise;
+      });
+    });
+
+    describe('#invoke', function() {
+      it('returns a promise', function() {
+        expect(subject.invoke('iframe.resize')).to.be.a.promise;
+      });
     });
 
   });
