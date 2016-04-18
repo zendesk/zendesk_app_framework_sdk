@@ -205,16 +205,7 @@ describe('Client', function() {
       });
 
       describe('promise', function() {
-        var response = { responseArgs: [ {} ] },
-            clock;
-
-        beforeEach(function () {
-          clock = sinon.useFakeTimers();
-        });
-
-        afterEach(function () {
-          clock.restore();
-        });
+        var response = { responseArgs: [ {} ] };
 
         it('resolves when the request succeeds', function(done) {
           subject.trigger('request:' + (requestsCount - 1) + '.done', response);
