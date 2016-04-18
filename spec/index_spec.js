@@ -16,7 +16,7 @@ describe('ZAFClient', function() {
     describe('given origin and app_guid exist', function() {
       beforeEach(function() {
         Utils.queryParameters.returns({
-          origin:   'https://foo.zendesk.com',
+          origin: document.location,
           app_guid: 'A2'
         });
       });
