@@ -6,7 +6,8 @@ describe('Client', function() {
       appGuid = 'ABC123',
       version = require('version'),
       subject,
-      callback;
+      callback,
+      requestsCount = 0;
 
   beforeEach(function() {
     sandbox.stub(window, 'addEventListener');
@@ -184,7 +185,7 @@ describe('Client', function() {
     });
 
     describe('#request', function() {
-      var promise, doneHandler, failHandler, requestsCount = 0;
+      var promise, doneHandler, failHandler;
 
       beforeEach(function() {
         sandbox.spy(subject, 'postMessage');
@@ -215,20 +216,22 @@ describe('Client', function() {
           clock.restore();
         });
 
-        it('resolves when the request succeeds', function() {
+        it('resolves when the request succeeds', function(done) {
           subject.trigger('request:' + (requestsCount - 1) + '.done', response);
-          clock.tick(1);
-          expect(doneHandler).to.have.been.calledWith(response.responseArgs[0]);
+          promise.then(function() {
+            expect(doneHandler).to.have.been.calledWith(response.responseArgs[0]);
+            done();
+          });
         });
 
-        it('rejects when the request fails', function() {
+        it('rejects when the request fails', function(done) {
           subject.trigger('request:' + (requestsCount - 1) + '.fail', response);
-          clock.tick(1);
-          expect(failHandler).to.have.been.calledWith(response.responseArgs[0]);
+          promise.then(function() {
+            expect(failHandler).to.have.been.calledWith(response.responseArgs[0]);
+            done();
+          });
         });
-
       });
-
     });
 
     describe('#get', function() {
@@ -243,6 +246,19 @@ describe('Client', function() {
       it('rejects the promise after 5 seconds', function() {
         subject.get('ticket.subject');
         expect(setTimeout).to.have.been.calledWith(sinon.match.func, 5000);
+      });
+
+      it('resolves the promise when the expected message is received', function(done) {
+        var promise = subject.get('ticket.subject');
+
+        expect(promise).to.eventually.become({a: 'b'}).and.notify(done);
+
+        window.addEventListener.callArgWith(1, {
+          origin: subject._origin,
+          source: subject._source,
+          data: { id: requestsCount - 1, result: {a: 'b'} }
+        });
+        ++requestsCount;
       });
     });
 
