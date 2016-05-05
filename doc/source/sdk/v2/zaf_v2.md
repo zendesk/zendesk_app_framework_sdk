@@ -167,14 +167,14 @@ A [Promises/A+](https://promisesaplus.com) conformant `promise` object returning
 ```javascript
 var client = ZAFClient.init();
 
-client.set('ticket.subject', 'Printer Overheating Incident').then(function(ticket) {
-  console.log(ticket);
+client.set('ticket.subject', 'Printer Overheating Incident').then(function(data) {
+  console.log(data); // { 'ticket.subject': 'Printer Overheating Incident' }
 });
 
 // or
 
-client.set({'ticket.subject': 'Printer Overheating Incident', 'ticket.type': 'incident' }).then(function(ticket) {
-  console.log(ticket);
+client.set({ 'ticket.subject': 'Printer Overheating Incident', 'ticket.type': 'incident' }).then(function(data) {
+  console.log(data); // { 'ticket.subject': 'Printer Overheating Incident', 'ticket.type': 'incident' }
 });
 ```
 
@@ -184,12 +184,12 @@ Remotely invoke an API from the host framework. For a complete list of all paths
 
 ##### Returns
 
-A [Promises/A+](https://promisesaplus.com) conformant `promise` object.
+A [Promises/A+](https://promisesaplus.com) conformant `promise` object returning the value returned from the method call.
 
 ```javascript
 var client = ZAFClient.init();
 
-client.invoke('ticket.comment.appendText', 'Help!').then(function(data) {
+client.invoke('ticket.comment.appendText', 'Help!').then(function() {
   console.log('text has been appended');
 });
 ```
