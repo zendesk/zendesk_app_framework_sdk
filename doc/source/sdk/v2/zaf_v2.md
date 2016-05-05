@@ -1,7 +1,10 @@
 ## Zendesk App Framework v2 Beta
 The Zendesk App Framework (ZAF) v2 introduces a new way of building Zendesk apps using iframes.
 
-The new framework allows you to build powerful apps using whatever technologies you are used to along with all the capabilities you expect from the existing framework.
+The v2 Framework improves upon v1 by:
+- improving on security by taking advantage of the browsers own cross-domain security features.
+- making it easy to use whatever technologies you're familiar with.
+- providing consistent APIs across all supported Zendesk Products
 
 ### How does it work?
 ZAF v2 apps include a manifest.json file and an assets folder. The manifest file includes a slightly modified locations property, which specifies URL paths for each location. These URL paths can be absolute, pointing to an external page, or relative, pointing to a html file inside the assets folder.
@@ -40,7 +43,7 @@ The Zendesk App Tools (ZAT) provides a new option to create ZAF v2 apps, also ca
 $ zat new --iframe-only
 ```
 
-After following the usual prompts ZAT will ask you if you want to enter an iframe URI or leave it blank to use a default local template page. If you enter an iframe URI ZAT will copy it to the ticket_sidebar location on the manifest file. If you choose to leave it blank ZAT will create a HTML template and copy its relative path to the ticket_sidebar location on the manifest file.
+After following the usual prompts ZAT will ask you if you want to enter an iframe URI. If you leave the URI blank, ZAT will create a basic HTML page for you, using the [template here](https://github.com/zendesk/zendesk_apps_tools/blob/master/app_template_iframe/assets/iframe.html).
 
 ## ZAF SDK v2
 ZAF SDK v2 allows you to interact with the framework directly from your iframe. If you haven't used ZAF SDK before check out [Iframes In Apps: ZAFClient API](./iframes_in_apps#zafclient-api), just keep in mind the `postMessage` API described there has been deprecated in v2, since ZAF v2 apps interact directly with the framework, rather than through a legacy Zendesk app.
@@ -76,7 +79,7 @@ A [Promises/A+](https://promisesaplus.com) conformant `promise` object.
 ```javascript
 var client = ZAFClient.init();
 
-client.metadata().then(function(metadata) {
+client.context().then(function(metadata) {
   console.log(metadata); // { host: 'zendesk', hostAccountId: 'mysubdomain', location: 'ticket_sidebar', ticketId: 1234 }
 });
 ```
