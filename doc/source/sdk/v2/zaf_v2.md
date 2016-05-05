@@ -48,6 +48,52 @@ After following the usual prompts ZAT will ask you if you want to enter an ifram
 ## ZAF SDK v2
 ZAF SDK v2 allows you to interact with the framework directly from your iframe. If you haven't used ZAF SDK before check out [Iframes In Apps: ZAFClient API](./iframes_in_apps#zafclient-api), just keep in mind the `postMessage` API described there has been deprecated in v2, since ZAF v2 apps interact directly with the framework, rather than through a legacy Zendesk app.
 
+### Getting Started
+The new ZAF SDK v2 APIs allow your iframe to interact with the framework directly, without having to post messages to a parent Zendesk app. This functionality is made possible by the methods `get`, `set` and `invoke`. These methods provide an interface between your iframe and the existing Data and Interface framework APIs. The following section includes a few "before" and "after" examples of how to get, set and invoke the existing framework APIs.
+
+#### get
+`get` allows you to get paths that correspond to Data API functions.
+
+Legacy app:
+```js
+var name = this.ticket().requester().name();
+console.log(name); // Mikkel Svane
+```
+
+ZAF SDK v2:
+```js
+var client = ZAFClient.init();
+client.get('ticket.requester.name').then(function(data) {
+  console.log(data); // { "ticket.requester.name": "Mikkel Svane" }
+});
+```
+
+#### set
+Legacy app:
+```js
+this.ticket().type('task');
+```
+
+ZAF SDK v2:
+```js
+var client = ZAFClient.init();
+client.set('ticket.type', 'task');
+```
+
+#### invoke
+Legacy app:
+```js
+this.comment().appendText('My printer is on fire');
+```
+
+ZAF SDK v2:
+```js
+var client = ZAFClient.init();
+client.invoke('comment.appendText', 'My printer is on fire');
+```
+
+For a complete list of the APIs available check out the [feature parity status]() page. For more information about these new APIs please read the following section. 
+
 ## ZAF SDK v2 API Reference
 
 #### client.metadata()
