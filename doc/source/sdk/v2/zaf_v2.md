@@ -27,7 +27,7 @@ The HTML files referenced on the manifest file will need to include the ZAF SDK 
 
 i.e.
 ```html
-<script src="http://assets.zendesk.com/apps/sdk/2.0.0-beta1/zaf_sdk.js"></script>
+<script src="https://assets.zendesk.com/apps/sdk/2.0.0-beta1/zaf_sdk.js"></script>
 ```
 
 ### Feature parity
@@ -92,7 +92,7 @@ var client = ZAFClient.init();
 client.invoke('comment.appendText', 'My printer is on fire');
 ```
 
-For a complete list of the APIs available check out the [feature parity status]() page. For more information about these new APIs please read the following section. 
+For a complete list of the APIs available check out the [feature parity status]() page. For more information about these new APIs please read the following section.
 
 ## ZAF SDK v2 API Reference
 
