@@ -51,6 +51,8 @@ ZAF SDK v2 allows you to interact with the framework directly from your iframe. 
 ### Getting Started
 The new ZAF SDK v2 APIs allow your iframe to interact with the framework directly, without having to post messages to a parent Zendesk app. This functionality is made possible by the methods `get`, `set` and `invoke`. These methods provide an interface between your iframe and the existing Data and Interface framework APIs. The following section includes a few "before" and "after" examples of how to get, set and invoke the existing framework APIs.
 
+Note: Due do the nature of cross-frame communication every interaction between your iframe and the framework happens asynchronously.
+
 #### get
 `get` allows you to get paths that correspond to Data API functions.
 
