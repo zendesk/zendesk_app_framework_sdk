@@ -5,11 +5,10 @@
   <title>Iframe me!</title>
 </head>
 <body>
-  <script type="text/javascript" src="assets/zaf_sdk.min.js"></script>
+  <script type="text/javascript" src="assets/zaf_sdk.js"></script>
   <script>
     var app = window.ZAFClient.init(function(context) {
-      var currentUser = context.currentUser;
-      console.log('Hi ' + currentUser.name);
+      console.log('Hi', context);
     });
 
     app.on('helloIframe', function(data) {
@@ -21,6 +20,15 @@
     app.postMessage('helloApp', { awesome: true });
 
     app.request('/api/v2/tickets.json').then(
+      function(args) {
+        console.log('success:', args);
+      },
+      function(args) {
+        console.log('fail:', args);
+      }
+    );
+
+    app.get('ticket.subject').then(
       function(args) {
         console.log('success:', args);
       },
