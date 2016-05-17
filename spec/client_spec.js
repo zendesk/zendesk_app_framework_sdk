@@ -234,6 +234,10 @@ describe('Client', function() {
         expect(subject.get('ticket.subject')).to.be.a.promise;
       });
 
+      it('accepts an array with mutliple paths', function() {
+        expect( subject.get(['ticket.subject', 'ticket.requester']) ).to.be.a.promise;
+      });
+
       it('rejects the promise after 5 seconds', function() {
         subject.get('ticket.subject');
         expect(setTimeout).to.have.been.calledWith(sinon.match.func, 5000);
