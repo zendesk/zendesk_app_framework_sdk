@@ -28,8 +28,8 @@ module.exports = function (grunt) {
     },
     copy: {
       vendor: {
-        src: ['bower_components/es6-promise/es6-promise.js'],
-        dest: 'lib/vendor/es6-promise.js'
+        src: ['bower_components/native-promise-only/lib/npo.src.js'],
+        dest: 'lib/vendor/native-promise-only.js'
       }
     },
     gluejs: {
