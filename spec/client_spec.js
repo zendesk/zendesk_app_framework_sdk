@@ -251,7 +251,7 @@ describe('Client', function() {
         window.addEventListener.callArgWith(1, {
           origin: subject._origin,
           source: subject._source,
-          data: { id: requestsCount + 1, result: {a: 'b'} }
+          data: { id: requestsCount, result: {a: 'b'} }
         });
         ++requestsCount;
       });

@@ -26,12 +26,6 @@ module.exports = function (grunt) {
         src: ['spec/**/*.js']
       }
     },
-    copy: {
-      vendor: {
-        src: ['bower_components/es6-promise/es6-promise.js'],
-        dest: 'lib/vendor/es6-promise.js'
-      }
-    },
     gluejs: {
       options: {
         basepath: './lib/',
@@ -74,6 +68,7 @@ module.exports = function (grunt) {
           'node_modules/sinon/pkg/sinon.js',
           'node_modules/sinon-chai/lib/sinon-chai.js',
           'node_modules/chai-as-promised/lib/chai-as-promised.js',
+          'node_modules/es6-promise/dist/es6-promise.js',
           'node_modules/es5-shim/es5-shim.js',
           'spec/spec_helper.js',
           'spec/**/*_spec.js'
@@ -130,8 +125,8 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.registerTask('test', ['newer:eslint:test', 'copy:vendor', 'gluejs:test', 'testem:ci']);
-  grunt.registerTask('build', ['newer:eslint:lib', 'copy:vendor', 'gluejs:build', 'uglify:build']);
+  grunt.registerTask('test', ['newer:eslint:test', 'gluejs:test', 'testem:ci']);
+  grunt.registerTask('build', ['newer:eslint:lib', 'gluejs:build', 'uglify:build']);
   grunt.registerTask('server', ['build', 'connect', 'watch:lib']);
   grunt.registerTask('default', 'server');
 };

@@ -5,6 +5,7 @@
     "node_modules/sinon/pkg/sinon.js",
     "node_modules/sinon-chai/lib/sinon-chai.js",
     "node_modules/chai-as-promised/lib/chai-as-promised.js",
+    "node_modules/es6-promise/dist/es6-promise.js",
     "node_modules/es5-shim/es5-shim.js",
     "spec/spec_helper.js",
     "spec/**/*_spec.js"
