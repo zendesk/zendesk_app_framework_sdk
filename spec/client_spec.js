@@ -6,8 +6,7 @@ describe('Client', function() {
       appGuid = 'ABC123',
       version = require('version'),
       subject,
-      callback,
-      requestsCount = 0;
+      callback;
 
   beforeEach(function() {
     sandbox.stub(window, 'addEventListener');
@@ -185,7 +184,8 @@ describe('Client', function() {
     });
 
     describe('#request', function() {
-      var promise, doneHandler, failHandler;
+      var promise, doneHandler, failHandler,
+          requestsCount = 0;
 
       beforeEach(function() {
         sandbox.spy(subject, 'postMessage');
@@ -226,21 +226,35 @@ describe('Client', function() {
     });
 
     describe('#get', function() {
+      var requestsCount = 0;
+
       beforeEach(function() {
-        sandbox.spy(window, 'setTimeout');
+        requestsCount++;
       });
 
       it('returns a promise', function() {
-        expect(subject.get('ticket.subject')).to.be.a.promise;
+        var promise = subject.get('ticket.subject');
+
+        promise.catch(function() {});
+        expect(promise).to.be.a.promise;
       });
 
       it('accepts an array with mutliple paths', function() {
-        expect( subject.get(['ticket.subject', 'ticket.requester']) ).to.be.a.promise;
+        var promise = subject.get(['ticket.subject', 'ticket.requester']);
+
+        promise.catch(function() {});
+        expect(promise).to.be.a.promise;
       });
 
-      it('rejects the promise after 5 seconds', function() {
-        subject.get('ticket.subject');
-        expect(setTimeout).to.have.been.calledWith(sinon.match.func, 5000);
+      it('rejects the promise after 5 seconds', function(done) {
+        this.timeout(6000);
+
+        var promise = subject.get('ticket.subject');
+
+        promise.catch(function(err) {
+          expect(err).to.be.error;
+          done();
+        });
       });
 
       it('resolves the promise when the expected message is received', function(done) {
@@ -251,24 +265,27 @@ describe('Client', function() {
         window.addEventListener.callArgWith(1, {
           origin: subject._origin,
           source: subject._source,
-          data: { id: requestsCount, result: {a: 'b'} }
+          data: { id: requestsCount - 1, result: {a: 'b'} }
         });
-        ++requestsCount;
       });
     });
 
     describe('#set', function() {
       it('returns a promise', function() {
-        expect(subject.set('ticket.subject', 'value')).to.be.a.promise;
+        var promise = subject.set('ticket.subject', 'value');
+
+        promise.catch(function() {});
+        expect(promise).to.be.a.promise;
       });
     });
 
     describe('#invoke', function() {
       it('returns a promise', function() {
-        expect(subject.invoke('iframe.resize')).to.be.a.promise;
+        var promise = subject.invoke('iframe.resize');
+
+        promise.catch(function() {});
+        expect(promise).to.be.a.promise;
       });
     });
-
   });
-
 });
