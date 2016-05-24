@@ -185,7 +185,7 @@ describe('Client', function() {
 
     describe('#request', function() {
       var promise, doneHandler, failHandler,
-          requestsCount = 0;
+          requestsCount = -1;
 
       beforeEach(function() {
         sandbox.spy(subject, 'postMessage');
@@ -208,7 +208,7 @@ describe('Client', function() {
         var response = { responseArgs: [ {} ] };
 
         it('resolves when the request succeeds', function(done) {
-          subject.trigger('request:' + (requestsCount - 1) + '.done', response);
+          subject.trigger('request:' + requestsCount + '.done', response);
           promise.then(function() {
             expect(doneHandler).to.have.been.calledWith(response.responseArgs[0]);
             done();
@@ -216,7 +216,7 @@ describe('Client', function() {
         });
 
         it('rejects when the request fails', function(done) {
-          subject.trigger('request:' + (requestsCount - 1) + '.fail', response);
+          subject.trigger('request:' + requestsCount + '.fail', response);
           promise.then(function() {
             expect(failHandler).to.have.been.calledWith(response.responseArgs[0]);
             done();
@@ -226,7 +226,7 @@ describe('Client', function() {
     });
 
     describe('#get', function() {
-      var requestsCount = 0;
+      var requestsCount = -1;
 
       beforeEach(function() {
         requestsCount++;
@@ -266,7 +266,7 @@ describe('Client', function() {
         window.addEventListener.callArgWith(1, {
           origin: subject._origin,
           source: subject._source,
-          data: { id: requestsCount - 1, result: {a: 'b'} }
+          data: { id: requestsCount, result: {a: 'b'} }
         });
       });
     });
