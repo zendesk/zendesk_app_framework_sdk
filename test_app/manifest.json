@@ -1,9 +1,9 @@
 {
   "name": "app",
   "author": {
-    "name": "olaf",
-    "email": "olaf@oaf.as",
-    "url": ""
+    "name": "zendesk",
+    "email": "support@zendesk.com",
+    "url": "https://www.zendesk.com/"
   },
   "defaultLocale": "en",
   "private": true,
