@@ -235,15 +235,15 @@ describe('Client', function() {
       it('returns a promise', function() {
         var promise = subject.get('ticket.subject');
 
-        promise.catch(function() {});
         expect(promise).to.be.a.promise;
+        promise.catch(function() {});
       });
 
       it('accepts an array with mutliple paths', function() {
         var promise = subject.get(['ticket.subject', 'ticket.requester']);
 
-        promise.catch(function() {});
         expect(promise).to.be.a.promise;
+        promise.catch(function() {});
       });
 
       it('rejects the promise after 5 seconds', function(done) {
@@ -253,6 +253,7 @@ describe('Client', function() {
 
         promise.catch(function(err) {
           expect(err).to.be.error;
+          expect(err.message).to.equal('Invocation request timeout');
           done();
         });
       });
@@ -274,8 +275,8 @@ describe('Client', function() {
       it('returns a promise', function() {
         var promise = subject.set('ticket.subject', 'value');
 
-        promise.catch(function() {});
         expect(promise).to.be.a.promise;
+        promise.catch(function() {});
       });
     });
 
@@ -283,8 +284,8 @@ describe('Client', function() {
       it('returns a promise', function() {
         var promise = subject.invoke('iframe.resize');
 
-        promise.catch(function() {});
         expect(promise).to.be.a.promise;
+        promise.catch(function() {});
       });
     });
   });
