@@ -239,7 +239,7 @@ describe('Client', function() {
         promise.catch(function() {});
       });
 
-      it('accepts an array with mutliple paths', function() {
+      it('accepts an array with multiple paths', function() {
         var promise = subject.get(['ticket.subject', 'ticket.requester']);
 
         expect(promise).to.be.a.promise;
