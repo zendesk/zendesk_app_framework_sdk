@@ -185,7 +185,7 @@ describe('Client', function() {
 
     describe('#request', function() {
       var promise, doneHandler, failHandler,
-          requestsCount = -1;
+          requestsCount = 0;
 
       beforeEach(function() {
         sandbox.spy(subject, 'postMessage');
@@ -193,6 +193,9 @@ describe('Client', function() {
         failHandler = sandbox.spy();
 
         promise = subject.request('/api/v2/tickets.json').then(doneHandler, failHandler);
+      });
+
+      afterEach(function() {
         requestsCount++;
       });
 
@@ -226,30 +229,30 @@ describe('Client', function() {
     });
 
     describe('#get', function() {
-      var requestsCount = -1;
+      var requestsCount = 0,
+          promise;
 
-      beforeEach(function() {
+      afterEach(function() {
+        promise.catch(function() {});
         requestsCount++;
       });
 
       it('returns a promise', function() {
-        var promise = subject.get('ticket.subject');
+        promise = subject.get('ticket.subject');
 
         expect(promise).to.be.a.promise;
-        promise.catch(function() {});
       });
 
       it('accepts an array with multiple paths', function() {
-        var promise = subject.get(['ticket.subject', 'ticket.requester']);
+        promise = subject.get(['ticket.subject', 'ticket.requester']);
 
         expect(promise).to.be.a.promise;
-        promise.catch(function() {});
       });
 
       it('rejects the promise after 5 seconds', function(done) {
         this.timeout(6000);
 
-        var promise = subject.get('ticket.subject');
+        promise = subject.get('ticket.subject');
 
         promise.catch(function(err) {
           expect(err).to.be.error;
@@ -259,7 +262,7 @@ describe('Client', function() {
       });
 
       it('resolves the promise when the expected message is received', function(done) {
-        var promise = subject.get('ticket.subject');
+        promise = subject.get('ticket.subject');
 
         expect(promise).to.eventually.become({a: 'b'}).and.notify(done);
 
@@ -272,20 +275,30 @@ describe('Client', function() {
     });
 
     describe('#set', function() {
+      var promise;
+
+      afterEach(function() {
+        promise.catch(function() {});
+      });
+
       it('returns a promise', function() {
-        var promise = subject.set('ticket.subject', 'value');
+        promise = subject.set('ticket.subject', 'value');
 
         expect(promise).to.be.a.promise;
-        promise.catch(function() {});
       });
     });
 
     describe('#invoke', function() {
+      var promise;
+
+      afterEach(function() {
+        promise.catch(function() {});
+      });
+
       it('returns a promise', function() {
-        var promise = subject.invoke('iframe.resize');
+        promise = subject.invoke('iframe.resize');
 
         expect(promise).to.be.a.promise;
-        promise.catch(function() {});
       });
     });
   });
