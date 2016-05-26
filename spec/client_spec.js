@@ -229,7 +229,7 @@ describe('Client', function() {
     });
 
     describe('#get', function() {
-      var requestsCount = 0,
+      var requestsCount = 1,
           promise;
 
       afterEach(function() {
