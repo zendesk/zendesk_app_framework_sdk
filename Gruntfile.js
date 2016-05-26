@@ -28,8 +28,8 @@ module.exports = function (grunt) {
     },
     copy: {
       vendor: {
-        src: ['bower_components/ayepromise/ayepromise.js'],
-        dest: 'lib/vendor/ayepromise.js'
+        src: ['bower_components/native-promise-only/lib/npo.src.js'],
+        dest: 'lib/vendor/native-promise-only.js'
       }
     },
     gluejs: {

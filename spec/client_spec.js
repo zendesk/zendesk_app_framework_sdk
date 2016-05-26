@@ -6,8 +6,7 @@ describe('Client', function() {
       appGuid = 'ABC123',
       version = require('version'),
       subject,
-      callback,
-      requestsCount = 0;
+      callback;
 
   beforeEach(function() {
     sandbox.stub(window, 'addEventListener');
@@ -185,7 +184,8 @@ describe('Client', function() {
     });
 
     describe('#request', function() {
-      var promise, doneHandler, failHandler;
+      var promise, doneHandler, failHandler,
+          requestsCount = 0;
 
       beforeEach(function() {
         sandbox.spy(subject, 'postMessage');
@@ -193,6 +193,9 @@ describe('Client', function() {
         failHandler = sandbox.spy();
 
         promise = subject.request('/api/v2/tickets.json').then(doneHandler, failHandler);
+      });
+
+      afterEach(function() {
         requestsCount++;
       });
 
@@ -208,7 +211,7 @@ describe('Client', function() {
         var response = { responseArgs: [ {} ] };
 
         it('resolves when the request succeeds', function(done) {
-          subject.trigger('request:' + (requestsCount - 1) + '.done', response);
+          subject.trigger('request:' + requestsCount + '.done', response);
           promise.then(function() {
             expect(doneHandler).to.have.been.calledWith(response.responseArgs[0]);
             done();
@@ -216,7 +219,7 @@ describe('Client', function() {
         });
 
         it('rejects when the request fails', function(done) {
-          subject.trigger('request:' + (requestsCount - 1) + '.fail', response);
+          subject.trigger('request:' + requestsCount + '.fail', response);
           promise.then(function() {
             expect(failHandler).to.have.been.calledWith(response.responseArgs[0]);
             done();
@@ -226,45 +229,77 @@ describe('Client', function() {
     });
 
     describe('#get', function() {
-      beforeEach(function() {
-        sandbox.spy(window, 'setTimeout');
+      var requestsCount = 0,
+          promise;
+
+      afterEach(function() {
+        promise.catch(function() {});
+        requestsCount++;
       });
 
       it('returns a promise', function() {
-        expect(subject.get('ticket.subject')).to.be.a.promise;
+        promise = subject.get('ticket.subject');
+
+        expect(promise).to.be.a.promise;
       });
 
-      it('rejects the promise after 5 seconds', function() {
-        subject.get('ticket.subject');
-        expect(setTimeout).to.have.been.calledWith(sinon.match.func, 5000);
+      it('accepts an array with multiple paths', function() {
+        promise = subject.get(['ticket.subject', 'ticket.requester']);
+
+        expect(promise).to.be.a.promise;
+      });
+
+      it('rejects the promise after 5 seconds', function(done) {
+        this.timeout(6000);
+
+        promise = subject.get('ticket.subject');
+
+        promise.catch(function(err) {
+          expect(err).to.be.error;
+          expect(err.message).to.equal('Invocation request timeout');
+          done();
+        });
       });
 
       it('resolves the promise when the expected message is received', function(done) {
-        var promise = subject.get('ticket.subject');
+        promise = subject.get('ticket.subject');
 
         expect(promise).to.eventually.become({a: 'b'}).and.notify(done);
 
         window.addEventListener.callArgWith(1, {
           origin: subject._origin,
           source: subject._source,
-          data: { id: requestsCount - 1, result: {a: 'b'} }
+          data: { id: requestsCount, result: {a: 'b'} }
         });
-        ++requestsCount;
       });
     });
 
     describe('#set', function() {
+      var promise;
+
+      afterEach(function() {
+        promise.catch(function() {});
+      });
+
       it('returns a promise', function() {
-        expect(subject.set('ticket.subject', 'value')).to.be.a.promise;
+        promise = subject.set('ticket.subject', 'value');
+
+        expect(promise).to.be.a.promise;
       });
     });
 
     describe('#invoke', function() {
+      var promise;
+
+      afterEach(function() {
+        promise.catch(function() {});
+      });
+
       it('returns a promise', function() {
-        expect(subject.invoke('iframe.resize')).to.be.a.promise;
+        promise = subject.invoke('iframe.resize');
+
+        expect(promise).to.be.a.promise;
       });
     });
-
   });
-
 });

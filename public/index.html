@@ -2,32 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Iframe me!</title>
+  <title>Main window!</title>
 </head>
 <body>
-  <script type="text/javascript" src="assets/zaf_sdk.min.js"></script>
-  <script>
-    var app = window.ZAFClient.init(function(context) {
-      var currentUser = context.currentUser;
-      console.log('Hi ' + currentUser.name);
-    });
-
-    app.on('helloIframe', function(data) {
-      if (data.omg) {
-        console.log('app says hello');
-      }
-    });
-
-    app.postMessage('helloApp', { awesome: true });
-
-    app.request('/api/v2/tickets.json').then(
-      function(args) {
-        console.log('success:', args);
-      },
-      function(args) {
-        console.log('fail:', args);
-      }
-    );
-  </script>
+  <script src="https://cdn.jsdelivr.net/g/jquery@2.2.3,underscorejs@1.8.3"></script>
+  <script src="http://localhost:5678/framework.js"></script>
+  <iframe src="iframe.html?origin=http://localhost:9001&amp;app_guid=1234"></iframe>
 </body>
 </html>

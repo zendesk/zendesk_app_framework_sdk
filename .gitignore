@@ -4,3 +4,4 @@
 /build
 vendor/bundle
 npm-debug.log
+/tmp
