@@ -254,11 +254,7 @@ describe('Client', function() {
 
         promise = subject.get('ticket.subject');
 
-        promise.catch(function(err) {
-          expect(err).to.be.error;
-          expect(err.message).to.equal('Invocation request timeout');
-          done();
-        });
+        expect(promise).to.be.rejectedWith(Error, 'Invocation request timeout').and.notify(done);
       });
 
       it('resolves the promise when the expected message is received', function(done) {
