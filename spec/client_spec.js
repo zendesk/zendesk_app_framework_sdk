@@ -249,6 +249,12 @@ describe('Client', function() {
         expect(promise).to.be.a.promise;
       });
 
+      it('accepts multiple arguments', function() {
+        promise = subject.get('ticket.subject', 'ticket.requester');
+
+        expect(promise).to.be.a.promise;
+      });
+
       it('rejects the promise after 5 seconds', function(done) {
         this.timeout(6000);
 
@@ -268,6 +274,18 @@ describe('Client', function() {
           data: { id: requestsCount, result: {a: 'b'} }
         });
       });
+
+      it('returns an error when not passing in strings', function() {
+        expect(function() {
+          subject.get(123);
+        }).to.throw(Error);
+
+        expect(function() {
+          subject.get({
+            'ticket.subject': true
+          });
+        }).to.throw(Error);
+      });
     });
 
     describe('#set', function() {
@@ -281,6 +299,26 @@ describe('Client', function() {
         promise = subject.set('ticket.subject', 'value');
 
         expect(promise).to.be.a.promise;
+      });
+
+      it('accepts an object', function() {
+        promise = subject.set({
+          'ticket.subject': 'value',
+          'ticket.description': 'value'
+        });
+
+        expect(promise).to.be.a.promise;
+      });
+
+
+      it('throws when not 2 strings or an object', function() {
+        expect(function() {
+          subject.set('test');
+        }).to.throw(Error);
+
+        expect(function() {
+          subject.set(['foo', 'bar']);
+        }).to.throw(Error);
       });
     });
 
