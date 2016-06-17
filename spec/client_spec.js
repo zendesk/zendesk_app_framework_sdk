@@ -334,6 +334,14 @@ describe('Client', function() {
 
         expect(promise).to.be.a.promise;
       });
+
+      it('throw when called with an object', function() {
+        expect(function() {
+          subject.invoke({
+            'iframe.resize': [1]
+          });
+        }).to.throw(Error);
+      });
     });
   });
 });
