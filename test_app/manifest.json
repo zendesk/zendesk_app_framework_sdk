@@ -7,8 +7,12 @@
   },
   "defaultLocale": "en",
   "private": true,
-  "location": { "zendesk":
-    { "ticket_sidebar": "http://localhost:9001/iframe.html" }
+  "location": {
+    "zendesk": {
+      "ticket_sidebar": "http://localhost:9001/iframe.html",
+      "user_sidebar": "http://localhost:9001/iframe.html",
+      "organization_sidebar": "http://localhost:9001/iframe.html"
+    }
   },
   "version": "1.0",
   "frameworkVersion": "1.0"
