@@ -185,7 +185,7 @@ describe('Client', function() {
 
     describe('#request', function() {
       var promise, doneHandler, failHandler,
-          requestsCount = 0;
+          requestsCount = 1;
 
       beforeEach(function() {
         sandbox.spy(subject, 'postMessage');
