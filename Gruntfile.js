@@ -132,6 +132,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('test', ['newer:eslint:test', 'copy:vendor', 'gluejs:test', 'testem:ci']);
   grunt.registerTask('build', ['newer:eslint:lib', 'copy:vendor', 'gluejs:build', 'uglify:build']);
+  grunt.registerTask('test_build', ['newer:eslint:test', 'copy:vendor', 'gluejs:test']);
   grunt.registerTask('server', ['build', 'connect', 'watch:lib']);
   grunt.registerTask('default', 'server');
 };
