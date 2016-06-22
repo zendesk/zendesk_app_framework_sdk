@@ -87,11 +87,11 @@ describe('Utils', function() {
 
       it('should reject when the first promise rejects', function(done) {
         Utils.when([
-          new Promise(function(_, rej) { setTimeout(rej, 10); }),
+          new Promise(function(_, rej) { rej(); }),
           new Promise(function(res) { setTimeout(function() {
             allDone = true;
             res();
-          }, 20); })
+          }, 100); })
         ]).catch(function() {
           expect(allDone).to.be.false;
           done();
