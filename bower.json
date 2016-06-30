@@ -1,6 +1,6 @@
 {
   "name": "zendesk_app_framework_sdk",
-  "version": "2.0.0-beta3",
+  "version": "2.0.0",
   "homepage": "http://developer.zendesk.com",
   "authors": [
     "Zendesk <support@zendesk.com>"
