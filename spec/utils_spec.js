@@ -70,6 +70,13 @@ describe('Utils', function() {
           function() { return true; }
         ])).to.eventually.be.rejectedWith('Awful mistake').and.notify(done);
       });
+
+      it('should resolve if all of the functions return true', function(done) {
+        expect(Utils.when([
+          function() { return true; },
+          function() { return true; }
+        ])).to.eventually.be.fulfilled.and.notify(done);
+      });
     });
 
     describe('with one or more promises passed in', function() {
