@@ -56,6 +56,29 @@ describe('Utils', function() {
 
     });
 
+    describe('with one or more functions passed in', function() {
+      it('should reject when any of the functions returns false', function(done) {
+        expect(Utils.when([
+          function() { return false; },
+          function() { return true; }
+        ])).to.eventually.be.rejected.and.notify(done);
+      });
+
+      it('should reject with a string, when any of the functions returns a string', function(done) {
+        expect(Utils.when([
+          function() { return 'Awful mistake'; },
+          function() { return true; }
+        ])).to.eventually.be.rejectedWith('Awful mistake').and.notify(done);
+      });
+
+      it('should resolve if all of the functions return true', function(done) {
+        expect(Utils.when([
+          function() { return true; },
+          function() { return true; }
+        ])).to.eventually.be.fulfilled.and.notify(done);
+      });
+    });
+
     describe('with one or more promises passed in', function() {
       var allDone;
       beforeEach(function() {
