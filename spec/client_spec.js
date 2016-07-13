@@ -1,6 +1,7 @@
 describe('Client', function() {
 
   var Client  = require('client'),
+      Promise = window.Promise || require('../vendor/native-promise-only'),
       sandbox = sinon.sandbox.create(),
       origin  = 'https://foo.zendesk.com',
       appGuid = 'ABC123',
@@ -261,10 +262,10 @@ describe('Client', function() {
   });
 
   describe('v2 methods', function() {
+    var promise;
 
     describe('#get', function() {
-      var requestsCount = 1,
-          promise;
+      var requestsCount = 1;
 
       afterEach(function() {
         promise.catch(function() {});
@@ -323,8 +324,6 @@ describe('Client', function() {
     });
 
     describe('#set', function() {
-      var promise;
-
       afterEach(function() {
         promise.catch(function() {});
       });
@@ -357,8 +356,6 @@ describe('Client', function() {
     });
 
     describe('#invoke', function() {
-      var promise;
-
       afterEach(function() {
         promise.catch(function() {});
       });
@@ -375,6 +372,26 @@ describe('Client', function() {
             'iframe.resize': [1]
           });
         }).to.throw(Error);
+      });
+    });
+
+    describe('#instance', function() {
+      var context = { location: 'top_bar' };
+
+      beforeEach(function() {
+        sandbox.stub(subject, 'get');
+        subject.get.withArgs('instances.abc-123').returns(
+          Promise.resolve({ 'instances.abc-123': context })
+        );
+      });
+
+      it('requests instance context and caches it in the returned client', function() {
+        promise = subject.instance('abc-123');
+        expect(subject.get).to.have.been.calledWith('instances.abc-123');
+        return Promise.all([
+          expect(promise).to.eventually.be.an.instanceof(Client),
+          expect(promise).to.eventually.have.property('_context').that.equals(context)
+        ]);
       });
     });
   });
