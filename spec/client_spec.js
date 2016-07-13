@@ -391,6 +391,15 @@ describe('Client', function() {
         ]);
       });
 
+      it('returns the same client when requested multiple times', function() {
+        return Promise.all([
+          subject.instance('def-321'),
+          subject.instance('def-321')
+        ]).then(function(promises) {
+          expect(promises[0]).to.equal(promises[1]);
+        });
+      });
+
       describe('with the returned client', function() {
         var childClient;
 
