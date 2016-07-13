@@ -264,11 +264,14 @@ describe('Client', function() {
   describe('v2 methods', function() {
     var promise;
 
+    afterEach(function() {
+      promise.catch(function() {});
+    });
+
     describe('#get', function() {
       var requestsCount = 1;
 
       afterEach(function() {
-        promise.catch(function() {});
         requestsCount++;
       });
 
@@ -324,10 +327,6 @@ describe('Client', function() {
     });
 
     describe('#set', function() {
-      afterEach(function() {
-        promise.catch(function() {});
-      });
-
       it('returns a promise', function() {
         promise = subject.set('ticket.subject', 'value');
 
@@ -356,10 +355,6 @@ describe('Client', function() {
     });
 
     describe('#invoke', function() {
-      afterEach(function() {
-        promise.catch(function() {});
-      });
-
       it('returns a promise', function() {
         promise = subject.invoke('iframe.resize');
 
@@ -379,19 +374,69 @@ describe('Client', function() {
       var context = { location: 'top_bar' };
 
       beforeEach(function() {
+        subject.ready = true;
         sandbox.stub(subject, 'get');
-        subject.get.withArgs('instances.abc-123').returns(
-          Promise.resolve({ 'instances.abc-123': context })
+        subject.get.withArgs('instances.def-321').returns(
+          Promise.resolve({ 'instances.def-321': context })
         );
       });
 
       it('requests instance context and caches it in the returned client', function() {
-        promise = subject.instance('abc-123');
-        expect(subject.get).to.have.been.calledWith('instances.abc-123');
+        promise = subject.instance('def-321');
+        expect(subject.get).to.have.been.calledWith('instances.def-321');
         return Promise.all([
           expect(promise).to.eventually.be.an.instanceof(Client),
-          expect(promise).to.eventually.have.property('_context').that.equals(context)
+          expect(promise).to.eventually.have.property('_context').that.equals(context),
+          expect(promise).to.eventually.have.property('_instanceGuid').that.equals('def-321')
         ]);
+      });
+
+      describe('with the returned client', function() {
+        var childClient;
+
+        beforeEach(function(done) {
+          subject.instance('def-321').then(function(client) {
+            childClient = client;
+            window.top.postMessage.reset();
+          }).then(done);
+        });
+
+        it('should be ready', function() {
+          expect(childClient).to.have.property('ready', true);
+        });
+
+        describe('#get', function() {
+          it('makes a call with the instanceGuid set', function() {
+            promise = childClient.get('foo.bar');
+            var lastCall = JSON.parse(window.top.postMessage.lastCall.args[0]);
+            expect(lastCall.request).to.equal('get');
+            expect(lastCall.params).to.deep.equal(['foo.bar']);
+            expect(lastCall.appGuid).to.equal('ABC123');
+            expect(lastCall.instanceGuid).to.equal('def-321');
+          });
+        });
+
+        describe('#set', function() {
+          it('makes a call with the instanceGuid set', function() {
+            promise = childClient.set('foo.bar', 'baz');
+            var lastCall = JSON.parse(window.top.postMessage.lastCall.args[0]);
+            expect(lastCall.request).to.equal('set');
+            expect(lastCall.params).to.deep.equal({'foo.bar': 'baz'});
+            expect(lastCall.appGuid).to.equal('ABC123');
+            expect(lastCall.instanceGuid).to.equal('def-321');
+          });
+        });
+
+        describe('#invoke', function() {
+          it('makes a call with the instanceGuid set', function() {
+            promise = childClient.invoke('popover', 'hide');
+            var lastCall = JSON.parse(window.top.postMessage.lastCall.args[0]);
+            expect(lastCall.request).to.equal('invoke');
+            expect(lastCall.params).to.deep.equal({'popover': ['hide']});
+            expect(lastCall.appGuid).to.equal('ABC123');
+            expect(lastCall.instanceGuid).to.equal('def-321');
+          });
+        });
       });
     });
   });
