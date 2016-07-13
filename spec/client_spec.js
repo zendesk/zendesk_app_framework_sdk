@@ -256,10 +256,10 @@ describe('Client', function() {
       });
 
       it('rejects the promise after 5 seconds', function(done) {
-        this.timeout(6000);
-
+        var clock = sinon.useFakeTimers();
         promise = subject.get('ticket.subject');
-
+        clock.tick(5000);
+        clock.restore();
         expect(promise).to.be.rejectedWith(Error, 'Invocation request timeout').and.notify(done);
       });
 
