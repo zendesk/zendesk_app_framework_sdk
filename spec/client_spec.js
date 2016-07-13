@@ -11,29 +11,60 @@ describe('Client', function() {
   beforeEach(function() {
     sandbox.stub(window, 'addEventListener');
     sandbox.stub(window.top, 'postMessage');
-    subject = new Client(origin, appGuid);
+    subject = new Client({ origin: origin, appGuid: appGuid });
   });
 
   afterEach(function() {
     sandbox.restore();
   });
 
-  it('can be instantiated', function() {
-    expect(subject).to.exist;
-  });
+  describe('initialisation', function() {
+    it('can be instantiated', function() {
+      expect(subject).to.exist;
+    });
 
-  it('adds a listener for the message event', function() {
-    expect(window.addEventListener).to.have.been.calledWith('message');
-  });
+    it('adds a listener for the message event', function() {
+      expect(window.addEventListener).to.have.been.calledWith('message');
+    });
 
-  it('posts an "iframe.handshake" message when initialised', function() {
-    var data = {
-      key: "iframe.handshake",
-      message: { version: version },
-      appGuid: appGuid
-    };
+    it('posts an "iframe.handshake" message when initialised', function() {
+      var data = {
+        key: "iframe.handshake",
+        message: { version: version },
+        appGuid: appGuid,
+        instanceGuid: appGuid
+      };
 
-    expect(window.top.postMessage).to.have.been.calledWithMatch(JSON.stringify(data));
+      expect(window.top.postMessage).to.have.been.calledWithMatch(JSON.stringify(data));
+    });
+
+    describe('with a parent client', function() {
+      var childClient;
+
+      beforeEach(function() {
+        subject.ready = true;
+        window.top.postMessage.reset();
+        window.addEventListener.reset();
+        childClient = new Client({ parent: subject });
+      });
+
+      it('sets origin and appGuid from parent', function() {
+        expect(childClient._origin).to.equal(origin);
+        expect(childClient._appGuid).to.equal(appGuid);
+      });
+
+      it('does not post a handshake', function() {
+        expect(window.top.postMessage).not.to.have.been.called;
+      });
+
+      it('does not add a listener for the message event', function() {
+        expect(window.addEventListener).not.to.have.been.calledWith('message');
+      });
+
+      it('inherits the ready state of the parent', function() {
+        expect(childClient.ready).to.equal(true);
+      });
+    });
   });
 
   describe('events', function() {
@@ -99,9 +130,9 @@ describe('Client', function() {
 
       it('waits until the client is ready to post messages', function() {
         subject.postMessage('foo');
-        expect(window.top.postMessage).to.not.have.been.calledWithMatch('{"key":"foo","appGuid":"ABC123"}');
+        expect(window.top.postMessage).to.not.have.been.calledWithMatch('{"key":"foo","appGuid":"ABC123","instanceGuid":"ABC123"}');
         subject.trigger('app.registered', { context: {}, metadata: {} });
-        expect(window.top.postMessage).to.have.been.calledWithMatch('{"key":"foo","appGuid":"ABC123"}');
+        expect(window.top.postMessage).to.have.been.calledWithMatch('{"key":"foo","appGuid":"ABC123","instanceGuid":"ABC123"}');
       });
 
     });
@@ -227,6 +258,9 @@ describe('Client', function() {
         });
       });
     });
+  });
+
+  describe('v2 methods', function() {
 
     describe('#get', function() {
       var requestsCount = 1,
