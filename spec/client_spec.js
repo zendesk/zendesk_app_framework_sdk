@@ -265,7 +265,7 @@ describe('Client', function() {
     var promise;
 
     afterEach(function() {
-      promise.catch(function() {});
+      promise && promise.catch(function() {});
     });
 
     describe('#get', function() {
@@ -370,6 +370,22 @@ describe('Client', function() {
       });
     });
 
+    describe('#context', function() {
+      it('resolves with the cached context if ready', function() {
+        subject.ready = true;
+        subject._context = { location: 'top_bar' };
+        promise = subject.context();
+        return expect(promise).to.eventually.eq(subject._context);
+      });
+
+      it('waits for the app to be registered before resolving', function() {
+        var context = { location: 'top_bar' };
+        promise = subject.context();
+        subject.trigger('app.registered', { metadata: {}, context: context });
+        return expect(promise).to.eventually.eq(context);
+      });
+    });
+
     describe('#instance', function() {
       var context = { location: 'top_bar' };
 
@@ -412,6 +428,17 @@ describe('Client', function() {
 
         it('should be ready', function() {
           expect(childClient).to.have.property('ready', true);
+        });
+
+        describe('#context', function() {
+          it('delegates to instances api', function() {
+            sandbox.stub(childClient, 'get').withArgs('instances.def-321').returns(
+              Promise.resolve({ 'instances.def-321': context })
+            );
+            promise = childClient.context();
+            expect(childClient.get).to.have.been.calledWith('instances.def-321');
+            return expect(promise).to.eventually.equal(context);
+          });
         });
 
         describe('#get', function() {
