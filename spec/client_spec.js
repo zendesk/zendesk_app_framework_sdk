@@ -464,6 +464,18 @@ describe('Client', function() {
           });
         });
 
+        describe('#postMessage', function() {
+          it('includes the instanceGuid in the message', function() {
+            childClient.postMessage('foo.bar', { bar: 'foo' });
+            expect(source.postMessage).to.have.been.called;
+            var lastCall = JSON.parse(source.postMessage.lastCall.args[0]);
+            expect(lastCall.key).to.equal('foo.bar');
+            expect(lastCall.message).to.deep.equal({ bar: 'foo' });
+            expect(lastCall.appGuid).to.equal('ABC123');
+            expect(lastCall.instanceGuid).to.equal('def-321');
+          });
+        });
+
         describe('#get', function() {
           it('makes a call with the instanceGuid set', function() {
             promise = childClient.get('foo.bar');
