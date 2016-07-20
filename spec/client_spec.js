@@ -162,6 +162,12 @@ describe('Client', function() {
         expect(subject._messageHandlers.foo).to.not.exist;
       });
 
+      it('notifies the framework of the handler registration', function() {
+        sandbox.spy(subject, 'postMessage');
+        subject.on('foo', callback);
+        expect(subject.postMessage).to.have.been.calledWithMatch('iframe.on:foo');
+      });
+
     });
 
     describe('#off', function() {
@@ -180,6 +186,13 @@ describe('Client', function() {
 
       it('returns false if no handler was found', function() {
         expect(subject.off('foo', callback)).to.be.false;
+      });
+
+      it('notifies the framework of the handler removal', function() {
+        sandbox.spy(subject, 'postMessage');
+        subject.on('foo', callback);
+        subject.off('foo', callback);
+        expect(subject.postMessage).to.have.been.calledWithMatch('iframe.off:foo');
       });
 
     });
