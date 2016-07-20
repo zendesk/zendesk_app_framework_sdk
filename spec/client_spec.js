@@ -1,6 +1,7 @@
 describe('Client', function() {
 
   var Client  = require('client'),
+      Promise = window.Promise || require('../vendor/native-promise-only'),
       sandbox = sinon.sandbox.create(),
       origin  = 'https://foo.zendesk.com',
       appGuid = 'ABC123',
@@ -11,29 +12,60 @@ describe('Client', function() {
   beforeEach(function() {
     sandbox.stub(window, 'addEventListener');
     sandbox.stub(window.top, 'postMessage');
-    subject = new Client(origin, appGuid);
+    subject = new Client({ origin: origin, appGuid: appGuid });
   });
 
   afterEach(function() {
     sandbox.restore();
   });
 
-  it('can be instantiated', function() {
-    expect(subject).to.exist;
-  });
+  describe('initialisation', function() {
+    it('can be instantiated', function() {
+      expect(subject).to.exist;
+    });
 
-  it('adds a listener for the message event', function() {
-    expect(window.addEventListener).to.have.been.calledWith('message');
-  });
+    it('adds a listener for the message event', function() {
+      expect(window.addEventListener).to.have.been.calledWith('message');
+    });
 
-  it('posts an "iframe.handshake" message when initialised', function() {
-    var data = {
-      key: "iframe.handshake",
-      message: { version: version },
-      appGuid: appGuid
-    };
+    it('posts an "iframe.handshake" message when initialised', function() {
+      var data = {
+        key: "iframe.handshake",
+        message: { version: version },
+        appGuid: appGuid,
+        instanceGuid: appGuid
+      };
 
-    expect(window.top.postMessage).to.have.been.calledWithMatch(JSON.stringify(data));
+      expect(window.top.postMessage).to.have.been.calledWithMatch(JSON.stringify(data));
+    });
+
+    describe('with a parent client', function() {
+      var childClient;
+
+      beforeEach(function() {
+        subject.ready = true;
+        window.top.postMessage.reset();
+        window.addEventListener.reset();
+        childClient = new Client({ parent: subject });
+      });
+
+      it('sets origin and appGuid from parent', function() {
+        expect(childClient._origin).to.equal(origin);
+        expect(childClient._appGuid).to.equal(appGuid);
+      });
+
+      it('does not post a handshake', function() {
+        expect(window.top.postMessage).not.to.have.been.called;
+      });
+
+      it('does not add a listener for the message event', function() {
+        expect(window.addEventListener).not.to.have.been.calledWith('message');
+      });
+
+      it('inherits the ready state of the parent', function() {
+        expect(childClient.ready).to.equal(true);
+      });
+    });
   });
 
   describe('events', function() {
@@ -99,9 +131,9 @@ describe('Client', function() {
 
       it('waits until the client is ready to post messages', function() {
         subject.postMessage('foo');
-        expect(window.top.postMessage).to.not.have.been.calledWithMatch('{"key":"foo","appGuid":"ABC123"}');
+        expect(window.top.postMessage).to.not.have.been.calledWithMatch('{"key":"foo","appGuid":"ABC123","instanceGuid":"ABC123"}');
         subject.trigger('app.registered', { context: {}, metadata: {} });
-        expect(window.top.postMessage).to.have.been.calledWithMatch('{"key":"foo","appGuid":"ABC123"}');
+        expect(window.top.postMessage).to.have.been.calledWithMatch('{"key":"foo","appGuid":"ABC123","instanceGuid":"ABC123"}');
       });
 
     });
@@ -227,13 +259,19 @@ describe('Client', function() {
         });
       });
     });
+  });
+
+  describe('v2 methods', function() {
+    var promise;
+
+    afterEach(function() {
+      promise && promise.catch(function() {});
+    });
 
     describe('#get', function() {
-      var requestsCount = 1,
-          promise;
+      var requestsCount = 1;
 
       afterEach(function() {
-        promise.catch(function() {});
         requestsCount++;
       });
 
@@ -256,10 +294,10 @@ describe('Client', function() {
       });
 
       it('rejects the promise after 5 seconds', function(done) {
-        this.timeout(6000);
-
+        var clock = sinon.useFakeTimers();
         promise = subject.get('ticket.subject');
-
+        clock.tick(5000);
+        clock.restore();
         expect(promise).to.be.rejectedWith(Error, 'Invocation request timeout').and.notify(done);
       });
 
@@ -289,12 +327,6 @@ describe('Client', function() {
     });
 
     describe('#set', function() {
-      var promise;
-
-      afterEach(function() {
-        promise.catch(function() {});
-      });
-
       it('returns a promise', function() {
         promise = subject.set('ticket.subject', 'value');
 
@@ -323,12 +355,6 @@ describe('Client', function() {
     });
 
     describe('#invoke', function() {
-      var promise;
-
-      afterEach(function() {
-        promise.catch(function() {});
-      });
-
       it('returns a promise', function() {
         promise = subject.invoke('iframe.resize');
 
@@ -341,6 +367,112 @@ describe('Client', function() {
             'iframe.resize': [1]
           });
         }).to.throw(Error);
+      });
+    });
+
+    describe('#context', function() {
+      it('resolves with the cached context if ready', function() {
+        subject.ready = true;
+        subject._context = { location: 'top_bar' };
+        promise = subject.context();
+        return expect(promise).to.eventually.eq(subject._context);
+      });
+
+      it('waits for the app to be registered before resolving', function() {
+        var context = { location: 'top_bar' };
+        promise = subject.context();
+        subject.trigger('app.registered', { metadata: {}, context: context });
+        return expect(promise).to.eventually.eq(context);
+      });
+    });
+
+    describe('#instance', function() {
+      var context = { location: 'top_bar' };
+
+      beforeEach(function() {
+        subject.ready = true;
+        sandbox.stub(subject, 'get');
+        subject.get.withArgs('instances.def-321').returns(
+          Promise.resolve({ 'instances.def-321': context })
+        );
+      });
+
+      it('requests instance context and caches it in the returned client', function() {
+        promise = subject.instance('def-321');
+        expect(subject.get).to.have.been.calledWith('instances.def-321');
+        return Promise.all([
+          expect(promise).to.eventually.be.an.instanceof(Client),
+          expect(promise).to.eventually.have.property('_context').that.equals(context),
+          expect(promise).to.eventually.have.property('_instanceGuid').that.equals('def-321')
+        ]);
+      });
+
+      it('returns the same client when requested multiple times', function() {
+        return Promise.all([
+          subject.instance('def-321'),
+          subject.instance('def-321')
+        ]).then(function(promises) {
+          expect(promises[0]).to.equal(promises[1]);
+        });
+      });
+
+      describe('with the returned client', function() {
+        var childClient;
+
+        beforeEach(function(done) {
+          subject.instance('def-321').then(function(client) {
+            childClient = client;
+            window.top.postMessage.reset();
+          }).then(done);
+        });
+
+        it('should be ready', function() {
+          expect(childClient).to.have.property('ready', true);
+        });
+
+        describe('#context', function() {
+          it('delegates to instances api', function() {
+            sandbox.stub(childClient, 'get').withArgs('instances.def-321').returns(
+              Promise.resolve({ 'instances.def-321': context })
+            );
+            promise = childClient.context();
+            expect(childClient.get).to.have.been.calledWith('instances.def-321');
+            return expect(promise).to.eventually.equal(context);
+          });
+        });
+
+        describe('#get', function() {
+          it('makes a call with the instanceGuid set', function() {
+            promise = childClient.get('foo.bar');
+            var lastCall = JSON.parse(window.top.postMessage.lastCall.args[0]);
+            expect(lastCall.request).to.equal('get');
+            expect(lastCall.params).to.deep.equal(['foo.bar']);
+            expect(lastCall.appGuid).to.equal('ABC123');
+            expect(lastCall.instanceGuid).to.equal('def-321');
+          });
+        });
+
+        describe('#set', function() {
+          it('makes a call with the instanceGuid set', function() {
+            promise = childClient.set('foo.bar', 'baz');
+            var lastCall = JSON.parse(window.top.postMessage.lastCall.args[0]);
+            expect(lastCall.request).to.equal('set');
+            expect(lastCall.params).to.deep.equal({'foo.bar': 'baz'});
+            expect(lastCall.appGuid).to.equal('ABC123');
+            expect(lastCall.instanceGuid).to.equal('def-321');
+          });
+        });
+
+        describe('#invoke', function() {
+          it('makes a call with the instanceGuid set', function() {
+            promise = childClient.invoke('popover', 'hide');
+            var lastCall = JSON.parse(window.top.postMessage.lastCall.args[0]);
+            expect(lastCall.request).to.equal('invoke');
+            expect(lastCall.params).to.deep.equal({'popover': ['hide']});
+            expect(lastCall.appGuid).to.equal('ABC123');
+            expect(lastCall.instanceGuid).to.equal('def-321');
+          });
+        });
       });
     });
   });
