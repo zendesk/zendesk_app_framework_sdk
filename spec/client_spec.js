@@ -232,6 +232,12 @@ describe('Client', function() {
         expect(callback).to.have.been.calledTwice;
       });
 
+      it('notifies the framework', function() {
+        sandbox.spy(subject, 'postMessage');
+        subject.trigger('foo', data);
+        expect(subject.postMessage).to.have.been.calledWith('iframe.trigger:foo', data);
+      });
+
     });
 
     describe('#request', function() {
