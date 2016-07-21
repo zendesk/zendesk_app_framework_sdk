@@ -81,9 +81,10 @@ describe('Client', function() {
     });
 
     describe('when a message is received', function() {
-      var message, evt, trigger;
+      var message, evt, handler;
 
       beforeEach(function() {
+        handler = sandbox.stub();
         message = { awesome: true };
 
         evt = {
@@ -93,7 +94,7 @@ describe('Client', function() {
           }
         };
 
-        trigger = sandbox.stub(subject, 'trigger');
+        subject.on('hello', handler);
       });
 
       describe('when the event is valid', function() {
@@ -104,14 +105,14 @@ describe('Client', function() {
 
         it("passes the message to the client", function() {
           window.addEventListener.callArgWith(1, evt);
-          expect(trigger).to.have.been.calledWithExactly('hello', message);
+          expect(handler).to.have.been.calledWithExactly(message);
         });
 
         describe('when the message is a stringified JSON', function() {
           it("passes the parsed message to the client", function() {
             evt.data = JSON.stringify(evt.data);
             window.addEventListener.callArgWith(1, evt);
-            expect(trigger).to.have.been.calledWithExactly('hello', message);
+            expect(handler).to.have.been.calledWithExactly(message);
           });
         });
 
@@ -119,7 +120,7 @@ describe('Client', function() {
           it("does not pass the message to the client", function() {
             evt.data.key = 'hello';
             window.addEventListener.callArgWith(1, evt);
-            expect(trigger).to.not.have.been.called;
+            expect(handler).to.not.have.been.called;
           });
         });
       });
@@ -128,7 +129,7 @@ describe('Client', function() {
         it("does not pass the message to the client", function() {
           evt.origin = 'https://foo.com';
           window.addEventListener.callArgWith(1, evt);
-          expect(trigger).to.not.have.been.called;
+          expect(handler).to.not.have.been.called;
         });
       });
     });
