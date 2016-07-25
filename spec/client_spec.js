@@ -166,7 +166,7 @@ describe('Client', function() {
       it('notifies the framework of the handler registration', function() {
         sandbox.spy(subject, 'postMessage');
         subject.on('foo', callback);
-        expect(subject.postMessage).to.have.been.calledWithMatch('iframe.on:foo');
+        expect(subject.postMessage).to.have.been.calledWithMatch('iframe.on:foo', { subscriberCount: 1 });
       });
 
     });
@@ -193,7 +193,7 @@ describe('Client', function() {
         sandbox.spy(subject, 'postMessage');
         subject.on('foo', callback);
         subject.off('foo', callback);
-        expect(subject.postMessage).to.have.been.calledWithMatch('iframe.off:foo');
+        expect(subject.postMessage).to.have.been.calledWithMatch('iframe.off:foo', { subscriberCount: 0 });
       });
 
     });
