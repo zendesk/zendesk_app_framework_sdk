@@ -156,6 +156,12 @@ describe('Client', function() {
         expect(subject._messageHandlers.foo).to.not.exist;
       });
 
+      it('notifies the framework of the handler registration', function() {
+        sandbox.spy(subject, 'postMessage');
+        subject.on('foo', callback);
+        expect(subject.postMessage).to.have.been.calledWithMatch('iframe.on:foo', { subscriberCount: 1 });
+      });
+
     });
 
     describe('#off', function() {
@@ -176,6 +182,28 @@ describe('Client', function() {
         expect(subject.off('foo', callback)).to.be.false;
       });
 
+      it('notifies the framework of the handler removal', function() {
+        sandbox.spy(subject, 'postMessage');
+        subject.on('foo', callback);
+        subject.off('foo', callback);
+        expect(subject.postMessage).to.have.been.calledWithMatch('iframe.off:foo', { subscriberCount: 0 });
+      });
+      describe('when #off is called before #on', function() {
+        beforeEach(function() {
+          sandbox.spy(subject, 'postMessage');
+          subject.on('foo', function() {});
+        });
+
+        it('notifies the framework of the handler removal', function() {
+          subject.off('foo', callback);
+          expect(subject.postMessage).to.have.been.calledWithMatch('iframe.off:foo', { subscriberCount: 1 });
+        });
+
+        it('does not remove other handlers', function() {
+          subject.off('foo', callback);
+          expect(subject._messageHandlers.foo.length).to.equal(1);
+        });
+      });
     });
 
     describe('#has', function() {
