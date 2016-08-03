@@ -275,22 +275,50 @@ describe('Client', function() {
         requestsCount++;
       });
 
-      it('returns a promise', function() {
+      it('returns a promise', function(done) {
         promise = subject.get('ticket.subject');
 
         expect(promise).to.be.a.promise;
+        expect(promise).to.eventually.become('test').and.notify(done);
+
+        window.addEventListener.callArgWith(1, {
+          origin: subject._origin,
+          source: subject._source,
+          data: { id: requestsCount, result: { errors: {}, 'ticket.subject': 'test' } }
+        });
       });
 
-      it('accepts an array with multiple paths', function() {
+      it('throws an error when the handler throws it', function(done) {
+        promise = subject.get('ticket.err');
+
+        expect(promise).to.be.a.promise;
+        expect(promise).to.be.rejectedWith(Error, 'ticket.e').and.notify(done);
+
+        window.addEventListener.callArgWith(1, {
+          origin: subject._origin,
+          source: subject._source,
+          data: { id: requestsCount, result: { errors: { 'ticket.err': { message: 'ticket.err unavailable' } } } }
+        });
+      });
+
+      it('accepts an array with multiple paths', function(done) {
         promise = subject.get(['ticket.subject', 'ticket.requester']);
 
         expect(promise).to.be.a.promise;
+        expect(promise).to.eventually.become({ 'ticket.subject': 'test', 'ticket.requester': 'test' }).and.notify(done);
+
+        window.addEventListener.callArgWith(1, {
+          origin: subject._origin,
+          source: subject._source,
+          data: { id: requestsCount, result: { 'ticket.subject': 'test', 'ticket.requester': 'test' } }
+        });
       });
 
-      it('accepts multiple arguments', function() {
-        promise = subject.get('ticket.subject', 'ticket.requester');
-
-        expect(promise).to.be.a.promise;
+      it('doesn\'t accepts multiple arguments', function() {
+        requestsCount--;
+        expect(function() {
+          subject.get('ticket.subject', 'ticket.requester');
+        }).to.throw(Error);
       });
 
       it('rejects the promise after 5 seconds', function(done) {
@@ -309,7 +337,7 @@ describe('Client', function() {
         window.addEventListener.callArgWith(1, {
           origin: subject._origin,
           source: subject._source,
-          data: { id: requestsCount, result: { 'ticket.subject': {a: 'b'} } }
+          data: { id: requestsCount, result: { errors: {}, 'ticket.subject': {a: 'b'} } }
         });
       });
 
