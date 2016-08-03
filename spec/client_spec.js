@@ -314,7 +314,7 @@ describe('Client', function() {
         });
       });
 
-      it('doesn\'t accepts multiple arguments', function() {
+      it("doesn't accepts multiple arguments", function() {
         requestsCount--;
         expect(function() {
           subject.get('ticket.subject', 'ticket.requester');
@@ -341,7 +341,7 @@ describe('Client', function() {
         });
       });
 
-      it('throws an error, which you can catch, when requesting something that doesn\'t exist', function(done) {
+      it("throws an error, which you can catch, when requesting something that doesn't exist", function(done) {
         var promise = subject.get('ticket.subj');
 
         expect(promise).to.be.rejectedWith(Error, 'No such Api').and.notify(done);
@@ -349,19 +349,19 @@ describe('Client', function() {
         window.addEventListener.callArgWith(1, {
           origin: subject._origin,
           source: subject._source,
-          data: { id: requestsCount, result: { errors: { 'ticket.subj': {message: 'No such Api'} } } }
+          data: { id: requestsCount, result: { errors: { 'ticket.subj': { message: 'No such Api' } } } }
         });
       });
 
       it('does not throw an error when bulk requesting', function(done) {
         var promise = subject.get(['ticket.subj']);
 
-        expect(promise).to.become({ errors: {'ticket.subj': { message: 'No such Api'} } }).and.notify(done);
+        expect(promise).to.become({ errors: { 'ticket.subj': { message: 'No such Api' } } }).and.notify(done);
 
         window.addEventListener.callArgWith(1, {
           origin: subject._origin,
           source: subject._source,
-          data: { id: requestsCount, result: { errors: { 'ticket.subj': { message: 'No such Api'} } } }
+          data: { id: requestsCount, result: { errors: { 'ticket.subj': { message: 'No such Api' } } } }
         });
       });
 
