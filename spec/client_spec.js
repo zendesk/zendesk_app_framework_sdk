@@ -303,22 +303,50 @@ describe('Client', function() {
         requestsCount++;
       });
 
-      it('returns a promise', function() {
+      it('returns a promise', function(done) {
         promise = subject.get('ticket.subject');
 
         expect(promise).to.be.a.promise;
+        expect(promise).to.eventually.become('test').and.notify(done);
+
+        window.addEventListener.callArgWith(1, {
+          origin: subject._origin,
+          source: subject._source,
+          data: { id: requestsCount, result: { errors: {}, 'ticket.subject': 'test' } }
+        });
       });
 
-      it('accepts an array with multiple paths', function() {
+      it('throws an error when the handler throws it', function(done) {
+        promise = subject.get('ticket.err');
+
+        expect(promise).to.be.a.promise;
+        expect(promise).to.be.rejectedWith(Error, 'ticket.e').and.notify(done);
+
+        window.addEventListener.callArgWith(1, {
+          origin: subject._origin,
+          source: subject._source,
+          data: { id: requestsCount, result: { errors: { 'ticket.err': { message: 'ticket.err unavailable' } } } }
+        });
+      });
+
+      it('accepts an array with multiple paths', function(done) {
         promise = subject.get(['ticket.subject', 'ticket.requester']);
 
         expect(promise).to.be.a.promise;
+        expect(promise).to.eventually.become({ 'ticket.subject': 'test', 'ticket.requester': 'test' }).and.notify(done);
+
+        window.addEventListener.callArgWith(1, {
+          origin: subject._origin,
+          source: subject._source,
+          data: { id: requestsCount, result: { 'ticket.subject': 'test', 'ticket.requester': 'test' } }
+        });
       });
 
-      it('accepts multiple arguments', function() {
-        promise = subject.get('ticket.subject', 'ticket.requester');
-
-        expect(promise).to.be.a.promise;
+      it("doesn't accepts multiple arguments", function() {
+        requestsCount--;
+        expect(function() {
+          subject.get('ticket.subject', 'ticket.requester');
+        }).to.throw(Error);
       });
 
       it('rejects the promise after 5 seconds', function(done) {
@@ -337,7 +365,31 @@ describe('Client', function() {
         window.addEventListener.callArgWith(1, {
           origin: subject._origin,
           source: subject._source,
-          data: { id: requestsCount, result: {a: 'b'} }
+          data: { id: requestsCount, result: { errors: {}, 'ticket.subject': {a: 'b'} } }
+        });
+      });
+
+      it("throws an error, which you can catch, when requesting something that doesn't exist", function(done) {
+        var promise = subject.get('ticket.subj');
+
+        expect(promise).to.be.rejectedWith(Error, 'No such Api').and.notify(done);
+
+        window.addEventListener.callArgWith(1, {
+          origin: subject._origin,
+          source: subject._source,
+          data: { id: requestsCount, result: { errors: { 'ticket.subj': { message: 'No such Api' } } } }
+        });
+      });
+
+      it('does not throw an error when bulk requesting', function(done) {
+        var promise = subject.get(['ticket.subj']);
+
+        expect(promise).to.become({ errors: { 'ticket.subj': { message: 'No such Api' } } }).and.notify(done);
+
+        window.addEventListener.callArgWith(1, {
+          origin: subject._origin,
+          source: subject._source,
+          data: { id: requestsCount, result: { errors: { 'ticket.subj': { message: 'No such Api' } } } }
         });
       });
 
