@@ -502,7 +502,7 @@ describe('Client', function() {
           subject.invoke({
             'iframe.resize': [1]
           });
-        }).to.throw(Error);
+        }).to.throw(Error, "Invoke with an object isn't supported.");
       });
 
       it('rejects the promise after 5 seconds', function(done) {
