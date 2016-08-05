@@ -299,12 +299,9 @@ describe('Client', function() {
     });
 
     describe('#get', function() {
-
-
-      it('returns a promise', function(done) {
+      it('takes an argument and returns a promise with data', function(done) {
         promise = subject.get('ticket.subject');
 
-        expect(promise).to.be.a.promise;
         expect(promise).to.eventually.become({ errors: {}, 'ticket.subject': 'test' }).and.notify(done);
 
         window.addEventListener.callArgWith(1, {
@@ -317,7 +314,6 @@ describe('Client', function() {
       it('throws an error when the handler throws it', function(done) {
         promise = subject.get('ticket.err');
 
-        expect(promise).to.be.a.promise;
         expect(promise).to.be.rejectedWith(Error, 'ticket.err unavailable').and.notify(done);
 
         window.addEventListener.callArgWith(1, {
@@ -330,7 +326,6 @@ describe('Client', function() {
       it('accepts an array with multiple paths', function(done) {
         promise = subject.get(['ticket.subject', 'ticket.requester']);
 
-        expect(promise).to.be.a.promise;
         expect(promise).to.eventually.become({
           'ticket.subject': 'test',
           'ticket.requester': 'test'
@@ -346,7 +341,7 @@ describe('Client', function() {
         });
       });
 
-      it('succeeds with errors when bulk requesting', function(done) {
+      it('resolves with errors when bulk requesting', function(done) {
         var promise = subject.get(['ticket.subj']);
 
         expect(promise).to.become({ errors: { 'ticket.subj': { message: 'No such Api' } } }).and.notify(done);
@@ -388,10 +383,9 @@ describe('Client', function() {
     });
 
     describe('#set', function() {
-      it('returns a promise', function(done) {
+      it('takes two arguments and returns a promise with data', function(done) {
         promise = subject.set('ticket.subject', 'value');
 
-        expect(promise).to.be.a.promise;
         expect(promise).to.eventually.become({ errors: {}, 'ticket.subject': 'value' }).and.notify(done);
 
         window.addEventListener.callArgWith(1, {
@@ -411,7 +405,6 @@ describe('Client', function() {
       it('throws an error when the handler throws it', function(done) {
         promise = subject.set('ticket.foo', 'bar');
 
-        expect(promise).to.be.a.promise;
         expect(promise).to.be.rejectedWith(Error, 'ticket.foo unavailable').and.notify(done);
 
         window.addEventListener.callArgWith(1, {
@@ -427,7 +420,6 @@ describe('Client', function() {
           'ticket.description': 'value'
         });
 
-        expect(promise).to.be.a.promise;
         expect(promise).to.eventually.become({
           'ticket.subject': 'value',
           'ticket.requester': 'value'
@@ -443,7 +435,7 @@ describe('Client', function() {
         });
       });
 
-      it('succeeds with errors when bulk requesting', function(done) {
+      it('resolves with errors when bulk requesting', function(done) {
         var promise = subject.set({ 'ticket.foo': 'bar' });
 
         expect(promise).to.become({ errors: { 'ticket.foo': { message: 'No such Api' } } }).and.notify(done);
@@ -480,11 +472,10 @@ describe('Client', function() {
     });
 
     describe('#invoke', function() {
-      it('returns a promise', function(done) {
+      it('takes multiple arguments and returns a promise with data', function(done) {
         // in reality appendText doesn't return anything
         promise = subject.invoke('ticket.appendText', 'foobar');
 
-        expect(promise).to.be.a.promise;
         expect(promise).to.eventually.become({ errors: {}, 'ticket.appendText': true }).and.notify(done);
 
         window.addEventListener.callArgWith(1, {
@@ -497,7 +488,6 @@ describe('Client', function() {
       it('throws an error when the handler throws it', function(done) {
         promise = subject.invoke('ticket.foo', 'bar');
 
-        expect(promise).to.be.a.promise;
         expect(promise).to.be.rejectedWith(Error, 'ticket.foo unavailable').and.notify(done);
 
         window.addEventListener.callArgWith(1, {
