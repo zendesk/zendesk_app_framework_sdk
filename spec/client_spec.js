@@ -402,7 +402,7 @@ describe('Client', function() {
         }).to.throw(Error);
       });
 
-      it('throws an error when the handler throws it', function(done) {
+      it('rejects the promise when single request and handler throws an error', function(done) {
         promise = subject.set('ticket.foo', 'bar');
 
         expect(promise).to.be.rejectedWith(Error, 'ticket.foo unavailable').and.notify(done);
@@ -485,7 +485,7 @@ describe('Client', function() {
         });
       });
 
-      it('throws an error when the handler throws it', function(done) {
+      it('rejects the promise when single request and handler throws an error', function(done) {
         promise = subject.invoke('ticket.foo', 'bar');
 
         expect(promise).to.be.rejectedWith(Error, 'ticket.foo unavailable').and.notify(done);
