@@ -542,32 +542,21 @@ describe('Client', function() {
       });
 
       it('requests instance context and caches it in the returned client', function() {
-        promise = subject.instance('def-321');
-        expect(subject.get).to.have.been.calledWith('instances.def-321');
-        return Promise.all([
-          expect(promise).to.eventually.be.an.instanceof(Client),
-          expect(promise).to.eventually.have.property('_context').that.equals(context),
-          expect(promise).to.eventually.have.property('_instanceGuid').that.equals('def-321')
-        ]);
+        var instanceClient = subject.instance('def-321');
+        expect(instanceClient).to.be.an.instanceof(Client);
+        expect(instanceClient).to.have.property('_instanceGuid').that.equals('def-321');
       });
 
       it('returns the same client when requested multiple times', function() {
-        return Promise.all([
-          subject.instance('def-321'),
-          subject.instance('def-321')
-        ]).then(function(promises) {
-          expect(promises[0]).to.equal(promises[1]);
-        });
+        expect(subject.instance('def-321')).to.equal(subject.instance('def-321'));
       });
 
       describe('with the returned client', function() {
         var childClient;
 
-        beforeEach(function(done) {
-          subject.instance('def-321').then(function(client) {
-            childClient = client;
-            window.top.postMessage.reset();
-          }).then(done);
+        beforeEach(function() {
+          childClient = subject.instance('def-321');
+          window.top.postMessage.reset();
         });
 
         it('should be ready', function() {
