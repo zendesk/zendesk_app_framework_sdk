@@ -3,3 +3,9 @@ node_js:
   - '0.10'
 before_script:
   - npm install -g grunt-cli
+sudo: false
+cache:
+  directories:
+    - node_modules
+branches:
+  only: [master]

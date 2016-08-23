@@ -196,6 +196,22 @@ describe('Client', function() {
         expect(subject.postMessage).to.have.been.calledWithMatch('iframe.off:foo', { subscriberCount: 0 });
       });
 
+      describe('when #off is called before #on', function() {
+        beforeEach(function() {
+          sandbox.spy(subject, 'postMessage');
+          subject.on('foo', function() {});
+        });
+
+        it('notifies the framework of the handler removal', function() {
+          subject.off('foo', callback);
+          expect(subject.postMessage).to.have.been.calledWithMatch('iframe.off:foo', { subscriberCount: 1 });
+        });
+
+        it('does not remove other handlers', function() {
+          subject.off('foo', callback);
+          expect(subject._messageHandlers.foo.length).to.equal(1);
+        });
+      });
     });
 
     describe('#has', function() {
@@ -289,34 +305,73 @@ describe('Client', function() {
 
   describe('v2 methods', function() {
     var promise;
+    var requestsCount = 1;
 
     afterEach(function() {
       promise && promise.catch(function() {});
+      requestsCount++;
     });
 
     describe('#get', function() {
-      var requestsCount = 1;
-
-      afterEach(function() {
-        requestsCount++;
-      });
-
-      it('returns a promise', function() {
+      it('takes an argument and returns a promise with data', function(done) {
         promise = subject.get('ticket.subject');
 
-        expect(promise).to.be.a.promise;
+        expect(promise).to.eventually.become({ errors: {}, 'ticket.subject': 'test' }).and.notify(done);
+
+        window.addEventListener.callArgWith(1, {
+          origin: subject._origin,
+          source: subject._source,
+          data: { id: requestsCount, result: { errors: {}, 'ticket.subject': 'test' } }
+        });
       });
 
-      it('accepts an array with multiple paths', function() {
+      it('throws an error when the handler throws it', function(done) {
+        promise = subject.get('ticket.err');
+
+        expect(promise).to.be.rejectedWith(Error, 'ticket.err unavailable').and.notify(done);
+
+        window.addEventListener.callArgWith(1, {
+          origin: subject._origin,
+          source: subject._source,
+          data: { id: requestsCount, result: { errors: { 'ticket.err': { message: 'ticket.err unavailable' } } } }
+        });
+      });
+
+      it('accepts an array with multiple paths', function(done) {
         promise = subject.get(['ticket.subject', 'ticket.requester']);
 
-        expect(promise).to.be.a.promise;
+        expect(promise).to.eventually.become({
+          'ticket.subject': 'test',
+          'ticket.requester': 'test'
+        }).and.notify(done);
+
+        window.addEventListener.callArgWith(1, {
+          origin: subject._origin,
+          source: subject._source,
+          data: { id: requestsCount, result: {
+            'ticket.subject': 'test',
+            'ticket.requester': 'test'
+          }}
+        });
       });
 
-      it('accepts multiple arguments', function() {
-        promise = subject.get('ticket.subject', 'ticket.requester');
+      it('resolves with errors when bulk requesting', function(done) {
+        var promise = subject.get(['ticket.subj']);
 
-        expect(promise).to.be.a.promise;
+        expect(promise).to.become({ errors: { 'ticket.subj': { message: 'No such Api' } } }).and.notify(done);
+
+        window.addEventListener.callArgWith(1, {
+          origin: subject._origin,
+          source: subject._source,
+          data: { id: requestsCount, result: { errors: { 'ticket.subj': { message: 'No such Api' } } } }
+        });
+      });
+
+      it("doesn't accepts multiple arguments", function() {
+        requestsCount--;
+        expect(function() {
+          subject.get('ticket.subject', 'ticket.requester');
+        }).to.throw(Error);
       });
 
       it('rejects the promise after 5 seconds', function(done) {
@@ -327,19 +382,8 @@ describe('Client', function() {
         expect(promise).to.be.rejectedWith(Error, 'Invocation request timeout').and.notify(done);
       });
 
-      it('resolves the promise when the expected message is received', function(done) {
-        promise = subject.get('ticket.subject');
-
-        expect(promise).to.eventually.become({a: 'b'}).and.notify(done);
-
-        window.addEventListener.callArgWith(1, {
-          origin: subject._origin,
-          source: subject._source,
-          data: { id: requestsCount, result: {a: 'b'} }
-        });
-      });
-
       it('returns an error when not passing in strings', function() {
+        requestsCount--;
         expect(function() {
           subject.get(123);
         }).to.throw(Error);
@@ -353,23 +397,84 @@ describe('Client', function() {
     });
 
     describe('#set', function() {
-      it('returns a promise', function() {
+      it('takes two arguments and returns a promise with data', function(done) {
         promise = subject.set('ticket.subject', 'value');
 
-        expect(promise).to.be.a.promise;
+        expect(promise).to.eventually.become({ errors: {}, 'ticket.subject': 'value' }).and.notify(done);
+
+        window.addEventListener.callArgWith(1, {
+          origin: subject._origin,
+          source: subject._source,
+          data: { id: requestsCount, result: { errors: {}, 'ticket.subject': 'value' } }
+        });
       });
 
-      it('accepts an object', function() {
+      it('throws an error when not including a value', function() {
+        requestsCount--;
+        expect(function() {
+          subject.set('ticket.subject');
+        }).to.throw(Error);
+      });
+
+      it('rejects the promise when single request and handler throws an error', function(done) {
+        promise = subject.set('ticket.foo', 'bar');
+
+        expect(promise).to.be.rejectedWith(Error, 'ticket.foo unavailable').and.notify(done);
+
+        window.addEventListener.callArgWith(1, {
+          origin: subject._origin,
+          source: subject._source,
+          data: { id: requestsCount, result: { errors: { 'ticket.foo': { message: 'ticket.foo unavailable' } } } }
+        });
+      });
+
+      it('accepts an object with multiple paths', function(done) {
         promise = subject.set({
           'ticket.subject': 'value',
           'ticket.description': 'value'
         });
 
-        expect(promise).to.be.a.promise;
+        expect(promise).to.eventually.become({
+          'ticket.subject': 'value',
+          'ticket.requester': 'value'
+        }).and.notify(done);
+
+        window.addEventListener.callArgWith(1, {
+          origin: subject._origin,
+          source: subject._source,
+          data: { id: requestsCount, result: {
+            'ticket.subject': 'value',
+            'ticket.requester': 'value'
+          }}
+        });
       });
 
+      it('resolves with errors when bulk requesting', function(done) {
+        var promise = subject.set({ 'ticket.foo': 'bar' });
 
-      it('throws when not 2 strings or an object', function() {
+        expect(promise).to.become({ errors: { 'ticket.foo': { message: 'No such Api' } } }).and.notify(done);
+
+        window.addEventListener.callArgWith(1, {
+          origin: subject._origin,
+          source: subject._source,
+          data: { id: requestsCount, result: { errors: { 'ticket.foo': { message: 'No such Api' } } } }
+        });
+      });
+
+      it('rejects the promise after 5 seconds', function(done) {
+        var clock = sinon.useFakeTimers();
+        promise = subject.set('ticket.subject', 'test');
+        clock.tick(5000);
+        clock.restore();
+        expect(promise).to.be.rejectedWith(Error, 'Invocation request timeout').and.notify(done);
+      });
+
+      it('throws on invalid input', function() {
+        requestsCount--;
+        expect(function() {
+          subject.set(123);
+        }).to.throw(Error);
+
         expect(function() {
           subject.set('test');
         }).to.throw(Error);
@@ -381,18 +486,45 @@ describe('Client', function() {
     });
 
     describe('#invoke', function() {
-      it('returns a promise', function() {
-        promise = subject.invoke('iframe.resize');
+      it('takes multiple arguments and returns a promise with data', function(done) {
+        // in reality appendText doesn't return anything
+        promise = subject.invoke('ticket.appendText', 'foobar');
 
-        expect(promise).to.be.a.promise;
+        expect(promise).to.eventually.become({ errors: {}, 'ticket.appendText': true }).and.notify(done);
+
+        window.addEventListener.callArgWith(1, {
+          origin: subject._origin,
+          source: subject._source,
+          data: { id: requestsCount, result: { errors: {}, 'ticket.appendText': true } }
+        });
       });
 
-      it('throw when called with an object', function() {
+      it('rejects the promise when single request and handler throws an error', function(done) {
+        promise = subject.invoke('ticket.foo', 'bar');
+
+        expect(promise).to.be.rejectedWith(Error, 'ticket.foo unavailable').and.notify(done);
+
+        window.addEventListener.callArgWith(1, {
+          origin: subject._origin,
+          source: subject._source,
+          data: { id: requestsCount, result: { errors: { 'ticket.foo': { message: 'ticket.foo unavailable' } } } }
+        });
+      });
+
+      it('throws an error when invoked with an object', function() {
         expect(function() {
           subject.invoke({
             'iframe.resize': [1]
           });
-        }).to.throw(Error);
+        }).to.throw(Error, "Invoke with an object isn't supported.");
+      });
+
+      it('rejects the promise after 5 seconds', function(done) {
+        var clock = sinon.useFakeTimers();
+        promise = subject.invoke('ticket.subject', 'test');
+        clock.tick(5000);
+        clock.restore();
+        expect(promise).to.be.rejectedWith(Error, 'Invocation request timeout').and.notify(done);
       });
     });
 
