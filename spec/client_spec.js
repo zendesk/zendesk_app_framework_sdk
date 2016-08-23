@@ -568,17 +568,9 @@ describe('Client', function() {
       describe('with the returned client', function() {
         var childClient;
 
-<<<<<<< HEAD
         beforeEach(function() {
           childClient = subject.instance('def-321');
-          window.top.postMessage.reset();
-=======
-        beforeEach(function(done) {
-          subject.instance('def-321').then(function(client) {
-            childClient = client;
-            source.postMessage.reset();
-          }).then(done);
->>>>>>> adammw/instances-event-apis
+          source.postMessage.reset();
         });
 
         it('should be ready', function() {
