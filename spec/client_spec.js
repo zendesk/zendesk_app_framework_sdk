@@ -594,17 +594,11 @@ describe('Client', function() {
     });
 
     describe('#instance', function() {
-      var context = { location: 'top_bar' };
-
       beforeEach(function() {
         subject.ready = true;
-        sandbox.stub(subject, 'get');
-        subject.get.withArgs('instances.def-321').returns(
-          Promise.resolve({ 'instances.def-321': context })
-        );
       });
 
-      it('requests instance context and caches it in the returned client', function() {
+      it('returns a client for the instance', function() {
         var instanceClient = subject.instance('def-321');
         expect(instanceClient).to.be.an.instanceof(Client);
         expect(instanceClient).to.have.property('_instanceGuid').that.equals('def-321');
@@ -631,6 +625,8 @@ describe('Client', function() {
         });
 
         describe('#context', function() {
+          var context = { location: 'top_bar' };
+
           it('delegates to instances api', function() {
             sandbox.stub(childClient, 'get').withArgs('instances.def-321').returns(
               Promise.resolve({ 'instances.def-321': context })
