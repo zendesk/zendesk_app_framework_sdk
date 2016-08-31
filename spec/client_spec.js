@@ -20,6 +20,20 @@ describe('Client', function() {
     sandbox.restore();
   });
 
+  function triggerEvent(client, name, data) {
+    var evt = {
+      origin: client._origin,
+      source: client._source,
+      data: {
+        key: 'zaf.' + name,
+        message: data,
+        instanceGuid: client._instanceGuid
+      }
+    };
+
+    window.addEventListener.callArgWith(1, evt);
+  }
+
   describe('initialisation', function() {
     it('can be instantiated', function() {
       expect(subject).to.exist;
@@ -43,6 +57,35 @@ describe('Client', function() {
       };
 
       expect(source.postMessage).to.have.been.calledWithMatch(JSON.stringify(data));
+    });
+
+    it('listens for app.registered to mark the client as ready', function() {
+      var data = {
+        metadata: {
+          appId: 1,
+          installationId: 1
+        },
+        context: {
+          product: 'support',
+          location: 'ticket_sidebar'
+        }
+      };
+
+      expect(subject.ready).to.equal(false);
+      triggerEvent(subject, 'app.registered', data);
+      expect(subject.ready).to.equal(true);
+      expect(subject._metadata).to.equal(data.metadata);
+      expect(subject._context).to.equal(data.context);
+    });
+
+    it('listens for context.updated to update the client context', function() {
+      var context = {
+        foo: 123
+      };
+
+      expect(subject._context).not.to.equal(context);
+      triggerEvent(subject, 'context.updated', context);
+      expect(subject._context).to.equal(context);
     });
 
     describe('with a parent client', function() {
@@ -135,11 +178,27 @@ describe('Client', function() {
     });
 
     describe('#postMessage', function() {
+      var oldReady;
+
+      beforeEach(function() {
+        oldReady = subject.ready;
+        subject.ready = false;
+        sandbox.spy(subject, 'on');
+      });
+
+      afterEach(function() {
+        subject.ready = oldReady;
+      });
 
       it('waits until the client is ready to post messages', function() {
         subject.postMessage('foo');
         expect(source.postMessage).to.not.have.been.calledWithMatch('{"key":"foo","appGuid":"ABC123","instanceGuid":"ABC123"}');
-        subject.trigger('app.registered', { context: {}, metadata: {} });
+        expect(subject.on).to.have.been.calledWithMatch('app.registered');
+      });
+
+      it('posts a message when the client is ready', function() {
+        subject.ready = true;
+        subject.postMessage('foo');
         expect(source.postMessage).to.have.been.calledWithMatch('{"key":"foo","appGuid":"ABC123","instanceGuid":"ABC123"}');
       });
 
@@ -232,29 +291,18 @@ describe('Client', function() {
     });
 
     describe('#trigger', function() {
-
       var data = {
         bar: 2
       };
 
-      it('returns false if no event handler is registered for the given event', function() {
-        expect(subject.trigger('foo')).to.be.false;
-      });
-
-      it('fires registered event handlers with any data provided', function() {
-        subject.on('foo', callback);
-        subject.on('foo', callback);
-        subject.trigger('foo', data);
-        expect(callback).to.have.been.calledWith(data);
-        expect(callback).to.have.been.calledTwice;
-      });
-
-      it('notifies the framework', function() {
+      beforeEach(function() {
         sandbox.spy(subject, 'postMessage');
-        subject.trigger('foo', data);
-        expect(subject.postMessage).to.have.been.calledWith('iframe.trigger:foo', data);
       });
 
+      it('posts a message so the framework can trigger the event on all registered clients', function() {
+        subject.trigger('foo', data);
+        expect(subject.postMessage).to.have.been.calledWith('iframe.trigger:foo', { message: data });
+      });
     });
 
     describe('#request', function() {
@@ -285,7 +333,7 @@ describe('Client', function() {
         var response = { responseArgs: [ {} ] };
 
         it('resolves when the request succeeds', function(done) {
-          subject.trigger('request:' + requestsCount + '.done', response);
+          triggerEvent(subject, 'request:' + requestsCount + '.done', response);
           promise.then(function() {
             expect(doneHandler).to.have.been.calledWith(response.responseArgs[0]);
             done();
@@ -293,7 +341,7 @@ describe('Client', function() {
         });
 
         it('rejects when the request fails', function(done) {
-          subject.trigger('request:' + requestsCount + '.fail', response);
+          triggerEvent(subject, 'request:' + requestsCount + '.fail', response);
           promise.then(function() {
             expect(failHandler).to.have.been.calledWith(response.responseArgs[0]);
             done();
@@ -529,17 +577,18 @@ describe('Client', function() {
     });
 
     describe('#context', function() {
+      var context = { location: 'top_bar' };
+
       it('resolves with the cached context if ready', function() {
         subject.ready = true;
-        subject._context = { location: 'top_bar' };
+        subject._context = context;
         promise = subject.context();
-        return expect(promise).to.eventually.eq(subject._context);
+        return expect(promise).to.eventually.eq(context);
       });
 
       it('waits for the app to be registered before resolving', function() {
-        var context = { location: 'top_bar' };
         promise = subject.context();
-        subject.trigger('app.registered', { metadata: {}, context: context });
+        triggerEvent(subject, 'app.registered', { metadata: {}, context: context });
         return expect(promise).to.eventually.eq(context);
       });
     });
@@ -634,6 +683,21 @@ describe('Client', function() {
             expect(lastCall.params).to.deep.equal({'popover': ['hide']});
             expect(lastCall.appGuid).to.equal('ABC123');
             expect(lastCall.instanceGuid).to.equal('def-321');
+          });
+        });
+
+        describe('when a message is received for a child client', function() {
+          var message, handler;
+
+          beforeEach(function() {
+            handler = sandbox.stub();
+            message = { awesome: true };
+            childClient.on('hello', handler);
+          });
+
+          it("passes the message to the client", function() {
+            triggerEvent(childClient, 'hello', message);
+            expect(handler).to.have.been.calledWithExactly(message);
           });
         });
       });
