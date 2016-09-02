@@ -608,6 +608,10 @@ describe('Client', function() {
         expect(subject.instance('def-321')).to.equal(subject.instance('def-321'));
       });
 
+      it('returns its own client if the instanceGuid is matches its own', function() {
+        expect(subject.instance(subject._instanceGuid)).to.equal(subject);
+      });
+
       describe('with the returned client', function() {
         var childClient;
 
