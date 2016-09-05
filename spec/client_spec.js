@@ -7,17 +7,32 @@ describe('Client', function() {
       appGuid = 'ABC123',
       version = require('version'),
       subject,
+      source,
       callback;
 
   beforeEach(function() {
     sandbox.stub(window, 'addEventListener');
-    sandbox.stub(window.top, 'postMessage');
-    subject = new Client({ origin: origin, appGuid: appGuid });
+    source = { postMessage: sandbox.stub() };
+    subject = new Client({ origin: origin, appGuid: appGuid, source: source });
   });
 
   afterEach(function() {
     sandbox.restore();
   });
+
+  function triggerEvent(client, name, data) {
+    var evt = {
+      origin: client._origin,
+      source: client._source,
+      data: {
+        key: 'zaf.' + name,
+        message: data,
+        instanceGuid: client._instanceGuid
+      }
+    };
+
+    window.addEventListener.callArgWith(1, evt);
+  }
 
   describe('initialisation', function() {
     it('can be instantiated', function() {
@@ -28,6 +43,11 @@ describe('Client', function() {
       expect(window.addEventListener).to.have.been.calledWith('message');
     });
 
+    it('defaults to the window.top source', function (){
+      var client = new Client({ origin: origin, appGuid: appGuid });
+      expect(client).to.have.property('_source', window.top);
+    });
+
     it('posts an "iframe.handshake" message when initialised', function() {
       var data = {
         key: "iframe.handshake",
@@ -36,7 +56,36 @@ describe('Client', function() {
         instanceGuid: appGuid
       };
 
-      expect(window.top.postMessage).to.have.been.calledWithMatch(JSON.stringify(data));
+      expect(source.postMessage).to.have.been.calledWithMatch(JSON.stringify(data));
+    });
+
+    it('listens for app.registered to mark the client as ready', function() {
+      var data = {
+        metadata: {
+          appId: 1,
+          installationId: 1
+        },
+        context: {
+          product: 'support',
+          location: 'ticket_sidebar'
+        }
+      };
+
+      expect(subject.ready).to.equal(false);
+      triggerEvent(subject, 'app.registered', data);
+      expect(subject.ready).to.equal(true);
+      expect(subject._metadata).to.equal(data.metadata);
+      expect(subject._context).to.equal(data.context);
+    });
+
+    it('listens for context.updated to update the client context', function() {
+      var context = {
+        foo: 123
+      };
+
+      expect(subject._context).not.to.equal(context);
+      triggerEvent(subject, 'context.updated', context);
+      expect(subject._context).to.equal(context);
     });
 
     describe('with a parent client', function() {
@@ -44,7 +93,7 @@ describe('Client', function() {
 
       beforeEach(function() {
         subject.ready = true;
-        window.top.postMessage.reset();
+        source.postMessage.reset();
         window.addEventListener.reset();
         childClient = new Client({ parent: subject });
       });
@@ -55,7 +104,7 @@ describe('Client', function() {
       });
 
       it('does not post a handshake', function() {
-        expect(window.top.postMessage).not.to.have.been.called;
+        expect(source.postMessage).not.to.have.been.called;
       });
 
       it('does not add a listener for the message event', function() {
@@ -75,9 +124,10 @@ describe('Client', function() {
     });
 
     describe('when a message is received', function() {
-      var message, evt, trigger;
+      var message, evt, handler;
 
       beforeEach(function() {
+        handler = sandbox.stub();
         message = { awesome: true };
 
         evt = {
@@ -87,7 +137,7 @@ describe('Client', function() {
           }
         };
 
-        trigger = sandbox.stub(subject, 'trigger');
+        subject.on('hello', handler);
       });
 
       describe('when the event is valid', function() {
@@ -98,14 +148,14 @@ describe('Client', function() {
 
         it("passes the message to the client", function() {
           window.addEventListener.callArgWith(1, evt);
-          expect(trigger).to.have.been.calledWithExactly('hello', message);
+          expect(handler).to.have.been.calledWithExactly(message);
         });
 
         describe('when the message is a stringified JSON', function() {
           it("passes the parsed message to the client", function() {
             evt.data = JSON.stringify(evt.data);
             window.addEventListener.callArgWith(1, evt);
-            expect(trigger).to.have.been.calledWithExactly('hello', message);
+            expect(handler).to.have.been.calledWithExactly(message);
           });
         });
 
@@ -113,7 +163,7 @@ describe('Client', function() {
           it("does not pass the message to the client", function() {
             evt.data.key = 'hello';
             window.addEventListener.callArgWith(1, evt);
-            expect(trigger).to.not.have.been.called;
+            expect(handler).to.not.have.been.called;
           });
         });
       });
@@ -122,18 +172,34 @@ describe('Client', function() {
         it("does not pass the message to the client", function() {
           evt.origin = 'https://foo.com';
           window.addEventListener.callArgWith(1, evt);
-          expect(trigger).to.not.have.been.called;
+          expect(handler).to.not.have.been.called;
         });
       });
     });
 
     describe('#postMessage', function() {
+      var oldReady;
+
+      beforeEach(function() {
+        oldReady = subject.ready;
+        subject.ready = false;
+        sandbox.spy(subject, 'on');
+      });
+
+      afterEach(function() {
+        subject.ready = oldReady;
+      });
 
       it('waits until the client is ready to post messages', function() {
         subject.postMessage('foo');
-        expect(window.top.postMessage).to.not.have.been.calledWithMatch('{"key":"foo","appGuid":"ABC123","instanceGuid":"ABC123"}');
-        subject.trigger('app.registered', { context: {}, metadata: {} });
-        expect(window.top.postMessage).to.have.been.calledWithMatch('{"key":"foo","appGuid":"ABC123","instanceGuid":"ABC123"}');
+        expect(source.postMessage).to.not.have.been.calledWithMatch('{"key":"foo","appGuid":"ABC123","instanceGuid":"ABC123"}');
+        expect(subject.on).to.have.been.calledWithMatch('app.registered');
+      });
+
+      it('posts a message when the client is ready', function() {
+        subject.ready = true;
+        subject.postMessage('foo');
+        expect(source.postMessage).to.have.been.calledWithMatch('{"key":"foo","appGuid":"ABC123","instanceGuid":"ABC123"}');
       });
 
     });
@@ -188,6 +254,7 @@ describe('Client', function() {
         subject.off('foo', callback);
         expect(subject.postMessage).to.have.been.calledWithMatch('iframe.off:foo', { subscriberCount: 0 });
       });
+
       describe('when #off is called before #on', function() {
         beforeEach(function() {
           sandbox.spy(subject, 'postMessage');
@@ -224,23 +291,18 @@ describe('Client', function() {
     });
 
     describe('#trigger', function() {
-
       var data = {
         bar: 2
       };
 
-      it('returns false if no event handler is registered for the given event', function() {
-        expect(subject.trigger('foo')).to.be.false;
+      beforeEach(function() {
+        sandbox.spy(subject, 'postMessage');
       });
 
-      it('fires registered event handlers with any data provided', function() {
-        subject.on('foo', callback);
-        subject.on('foo', callback);
+      it('posts a message so the framework can trigger the event on all registered clients', function() {
         subject.trigger('foo', data);
-        expect(callback).to.have.been.calledWith(data);
-        expect(callback).to.have.been.calledTwice;
+        expect(subject.postMessage).to.have.been.calledWith('iframe.trigger:foo', { message: data });
       });
-
     });
 
     describe('#request', function() {
@@ -271,7 +333,7 @@ describe('Client', function() {
         var response = { responseArgs: [ {} ] };
 
         it('resolves when the request succeeds', function(done) {
-          subject.trigger('request:' + requestsCount + '.done', response);
+          triggerEvent(subject, 'request:' + requestsCount + '.done', response);
           promise.then(function() {
             expect(doneHandler).to.have.been.calledWith(response.responseArgs[0]);
             done();
@@ -279,7 +341,7 @@ describe('Client', function() {
         });
 
         it('rejects when the request fails', function(done) {
-          subject.trigger('request:' + requestsCount + '.fail', response);
+          triggerEvent(subject, 'request:' + requestsCount + '.fail', response);
           promise.then(function() {
             expect(failHandler).to.have.been.calledWith(response.responseArgs[0]);
             done();
@@ -515,66 +577,60 @@ describe('Client', function() {
     });
 
     describe('#context', function() {
+      var context = { location: 'top_bar' };
+
       it('resolves with the cached context if ready', function() {
         subject.ready = true;
-        subject._context = { location: 'top_bar' };
+        subject._context = context;
         promise = subject.context();
-        return expect(promise).to.eventually.eq(subject._context);
+        return expect(promise).to.eventually.eq(context);
       });
 
       it('waits for the app to be registered before resolving', function() {
-        var context = { location: 'top_bar' };
         promise = subject.context();
-        subject.trigger('app.registered', { metadata: {}, context: context });
+        triggerEvent(subject, 'app.registered', { metadata: {}, context: context });
         return expect(promise).to.eventually.eq(context);
       });
     });
 
     describe('#instance', function() {
-      var context = { location: 'top_bar' };
-
       beforeEach(function() {
         subject.ready = true;
-        sandbox.stub(subject, 'get');
-        subject.get.withArgs('instances.def-321').returns(
-          Promise.resolve({ 'instances.def-321': context })
-        );
       });
 
-      it('requests instance context and caches it in the returned client', function() {
-        promise = subject.instance('def-321');
-        expect(subject.get).to.have.been.calledWith('instances.def-321');
-        return Promise.all([
-          expect(promise).to.eventually.be.an.instanceof(Client),
-          expect(promise).to.eventually.have.property('_context').that.equals(context),
-          expect(promise).to.eventually.have.property('_instanceGuid').that.equals('def-321')
-        ]);
+      it('returns a client for the instance', function() {
+        var instanceClient = subject.instance('def-321');
+        expect(instanceClient).to.be.an.instanceof(Client);
+        expect(instanceClient).to.have.property('_instanceGuid').that.equals('def-321');
       });
 
       it('returns the same client when requested multiple times', function() {
-        return Promise.all([
-          subject.instance('def-321'),
-          subject.instance('def-321')
-        ]).then(function(promises) {
-          expect(promises[0]).to.equal(promises[1]);
-        });
+        expect(subject.instance('def-321')).to.equal(subject.instance('def-321'));
+      });
+
+      it('returns its own client if the instanceGuid is matches its own', function() {
+        expect(subject.instance(subject._instanceGuid)).to.equal(subject);
       });
 
       describe('with the returned client', function() {
         var childClient;
 
-        beforeEach(function(done) {
-          subject.instance('def-321').then(function(client) {
-            childClient = client;
-            window.top.postMessage.reset();
-          }).then(done);
+        beforeEach(function() {
+          childClient = subject.instance('def-321');
+          source.postMessage.reset();
         });
 
         it('should be ready', function() {
           expect(childClient).to.have.property('ready', true);
         });
 
+        it('defaults to inheriting the source from the parent', function() {
+          expect(childClient).to.have.property('_source', subject._source);
+        });
+
         describe('#context', function() {
+          var context = { location: 'top_bar' };
+
           it('delegates to instances api', function() {
             sandbox.stub(childClient, 'get').withArgs('instances.def-321').returns(
               Promise.resolve({ 'instances.def-321': context })
@@ -585,10 +641,22 @@ describe('Client', function() {
           });
         });
 
+        describe('#postMessage', function() {
+          it('includes the instanceGuid in the message', function() {
+            childClient.postMessage('foo.bar', { bar: 'foo' });
+            expect(source.postMessage).to.have.been.called;
+            var lastCall = JSON.parse(source.postMessage.lastCall.args[0]);
+            expect(lastCall.key).to.equal('foo.bar');
+            expect(lastCall.message).to.deep.equal({ bar: 'foo' });
+            expect(lastCall.appGuid).to.equal('ABC123');
+            expect(lastCall.instanceGuid).to.equal('def-321');
+          });
+        });
+
         describe('#get', function() {
           it('makes a call with the instanceGuid set', function() {
             promise = childClient.get('foo.bar');
-            var lastCall = JSON.parse(window.top.postMessage.lastCall.args[0]);
+            var lastCall = JSON.parse(source.postMessage.lastCall.args[0]);
             expect(lastCall.request).to.equal('get');
             expect(lastCall.params).to.deep.equal(['foo.bar']);
             expect(lastCall.appGuid).to.equal('ABC123');
@@ -599,7 +667,7 @@ describe('Client', function() {
         describe('#set', function() {
           it('makes a call with the instanceGuid set', function() {
             promise = childClient.set('foo.bar', 'baz');
-            var lastCall = JSON.parse(window.top.postMessage.lastCall.args[0]);
+            var lastCall = JSON.parse(source.postMessage.lastCall.args[0]);
             expect(lastCall.request).to.equal('set');
             expect(lastCall.params).to.deep.equal({'foo.bar': 'baz'});
             expect(lastCall.appGuid).to.equal('ABC123');
@@ -610,11 +678,26 @@ describe('Client', function() {
         describe('#invoke', function() {
           it('makes a call with the instanceGuid set', function() {
             promise = childClient.invoke('popover', 'hide');
-            var lastCall = JSON.parse(window.top.postMessage.lastCall.args[0]);
+            var lastCall = JSON.parse(source.postMessage.lastCall.args[0]);
             expect(lastCall.request).to.equal('invoke');
             expect(lastCall.params).to.deep.equal({'popover': ['hide']});
             expect(lastCall.appGuid).to.equal('ABC123');
             expect(lastCall.instanceGuid).to.equal('def-321');
+          });
+        });
+
+        describe('when a message is received for a child client', function() {
+          var message, handler;
+
+          beforeEach(function() {
+            handler = sandbox.stub();
+            message = { awesome: true };
+            childClient.on('hello', handler);
+          });
+
+          it("passes the message to the client", function() {
+            triggerEvent(childClient, 'hello', message);
+            expect(handler).to.have.been.calledWithExactly(message);
           });
         });
       });
