@@ -139,4 +139,18 @@ describe('Utils', function() {
 
   });
 
+  describe('.isObject', function() {
+    it('returns false for null', function() {
+      expect(Utils.isObject(null)).to.equal(false);
+    });
+    it('returns true for objects', function() {
+      expect(Utils.isObject({})).to.equal(true);
+    });
+    it('returns false for strings', function() {
+      expect(Utils.isObject('a')).to.equal(false);
+    });
+    it('returns true for arrays', function() {
+      expect(Utils.isObject(['a'])).to.equal(true);
+    });
+  });
 });
