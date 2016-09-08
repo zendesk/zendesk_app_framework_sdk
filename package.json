@@ -36,7 +36,6 @@
     "grunt-bump": "^0.7.0",
     "grunt-contrib-connect": "^1.0.1",
     "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-eslint": "0.0.5",
     "grunt-contrib-uglify": "^1.0.1",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-eslint": "^19.0.0",
