@@ -564,7 +564,7 @@ describe('Client', function() {
           subject.invoke({
             'iframe.resize': [1]
           });
-        }).to.throw(Error, "Invoke with an object isn't supported.");
+        }).to.throw(Error, "Invoke only supports string arguments.");
       });
 
       it('rejects the promise after 5 seconds', function(done) {
