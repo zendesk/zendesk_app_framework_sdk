@@ -581,11 +581,11 @@ describe('Client', function() {
         promise = subject.invoke('instances.create');
         clock.tick(10000);
         clock.restore();
-        expect(promise).to.eventually.become({ errors: {}, 'ticket.appendText': true }).and.notify(done);
+        expect(promise).to.eventually.become({ errors: {}, 'instances.create': { url: 'http://a.b' } }).and.notify(done);
         window.addEventListener.callArgWith(1, {
           origin: subject._origin,
           source: subject._source,
-          data: { id: requestsCount, result: { errors: {}, 'ticket.appendText': true } }
+          data: { id: requestsCount, result: { errors: {}, 'instances.create': { url: 'http://a.b' } } }
         });
       });
     });
