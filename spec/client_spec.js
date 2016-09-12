@@ -1,3 +1,5 @@
+require('phantomjs-polyfill-find');
+
 describe('Client', function() {
 
   var Client  = require('client'),
