@@ -1,3 +1,5 @@
+require('phantomjs-polyfill-find');
+
 describe('Client', function() {
 
   var Client  = require('client'),
@@ -560,11 +562,12 @@ describe('Client', function() {
       });
 
       it('throws an error when invoked with an object', function() {
+        requestsCount--;
         expect(function() {
           subject.invoke({
             'iframe.resize': [1]
           });
-        }).to.throw(Error, "Invoke with an object isn't supported.");
+        }).to.throw(Error, "Invoke only supports string arguments.");
       });
 
       it('rejects the promise after 5 seconds', function(done) {
@@ -573,6 +576,19 @@ describe('Client', function() {
         clock.tick(5000);
         clock.restore();
         expect(promise).to.be.rejectedWith(Error, 'Invocation request timeout').and.notify(done);
+      });
+
+      it('doesnt reject whitelisted promises after 5 seconds', function(done) {
+        var clock = sinon.useFakeTimers();
+        promise = subject.invoke('instances.create');
+        clock.tick(10000);
+        clock.restore();
+        expect(promise).to.eventually.become({ errors: {}, 'instances.create': { url: 'http://a.b' } }).and.notify(done);
+        window.addEventListener.callArgWith(1, {
+          origin: subject._origin,
+          source: subject._source,
+          data: { id: requestsCount, result: { errors: {}, 'instances.create': { url: 'http://a.b' } } }
+        });
       });
     });
 
