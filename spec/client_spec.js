@@ -204,7 +204,6 @@ describe('Client', function() {
     });
 
     describe('#on', function() {
-
       it('registers a handler for a given event', function() {
         subject.on('foo', callback);
         expect(subject._messageHandlers.foo).to.exist;
@@ -226,7 +225,6 @@ describe('Client', function() {
         subject.on('foo', callback);
         expect(subject.postMessage).to.have.been.calledWithMatch('iframe.on:foo', { subscriberCount: 1 });
       });
-
     });
 
     describe('#off', function() {
