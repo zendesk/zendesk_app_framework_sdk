@@ -1,7 +1,4 @@
-require('phantomjs-polyfill-find');
-
 describe('Client', function() {
-
   var Client  = require('client'),
       Promise = window.Promise || require('../vendor/native-promise-only'),
       sandbox = sinon.sandbox.create(),
@@ -14,6 +11,7 @@ describe('Client', function() {
 
   beforeEach(function() {
     sandbox.stub(window, 'addEventListener');
+    sandbox.stub(window, 'postMessage');
     source = { postMessage: sandbox.stub() };
     subject = new Client({ origin: origin, appGuid: appGuid, source: source });
   });
@@ -168,6 +166,92 @@ describe('Client', function() {
             expect(handler).to.not.have.been.called;
           });
         });
+
+        describe('when the message is for a hook event', function() {
+          beforeEach(function() {
+            evt.data.needsReply = true;
+            subject.ready = true;
+          });
+
+          it('calls the handler and sends back the response', function() {
+            var retval = window.addEventListener.lastCall.args[1].call(subject, evt);
+            return retval.then(function() {
+              expect(handler).to.have.been.called;
+              expect(source.postMessage).to.have.been.calledWith(
+                { appGuid: "ABC123", key: "iframe.reply:hello" },
+                'https://foo.zendesk.com'
+              );
+            });
+          });
+
+          describe('when the handler throws an error', function() {
+            beforeEach(function() {
+              handler.throwsException();
+            });
+
+            it('calls the handler and sends back the error', function() {
+              var retval = window.addEventListener.lastCall.args[1].call(subject, evt);
+              return retval.then(function() {
+                expect(handler).to.have.been.called;
+                expect(source.postMessage).to.have.been.calledWith(
+                  { appGuid: "ABC123", error: { msg: "Error" }, key: "iframe.reply:hello" },
+                  'https://foo.zendesk.com'
+                );
+              });
+            });
+          });
+
+          describe('when the handler returns false', function() {
+            beforeEach(function() {
+              handler.returns(false);
+            });
+
+            it('calls the handler and sends back the error', function() {
+              var retval = window.addEventListener.lastCall.args[1].call(subject, evt);
+              return retval.then(function() {
+                expect(handler).to.have.been.called;
+                expect(source.postMessage).to.have.been.calledWith(
+                  { appGuid: "ABC123", error: { msg: false }, key: "iframe.reply:hello" },
+                  'https://foo.zendesk.com'
+                );
+              });
+            });
+          });
+
+          describe('when the handler returns a string', function() {
+            beforeEach(function() {
+              handler.returns('Oh no! [object Object]');
+            });
+
+            it('calls the handler and sends back the string as an error', function() {
+              var retval = window.addEventListener.lastCall.args[1].call(subject, evt);
+              return retval.then(function() {
+                expect(handler).to.have.been.called;
+                expect(source.postMessage).to.have.been.calledWith(
+                  { appGuid: "ABC123", error: { msg: 'Oh no! [object Object]' }, key: "iframe.reply:hello" },
+                  'https://foo.zendesk.com'
+                );
+              });
+            });
+          });
+
+          describe('when the handler rejects a promise', function() {
+            beforeEach(function() {
+              handler.returns(Promise.reject('The third party API is broken.'));
+            });
+
+            it('calls the handler and sends back the rejection value as an error', function() {
+              var retval = window.addEventListener.lastCall.args[1].call(subject, evt);
+              return retval.then(function() {
+                expect(handler).to.have.been.called;
+                expect(source.postMessage).to.have.been.calledWith(
+                  { appGuid: "ABC123", error: { msg: 'The third party API is broken.' }, key: "iframe.reply:hello" },
+                  'https://foo.zendesk.com'
+                );
+              });
+            });
+          });
+        });
       });
 
       describe('when the event is not valid', function() {
@@ -207,7 +291,6 @@ describe('Client', function() {
     });
 
     describe('#on', function() {
-
       it('registers a handler for a given event', function() {
         subject.on('foo', callback);
         expect(subject._messageHandlers.foo).to.exist;
@@ -229,7 +312,6 @@ describe('Client', function() {
         subject.on('foo', callback);
         expect(subject.postMessage).to.have.been.calledWithMatch('iframe.on:foo', { subscriberCount: 1 });
       });
-
     });
 
     describe('#off', function() {
