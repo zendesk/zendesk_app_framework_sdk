@@ -1,7 +1,4 @@
-require('phantomjs-polyfill-find');
-
 describe('Client', function() {
-
   var Client  = require('client'),
       Promise = window.Promise || require('../vendor/native-promise-only'),
       sandbox = sinon.sandbox.create(),
