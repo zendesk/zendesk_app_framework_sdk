@@ -385,7 +385,7 @@ describe('Client', function() {
 
       it('posts a message so the framework can trigger the event on all registered clients', function() {
         subject.trigger('foo', data);
-        expect(subject.postMessage).to.have.been.calledWith('iframe.trigger:foo', { message: data });
+        expect(subject.postMessage).to.have.been.calledWith('iframe.trigger:foo', data);
       });
     });
 
