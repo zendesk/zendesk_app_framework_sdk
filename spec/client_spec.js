@@ -696,6 +696,18 @@ describe('Client', function() {
         subject.ready = true;
       });
 
+      it('throws an Error when an instanceGuid is not passed', function() {
+        expect(function() {
+          subject.instance();
+        }).to.throw(Error);
+      });
+
+      it('throws an Error when instanceGuid is not a string', function() {
+        expect(function() {
+          subject.instance(1234);
+        }).to.throw(Error);
+      });
+
       it('returns a client for the instance', function() {
         var instanceClient = subject.instance('def-321');
         expect(instanceClient).to.be.an.instanceof(Client);
