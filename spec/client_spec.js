@@ -620,6 +620,12 @@ describe('Client', function() {
         }).to.throw(Error);
       });
 
+      it('throws an Error when instanceGuid is not a string', function() {
+        expect(function() {
+          subject.instance(1234);
+        }).to.throw(Error);
+      });
+
       it('returns a client for the instance', function() {
         var instanceClient = subject.instance('def-321');
         expect(instanceClient).to.be.an.instanceof(Client);
