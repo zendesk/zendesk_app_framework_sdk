@@ -419,7 +419,7 @@ describe('Client', function() {
         it('resolves when the request succeeds', function(done) {
           triggerEvent(subject, 'request:' + requestsCount + '.done', response);
           promise.then(function() {
-            expect(doneHandler).to.have.been.calledWith(response.responseArgs[0]);
+            expect(doneHandler).to.have.been.calledWith(response.responseArgs);
             done();
           });
         });
@@ -427,7 +427,7 @@ describe('Client', function() {
         it('rejects when the request fails', function(done) {
           triggerEvent(subject, 'request:' + requestsCount + '.fail', response);
           promise.then(function() {
-            expect(failHandler).to.have.been.calledWith(response.responseArgs[0]);
+            expect(failHandler).to.have.been.calledWith(response.responseArgs);
             done();
           });
         });
