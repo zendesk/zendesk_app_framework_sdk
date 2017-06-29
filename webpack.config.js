@@ -32,6 +32,15 @@ module.exports = function (env) {
             path.resolve(__dirname, 'lib'),
             path.resolve(__dirname, 'spec')
           ],
+          enforce: 'pre',
+          loader: 'eslint-loader'
+        },
+        {
+          test: /\.js$/,
+          include: [
+            path.resolve(__dirname, 'lib'),
+            path.resolve(__dirname, 'spec')
+          ],
           loader: 'babel-loader'
         }
       ]
