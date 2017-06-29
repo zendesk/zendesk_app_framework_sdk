@@ -57,6 +57,7 @@
     "bump": ""
   },
   "dependencies": {
-    "babel-core": "^6.25.0"
+    "babel-core": "^6.25.0",
+    "eslint": "^4.1.1"
   }
 }
