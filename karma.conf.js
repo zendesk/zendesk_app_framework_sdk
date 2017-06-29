@@ -23,8 +23,6 @@ module.exports = function(config) {
       'mocha'
     ],
 
-    // singleRun: true,
-
     preprocessors: {
       'spec/test_index.js': ['webpack']
     },
