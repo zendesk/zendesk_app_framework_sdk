@@ -2,9 +2,15 @@
   "env": {
     "browser": true,
     "commonjs": true,
-    "mocha": true
+    "es6": true,
+    "mocha": true,
+    "node": true
+  },
+  "parserOptions": {
+    "sourceType": "module"
   },
   "globals": {
+    "VERSION": false,
     "expect": false,
     "sinon": false,
     "chai": false

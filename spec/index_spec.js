@@ -1,8 +1,9 @@
-describe('ZAFClient', function() {
-  var sandbox   = sinon.sandbox.create(),
-      ZAFClient = require('index'),
-      Client    = require('client'),
-      Utils     = require('utils');
+import ZAFClient from '../lib/index';
+import Client from '../lib/client';
+import * as Utils from '../lib/utils';
+
+describe('ZAFClient', function () {
+  var sandbox = sinon.sandbox.create()
 
   beforeEach(function() {
     sandbox.stub(Utils, 'queryParameters');

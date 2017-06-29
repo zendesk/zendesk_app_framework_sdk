@@ -1,10 +1,10 @@
-describe('Client', function() {
-  var Client  = require('client'),
-      Promise = window.Promise || require('../vendor/native-promise-only'),
-      sandbox = sinon.sandbox.create(),
+import Client from '../lib/client';
+require('native-promise-only');
+
+describe('Client', function () {
+  var sandbox = sinon.sandbox.create(),
       origin  = 'https://foo.zendesk.com',
       appGuid = 'ABC123',
-      version = require('version'),
       subject,
       source,
       callback;
@@ -51,12 +51,12 @@ describe('Client', function() {
     it('posts an "iframe.handshake" message when initialised', function() {
       var data = {
         key: "iframe.handshake",
-        message: { version: version },
+        message: { version: VERSION },
         appGuid: appGuid,
         instanceGuid: appGuid
       };
 
-      expect(source.postMessage).to.have.been.calledWithMatch(JSON.stringify(data));
+      expect(source.postMessage).to.have.been.calledWithMatch(data);
     });
 
     it('listens for app.registered to mark the client as ready', function() {
@@ -278,14 +278,14 @@ describe('Client', function() {
 
       it('waits until the client is ready to post messages', function() {
         subject.postMessage('foo');
-        expect(source.postMessage).to.not.have.been.calledWithMatch('{"key":"foo","appGuid":"ABC123","instanceGuid":"ABC123"}');
+        expect(source.postMessage).to.not.have.been.calledWithMatch({"key":"foo","appGuid":"ABC123","instanceGuid":"ABC123"});
         expect(subject.on).to.have.been.calledWithMatch('app.registered');
       });
 
       it('posts a message when the client is ready', function() {
         subject.ready = true;
         subject.postMessage('foo');
-        expect(source.postMessage).to.have.been.calledWithMatch('{"key":"foo","appGuid":"ABC123","instanceGuid":"ABC123"}');
+        expect(source.postMessage).to.have.been.calledWithMatch({"key":"foo","appGuid":"ABC123","instanceGuid":"ABC123"});
       });
 
     });
@@ -755,7 +755,7 @@ describe('Client', function() {
           it('includes the instanceGuid in the message', function() {
             childClient.postMessage('foo.bar', { bar: 'foo' });
             expect(source.postMessage).to.have.been.called;
-            var lastCall = JSON.parse(source.postMessage.lastCall.args[0]);
+            var lastCall = source.postMessage.lastCall.args[0];
             expect(lastCall.key).to.equal('foo.bar');
             expect(lastCall.message).to.deep.equal({ bar: 'foo' });
             expect(lastCall.appGuid).to.equal('ABC123');
