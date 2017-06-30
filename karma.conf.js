@@ -102,9 +102,11 @@ module.exports = function(config) {
     ],
 
     sauceLabs: {
-      testName:     'zendesk_app_framework_sdk mocha tests',
+      testName: 'zendesk_app_framework_sdk mocha tests',
       startConnect: true
     },
+
+    customLaunchers,
 
     preprocessors: {
       'spec/test_index.js': [
