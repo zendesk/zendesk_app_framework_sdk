@@ -1,8 +1,6 @@
 language: node_js
 node_js:
   - '6.11.0'
-script:
-  - npm run ci
 sudo: false
 dist: trusty
 cache:

@@ -57,7 +57,6 @@
     "build:watch": "npm run build:dev -- -w",
     "pretest": "npm run build:dev",
     "test": "karma start",
-    "ci": "npm run build:prod && karma start --single-run",
     "start": "webpack-dev-server",
     "bump": ""
   }
