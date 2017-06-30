@@ -47,9 +47,6 @@ module.exports = function (env) {
     },
   
     plugins: [
-      new UglifyJsPlugin({
-        compress: !!env.prod
-      }),
       new ModuleConcatenationPlugin(),
       new DefinePlugin({
         VERSION: JSON.stringify(pkg.version)
