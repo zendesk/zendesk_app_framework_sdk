@@ -101,6 +101,11 @@ module.exports = function(config) {
       'mocha'
     ],
 
+    sauceLabs: {
+      testName:     'zendesk_app_framework_sdk mocha tests',
+      startConnect: true
+    },
+
     preprocessors: {
       'spec/test_index.js': [
         'webpack',
