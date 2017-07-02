@@ -1,3 +1,11 @@
 {
-  "presets": ["env"]
+  "presets": [
+    ["env", {
+      "targets": {
+        "browsers": ["last 2 Chrome versions","last 2 Firefox versions","Firefox ESR","last 2 Safari versions","IE >= 9"]
+      },
+      "useBuiltins": true,
+      "debug": true
+    }]
+  ]
 }
