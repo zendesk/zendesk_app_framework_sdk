@@ -7,56 +7,7 @@ Zendesk App Framework SDK
 
 ## What is it?
 
-The Zendesk App Framework (ZAF) SDK is a JavaScript micro-library that simplifies cross-frame communication between iframed apps and [ZAF](http://developer.zendesk.com/documentation/apps/). See [Iframes in Apps](https://developer.zendesk.com/apps/docs/agent/iframes_in_apps) to learn more.
-
-## How does it work?
-
-### iframed website
-```html
-<script type="text/javascript" src="http://assets.zendesk.com/apps/sdk/1.0/zaf_sdk.js"></script>
-<script>
-  var app = window.ZAFClient.init(function(context) {
-    var currentUser = context.currentUser;
-    console.log('Hi ' + currentUser.name);
-  });
-
-  app.on('helloIframe', function(data) {
-    if (data.omg) {
-      console.log('app says hello');
-    }
-  });
-
-  app.postMessage('helloApp', { awesome: true });
-</script>
-```
-
-### iframe.hdbs
-```html
-{{iframe "https://dashboard.myapp.com"}}
-```
-
-### app.js
-```js
-events: {
-  'app.created':     'init',
-  'app.registered':  'onAppRegistered',
-  'iframe.helloApp': 'handleHello'
-},
-
-init: function() {
-  this.switchTo('iframe');
-},
-
-onAppRegistered: function() {
-  this.postMessage('helloIframe', { omg: true })
-},
-
-handleHello: function(data) {
-  if (data.awesome) {
-    console.log('iframe says hello');
-  }
-}
-```
+The Zendesk App Framework (ZAF) SDK is a JavaScript library that simplifies cross-frame communication between iframed apps and [ZAF](http://developer.zendesk.com/documentation/apps/). See [App Framework v2](https://developer.zendesk.com/apps/docs/apps-v2/getting_started) to learn more.
 
 ## For development...
 
