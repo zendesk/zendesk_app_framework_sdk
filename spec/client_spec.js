@@ -790,29 +790,29 @@ describe('Client', function() {
             promise = childClient.invoke('popover', 'hide');
             var lastCall = JSON.parse(source.postMessage.lastCall.args[0]);
             expect(lastCall.request).to.equal('invoke');
-            expect(lastCall.params).to.deep.equal({'popover': ['hide']});
+            expect(lastCall.params).to.deep.equal({popover: ['hide']});
             expect(lastCall.appGuid).to.equal('ABC123');
             expect(lastCall.instanceGuid).to.equal('def-321');
           });
 
           it('makes a call with an object', function() {
-            promise = childClient.invoke({'popover': ['hide']});
+            promise = childClient.invoke({popover: ['hide']});
             var lastCall = JSON.parse(source.postMessage.lastCall.args[0]);
             expect(lastCall.request).to.equal('invoke');
-            expect(lastCall.params).to.deep.equal({'popover': ['hide']});
+            expect(lastCall.params).to.deep.equal({popover: ['hide']});
             expect(lastCall.appGuid).to.equal('ABC123');
             expect(lastCall.instanceGuid).to.equal('def-321');
           });
 
           it('returns an error with incorrect arguments', function() {
             expect(function() {
-              promise = childClient.invoke({'popover': 'hide'});
+              promise = childClient.invoke({popover: 'hide'});
             }).to.throw(Error, "Invoke supports string arguments or an object with array of strings.");
           });
 
           it('returns an error with incorrect arguments', function() {
             expect(function() {
-              promise = childClient.invoke({'popover': [['hide']]});
+              promise = childClient.invoke({popover: [['hide']]});
             }).to.throw(Error, "Invoke supports string arguments or an object with array of strings.");
           });
 
