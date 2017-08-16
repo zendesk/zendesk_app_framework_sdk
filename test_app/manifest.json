@@ -1,0 +1,19 @@
+{
+  "name": "app",
+  "author": {
+    "name": "zendesk",
+    "email": "support@zendesk.com",
+    "url": "https://www.zendesk.com/"
+  },
+  "defaultLocale": "en",
+  "private": true,
+  "location": {
+    "zendesk": {
+      "ticket_sidebar": "http://localhost:9001/iframe.html",
+      "user_sidebar": "http://localhost:9001/iframe.html",
+      "organization_sidebar": "http://localhost:9001/iframe.html"
+    }
+  },
+  "version": "1.0",
+  "frameworkVersion": "2.0"
+}

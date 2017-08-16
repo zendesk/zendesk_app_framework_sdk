@@ -12,11 +12,9 @@ module.exports = function (grunt) {
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    jshint: {
+    eslint: {
       options: {
-        jshintrc: '.jshintrc',
-        reporter: require('jshint-stylish'),
-        ignores:  ['lib/vendor/*']
+        ignorePattern: ['lib/vendor/*']
       },
       gruntfile: {
         src: 'Gruntfile.js'
@@ -30,8 +28,8 @@ module.exports = function (grunt) {
     },
     copy: {
       vendor: {
-        src: ['bower_components/ayepromise/ayepromise.js'],
-        dest: 'lib/vendor/ayepromise.js'
+        src: ['bower_components/native-promise-only/lib/npo.src.js'],
+        dest: 'lib/vendor/native-promise-only.js'
       }
     },
     gluejs: {
@@ -75,7 +73,7 @@ module.exports = function (grunt) {
           '<%= gluejs.test.dest %>',
           'node_modules/sinon/pkg/sinon.js',
           'node_modules/sinon-chai/lib/sinon-chai.js',
-          'node_modules/es5-shim/es5-shim.js',
+          'node_modules/chai-as-promised/lib/chai-as-promised.js',
           'spec/spec_helper.js',
           'spec/**/*_spec.js'
         ],
@@ -98,19 +96,19 @@ module.exports = function (grunt) {
           port: 9001,
           base: 'public'
         }
-      },
+      }
     },
     watch: {
       gruntfile: {
-        files: '<%= jshint.gruntfile.src %>',
-        tasks: ['jshint:gruntfile']
+        files: '<%= eslint.gruntfile.src %>',
+        tasks: ['eslint:gruntfile']
       },
       lib: {
-        files: '<%= jshint.lib.src %>',
+        files: '<%= eslint.lib.src %>',
         tasks: ['build']
       },
       test: {
-        files: '<%= jshint.test.src %>',
+        files: '<%= eslint.test.src %>',
         tasks: ['test']
       }
     },
@@ -131,8 +129,9 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.registerTask('test', ['newer:jshint:test', 'copy:vendor', 'gluejs:test', 'testem:ci']);
-  grunt.registerTask('build', ['newer:jshint:lib', 'copy:vendor', 'gluejs:build', 'uglify:build']);
+  grunt.registerTask('test', ['newer:eslint:test', 'copy:vendor', 'gluejs:test', 'testem:ci']);
+  grunt.registerTask('build', ['newer:eslint:lib', 'copy:vendor', 'gluejs:build', 'uglify:build']);
+  grunt.registerTask('test_build', ['newer:eslint:test', 'copy:vendor', 'gluejs:test']);
   grunt.registerTask('server', ['build', 'connect', 'watch:lib']);
   grunt.registerTask('default', 'server');
 };
