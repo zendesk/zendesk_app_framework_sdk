@@ -43,6 +43,10 @@ describe('Client', function() {
       expect(window.addEventListener).to.have.been.calledWith('message');
     });
 
+    it('adds a listener for the click event', function() {
+      expect(window.addEventListener).to.have.been.calledWith('click');
+    });
+
     it('defaults to the window.top source', function (){
       var client = new Client({ origin: origin, appGuid: appGuid });
       expect(client).to.have.property('_source', window.top);
