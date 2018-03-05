@@ -7,6 +7,7 @@ describe('Client', function() {
       version = require('version'),
       subject,
       source,
+      fakeMessage,
       callback;
 
   beforeEach(function() {
@@ -14,6 +15,7 @@ describe('Client', function() {
     sandbox.stub(window, 'postMessage');
     source = { postMessage: sandbox.stub() };
     subject = new Client({ origin: origin, appGuid: appGuid, source: source });
+    fakeMessage = window.addEventListener.withArgs('message', sinon.match.any).args[0][1];
   });
 
   afterEach(function() {
@@ -31,7 +33,7 @@ describe('Client', function() {
       }
     };
 
-    window.addEventListener.callArgWith(1, evt);
+    fakeMessage(evt);
   }
 
   describe('initialisation', function() {
@@ -151,14 +153,14 @@ describe('Client', function() {
         });
 
         it("passes the message to the client", function() {
-          window.addEventListener.callArgWith(1, evt);
+          fakeMessage(evt);
           expect(handler).to.have.been.calledWithExactly(message);
         });
 
         describe('when the message is a stringified JSON', function() {
           it("passes the parsed message to the client", function() {
             evt.data = JSON.stringify(evt.data);
-            window.addEventListener.callArgWith(1, evt);
+            fakeMessage(evt);
             expect(handler).to.have.been.calledWithExactly(message);
           });
         });
@@ -166,7 +168,7 @@ describe('Client', function() {
         describe('when the message is not from zaf', function() {
           it("does not pass the message to the client", function() {
             evt.data.key = 'hello';
-            window.addEventListener.callArgWith(1, evt);
+            fakeMessage(evt);
             expect(handler).to.not.have.been.called;
           });
         });
@@ -261,7 +263,7 @@ describe('Client', function() {
       describe('when the event is not valid', function() {
         it("does not pass the message to the client", function() {
           evt.origin = 'https://foo.com';
-          window.addEventListener.callArgWith(1, evt);
+          fakeMessage(evt);
           expect(handler).to.not.have.been.called;
         });
       });
@@ -454,7 +456,7 @@ describe('Client', function() {
 
         expect(promise).to.eventually.become({ errors: {}, 'ticket.subject': 'test' }).and.notify(done);
 
-        window.addEventListener.callArgWith(1, {
+        fakeMessage({
           origin: subject._origin,
           source: subject._source,
           data: { id: requestsCount, result: { errors: {}, 'ticket.subject': 'test' } }
@@ -466,7 +468,7 @@ describe('Client', function() {
 
         expect(promise).to.be.rejectedWith(Error, 'ticket.err unavailable').and.notify(done);
 
-        window.addEventListener.callArgWith(1, {
+        fakeMessage({
           origin: subject._origin,
           source: subject._source,
           data: { id: requestsCount, result: { errors: { 'ticket.err': { message: 'ticket.err unavailable' } } } }
@@ -481,7 +483,7 @@ describe('Client', function() {
           'ticket.requester': 'test'
         }).and.notify(done);
 
-        window.addEventListener.callArgWith(1, {
+        fakeMessage({
           origin: subject._origin,
           source: subject._source,
           data: { id: requestsCount, result: {
@@ -496,7 +498,7 @@ describe('Client', function() {
 
         expect(promise).to.become({ errors: { 'ticket.subj': { message: 'No such Api' } } }).and.notify(done);
 
-        window.addEventListener.callArgWith(1, {
+        fakeMessage({
           origin: subject._origin,
           source: subject._source,
           data: { id: requestsCount, result: { errors: { 'ticket.subj': { message: 'No such Api' } } } }
@@ -538,7 +540,7 @@ describe('Client', function() {
 
         expect(promise).to.eventually.become({ errors: {}, 'ticket.subject': 'value' }).and.notify(done);
 
-        window.addEventListener.callArgWith(1, {
+        fakeMessage({
           origin: subject._origin,
           source: subject._source,
           data: { id: requestsCount, result: { errors: {}, 'ticket.subject': 'value' } }
@@ -557,7 +559,7 @@ describe('Client', function() {
 
         expect(promise).to.be.rejectedWith(Error, 'ticket.foo unavailable').and.notify(done);
 
-        window.addEventListener.callArgWith(1, {
+        fakeMessage({
           origin: subject._origin,
           source: subject._source,
           data: { id: requestsCount, result: { errors: { 'ticket.foo': { message: 'ticket.foo unavailable' } } } }
@@ -575,7 +577,7 @@ describe('Client', function() {
           'ticket.requester': 'value'
         }).and.notify(done);
 
-        window.addEventListener.callArgWith(1, {
+        fakeMessage({
           origin: subject._origin,
           source: subject._source,
           data: { id: requestsCount, result: {
@@ -590,7 +592,7 @@ describe('Client', function() {
 
         expect(promise).to.become({ errors: { 'ticket.foo': { message: 'No such Api' } } }).and.notify(done);
 
-        window.addEventListener.callArgWith(1, {
+        fakeMessage({
           origin: subject._origin,
           source: subject._source,
           data: { id: requestsCount, result: { errors: { 'ticket.foo': { message: 'No such Api' } } } }
@@ -628,7 +630,7 @@ describe('Client', function() {
 
         expect(promise).to.eventually.become({ errors: {}, 'ticket.appendText': true }).and.notify(done);
 
-        window.addEventListener.callArgWith(1, {
+        fakeMessage({
           origin: subject._origin,
           source: subject._source,
           data: { id: requestsCount, result: { errors: {}, 'ticket.appendText': true } }
@@ -640,7 +642,7 @@ describe('Client', function() {
 
         expect(promise).to.be.rejectedWith(Error, 'ticket.foo unavailable').and.notify(done);
 
-        window.addEventListener.callArgWith(1, {
+        fakeMessage({
           origin: subject._origin,
           source: subject._source,
           data: { id: requestsCount, result: { errors: { 'ticket.foo': { message: 'ticket.foo unavailable' } } } }
@@ -670,7 +672,7 @@ describe('Client', function() {
         clock.tick(10000);
         clock.restore();
         expect(promise).to.eventually.become({ errors: {}, 'instances.create': { url: 'http://a.b' } }).and.notify(done);
-        window.addEventListener.callArgWith(1, {
+        fakeMessage({
           origin: subject._origin,
           source: subject._source,
           data: { id: requestsCount, result: { errors: {}, 'instances.create': { url: 'http://a.b' } } }
