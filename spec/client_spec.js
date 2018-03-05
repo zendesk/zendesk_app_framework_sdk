@@ -11,8 +11,8 @@ describe('Client', function() {
       messageEventListener;
 
   beforeEach(function() {
-    var eventStub = sandbox.stub(window, 'addEventListener');
-    messageEventListener = eventStub.withArgs('message', sinon.match.any);
+    sandbox.stub(window, 'addEventListener');
+    messageEventListener = window.addEventListener.withArgs('message', sinon.match.any);
     sandbox.stub(window, 'postMessage');
     source = { postMessage: sandbox.stub() };
     subject = new Client({ origin: origin, appGuid: appGuid, source: source });
