@@ -7,12 +7,10 @@ describe('Client', function() {
       version = require('version'),
       subject,
       source,
-      callback,
-      messageEventListener;
+      callback;
 
   beforeEach(function() {
-    var eventStub = sandbox.stub(window, 'addEventListener');
-    messageEventListener = eventStub.withArgs('message', sinon.match.any);
+    sandbox.stub(window, 'addEventListener');
     sandbox.stub(window, 'postMessage');
     source = { postMessage: sandbox.stub() };
     subject = new Client({ origin: origin, appGuid: appGuid, source: source });
@@ -33,7 +31,7 @@ describe('Client', function() {
       }
     };
 
-    messageEventListener.callArgWith(1, evt);
+    window.addEventListener.callArgWith(1, evt);
   }
 
   describe('initialisation', function() {
@@ -153,14 +151,14 @@ describe('Client', function() {
         });
 
         it("passes the message to the client", function() {
-          messageEventListener.callArgWith(1, evt);
+          window.addEventListener.callArgWith(1, evt);
           expect(handler).to.have.been.calledWithExactly(message);
         });
 
         describe('when the message is a stringified JSON', function() {
           it("passes the parsed message to the client", function() {
             evt.data = JSON.stringify(evt.data);
-            messageEventListener.callArgWith(1, evt);
+            window.addEventListener.callArgWith(1, evt);
             expect(handler).to.have.been.calledWithExactly(message);
           });
         });
@@ -168,7 +166,7 @@ describe('Client', function() {
         describe('when the message is not from zaf', function() {
           it("does not pass the message to the client", function() {
             evt.data.key = 'hello';
-            messageEventListener.callArgWith(1, evt);
+            window.addEventListener.callArgWith(1, evt);
             expect(handler).to.not.have.been.called;
           });
         });
@@ -180,7 +178,7 @@ describe('Client', function() {
           });
 
           it('calls the handler and sends back the response', function() {
-            var retval = messageEventListener.lastCall.args[1].call(subject, evt);
+            var retval = window.addEventListener.lastCall.args[1].call(subject, evt);
             return retval.then(function() {
               expect(handler).to.have.been.called;
               expect(source.postMessage).to.have.been.calledWith(
@@ -196,7 +194,7 @@ describe('Client', function() {
             });
 
             it('calls the handler and sends back the error', function() {
-              var retval = messageEventListener.lastCall.args[1].call(subject, evt);
+              var retval = window.addEventListener.lastCall.args[1].call(subject, evt);
               return retval.then(function() {
                 expect(handler).to.have.been.called;
                 expect(source.postMessage).to.have.been.calledWith(
@@ -213,7 +211,7 @@ describe('Client', function() {
             });
 
             it('calls the handler and sends back the error', function() {
-              var retval = messageEventListener.lastCall.args[1].call(subject, evt);
+              var retval = window.addEventListener.lastCall.args[1].call(subject, evt);
               return retval.then(function() {
                 expect(handler).to.have.been.called;
                 expect(source.postMessage).to.have.been.calledWith(
@@ -230,7 +228,7 @@ describe('Client', function() {
             });
 
             it('calls the handler and sends back the string as an error', function() {
-              var retval = messageEventListener.lastCall.args[1].call(subject, evt);
+              var retval = window.addEventListener.lastCall.args[1].call(subject, evt);
               return retval.then(function() {
                 expect(handler).to.have.been.called;
                 expect(source.postMessage).to.have.been.calledWith(
@@ -247,7 +245,7 @@ describe('Client', function() {
             });
 
             it('calls the handler and sends back the rejection value as an error', function() {
-              var retval = messageEventListener.lastCall.args[1].call(subject, evt);
+              var retval = window.addEventListener.lastCall.args[1].call(subject, evt);
               return retval.then(function() {
                 expect(handler).to.have.been.called;
                 expect(source.postMessage).to.have.been.calledWith(
@@ -263,7 +261,7 @@ describe('Client', function() {
       describe('when the event is not valid', function() {
         it("does not pass the message to the client", function() {
           evt.origin = 'https://foo.com';
-          messageEventListener.callArgWith(1, evt);
+          window.addEventListener.callArgWith(1, evt);
           expect(handler).to.not.have.been.called;
         });
       });
@@ -456,7 +454,7 @@ describe('Client', function() {
 
         expect(promise).to.eventually.become({ errors: {}, 'ticket.subject': 'test' }).and.notify(done);
 
-        messageEventListener.callArgWith(1, {
+        window.addEventListener.callArgWith(1, {
           origin: subject._origin,
           source: subject._source,
           data: { id: requestsCount, result: { errors: {}, 'ticket.subject': 'test' } }
@@ -468,7 +466,7 @@ describe('Client', function() {
 
         expect(promise).to.be.rejectedWith(Error, 'ticket.err unavailable').and.notify(done);
 
-        messageEventListener.callArgWith(1, {
+        window.addEventListener.callArgWith(1, {
           origin: subject._origin,
           source: subject._source,
           data: { id: requestsCount, result: { errors: { 'ticket.err': { message: 'ticket.err unavailable' } } } }
@@ -483,7 +481,7 @@ describe('Client', function() {
           'ticket.requester': 'test'
         }).and.notify(done);
 
-        messageEventListener.callArgWith(1, {
+        window.addEventListener.callArgWith(1, {
           origin: subject._origin,
           source: subject._source,
           data: { id: requestsCount, result: {
@@ -498,7 +496,7 @@ describe('Client', function() {
 
         expect(promise).to.become({ errors: { 'ticket.subj': { message: 'No such Api' } } }).and.notify(done);
 
-        messageEventListener.callArgWith(1, {
+        window.addEventListener.callArgWith(1, {
           origin: subject._origin,
           source: subject._source,
           data: { id: requestsCount, result: { errors: { 'ticket.subj': { message: 'No such Api' } } } }
@@ -540,7 +538,7 @@ describe('Client', function() {
 
         expect(promise).to.eventually.become({ errors: {}, 'ticket.subject': 'value' }).and.notify(done);
 
-        messageEventListener.callArgWith(1, {
+        window.addEventListener.callArgWith(1, {
           origin: subject._origin,
           source: subject._source,
           data: { id: requestsCount, result: { errors: {}, 'ticket.subject': 'value' } }
@@ -559,7 +557,7 @@ describe('Client', function() {
 
         expect(promise).to.be.rejectedWith(Error, 'ticket.foo unavailable').and.notify(done);
 
-        messageEventListener.callArgWith(1, {
+        window.addEventListener.callArgWith(1, {
           origin: subject._origin,
           source: subject._source,
           data: { id: requestsCount, result: { errors: { 'ticket.foo': { message: 'ticket.foo unavailable' } } } }
@@ -577,7 +575,7 @@ describe('Client', function() {
           'ticket.requester': 'value'
         }).and.notify(done);
 
-        messageEventListener.callArgWith(1, {
+        window.addEventListener.callArgWith(1, {
           origin: subject._origin,
           source: subject._source,
           data: { id: requestsCount, result: {
@@ -592,7 +590,7 @@ describe('Client', function() {
 
         expect(promise).to.become({ errors: { 'ticket.foo': { message: 'No such Api' } } }).and.notify(done);
 
-        messageEventListener.callArgWith(1, {
+        window.addEventListener.callArgWith(1, {
           origin: subject._origin,
           source: subject._source,
           data: { id: requestsCount, result: { errors: { 'ticket.foo': { message: 'No such Api' } } } }
@@ -630,7 +628,7 @@ describe('Client', function() {
 
         expect(promise).to.eventually.become({ errors: {}, 'ticket.appendText': true }).and.notify(done);
 
-        messageEventListener.callArgWith(1, {
+        window.addEventListener.callArgWith(1, {
           origin: subject._origin,
           source: subject._source,
           data: { id: requestsCount, result: { errors: {}, 'ticket.appendText': true } }
@@ -642,7 +640,7 @@ describe('Client', function() {
 
         expect(promise).to.be.rejectedWith(Error, 'ticket.foo unavailable').and.notify(done);
 
-        messageEventListener.callArgWith(1, {
+        window.addEventListener.callArgWith(1, {
           origin: subject._origin,
           source: subject._source,
           data: { id: requestsCount, result: { errors: { 'ticket.foo': { message: 'ticket.foo unavailable' } } } }
@@ -672,7 +670,7 @@ describe('Client', function() {
         clock.tick(10000);
         clock.restore();
         expect(promise).to.eventually.become({ errors: {}, 'instances.create': { url: 'http://a.b' } }).and.notify(done);
-        messageEventListener.callArgWith(1, {
+        window.addEventListener.callArgWith(1, {
           origin: subject._origin,
           source: subject._source,
           data: { id: requestsCount, result: { errors: {}, 'instances.create': { url: 'http://a.b' } } }
