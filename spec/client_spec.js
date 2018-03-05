@@ -1,15 +1,17 @@
 describe('Client', function() {
-  var Client  = require('client'),
-      Promise = window.Promise || require('../vendor/native-promise-only'),
-      sandbox = sinon.sandbox.create(),
-      origin  = 'https://foo.zendesk.com',
-      appGuid = 'ABC123',
-      version = require('version'),
+  var Client   = require('client'),
+      Tracking = require('tracking'),
+      Promise  = window.Promise || require('../vendor/native-promise-only'),
+      sandbox  = sinon.sandbox.create(),
+      origin   = 'https://foo.zendesk.com',
+      appGuid  = 'ABC123',
+      version  = require('version'),
       subject,
       source,
       callback;
 
   beforeEach(function() {
+    sandbox.stub(Tracking, 'setup');
     sandbox.stub(window, 'addEventListener');
     sandbox.stub(window, 'postMessage');
     source = { postMessage: sandbox.stub() };
@@ -43,8 +45,8 @@ describe('Client', function() {
       expect(window.addEventListener).to.have.been.calledWith('message');
     });
 
-    it('adds a listener for the click event', function() {
-      expect(window.addEventListener).to.have.been.calledWith('click');
+    it('sets up tracking', function() {
+      expect(Tracking.setup).to.have.been.called;
     });
 
     it('defaults to the window.top source', function (){
