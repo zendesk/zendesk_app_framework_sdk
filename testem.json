@@ -14,6 +14,5 @@
   ],
   "launch_in_dev": [
     "Chrome"
-  ],
-  "before_tests": "grunt test_build"
+  ]
 }
