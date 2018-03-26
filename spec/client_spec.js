@@ -36,6 +36,85 @@ describe('Client', function() {
     window.addEventListener.callArgWith(1, evt);
   }
 
+  describe('isDomainValid', function() {
+    it('Should instantiate client when domain is valid 1', function() {
+      var appSource = { postMessage: sandbox.stub() };
+      var validDomainClient = new Client({
+        origin: 'https://sub1.zendesk.com',
+        appGuid: 'appGuid',
+        source: appSource
+      });
+
+      expect(validDomainClient).to.exist;
+    });
+
+    it('Should instantiate client when domain is valid 2', function() {
+      var appSource = { postMessage: sandbox.stub() };
+      var validDomainClient = new Client({
+        origin: 'https://sub1.zd-staging.com',
+        appGuid: 'appGuid',
+        source: appSource
+      });
+
+      expect(validDomainClient).to.exist;
+    });
+
+    it('Should instantiate client when domain is valid 3', function() {
+      var appSource = { postMessage: sandbox.stub() };
+      var validDomainClient = new Client({
+        origin: 'https://sub1.zendesk-staging.com',
+        appGuid: 'appGuid',
+        source: appSource
+      });
+
+      expect(validDomainClient).to.exist;
+    });
+
+    it('Should instantiate client when domain is valid 4', function() {
+      var appSource = { postMessage: sandbox.stub() };
+      var validDomainClient = new Client({
+        origin: 'https://sub1.zd-master.com',
+        appGuid: 'appGuid',
+        source: appSource
+      });
+
+      expect(validDomainClient).to.exist;
+    });
+
+    it('Should instantiate client when domain is valid 5', function() {
+      var appSource = { postMessage: sandbox.stub() };
+      var validDomainClient = new Client({
+        origin: 'https://dashboard.zopim.com',
+        appGuid: 'appGuid',
+        source: appSource
+      });
+
+      expect(validDomainClient).to.exist;
+    });
+
+    it('Should instantiate client when domain is valid 6', function() {
+      var appSource = { postMessage: sandbox.stub() };
+      var validDomainClient = new Client({
+        origin: 'https://dashboard.zopim.org',
+        appGuid: 'appGuid',
+        source: appSource
+      });
+
+      expect(validDomainClient).to.exist;
+    });
+
+    it('Should throw when domain is invalid', function() {
+      var appSource = { postMessage: sandbox.stub() };
+      expect(function() {
+        new Client({
+          origin: 'https://invalid-domain.com',
+          appGuid: 'appGuid',
+          source: appSource
+        });
+      }).to.throw(Error);
+    });
+  });
+
   describe('initialisation', function() {
     it('can be instantiated', function() {
       expect(subject).to.exist;
