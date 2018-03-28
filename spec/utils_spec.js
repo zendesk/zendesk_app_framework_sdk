@@ -11,7 +11,11 @@ describe('Utils', function() {
         { queryStr: 'foo=0&bar=1&baz',      tests: { foo: '0', bar: '1', baz: '' } },
         { queryStr: 'foo=http://foo.com',   tests: { foo: 'http://foo.com' } },
         { queryStr: 'fooBar=A2&fooBar=A3',  tests: { fooBar: 'A3' } },
-        { queryStr: 'fooBar=A2&',           tests: { fooBar: 'A2' } }
+        { queryStr: 'fooBar=A2&',           tests: { fooBar: 'A2' } },
+        { queryStr: '?foo=0&bar=1&baz',      tests: { foo: '0', bar: '1', baz: '' } },
+        { queryStr: '?foo=http://foo.com',   tests: { foo: 'http://foo.com' } },
+        { queryStr: '#foo=0&bar=1&baz',      tests: { foo: '0', bar: '1', baz: '' } },
+        { queryStr: '#foo=http://foo.com',   tests: { foo: 'http://foo.com' } }
       ].forEach(function(testCase) {
         params = Utils.queryParameters(testCase.queryStr);
         Object.keys(testCase.tests).forEach(function(key) {
