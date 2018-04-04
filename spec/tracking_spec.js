@@ -8,6 +8,7 @@ describe('App Tracking', function() {
   beforeEach(function() {
     sandbox.stub(client, 'invoke');
     tracker = new Tracker(client);
+    tracker.setup();
   });
 
   afterEach(function() {
