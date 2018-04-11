@@ -27,9 +27,9 @@ describe('App Tracking', function() {
     });
 
     function causeMouseEvents(time) {
-      tracker.handleMouseOver();
+      tracker.handleMouseEnter();
       clock.tick(time);
-      tracker.handleMouseOut();
+      tracker.handleMouseLeave();
     }
 
     context('when < 200ms between mouseover and mouseout', function() {
