@@ -39,6 +39,26 @@ describe('Client', function() {
   }
 
   describe('isOriginValid', function() {
+    it('Should instantiate client for localhost', function() {
+      var validOriginClient = new Client({
+        origin: 'http://localhost',
+        appGuid: 'appGuid',
+        source: source
+      });
+
+      expect(validOriginClient).to.exist;
+    });
+
+    it('Should instantiate client for localhost with port', function() {
+      var validOriginClient = new Client({
+        origin: 'http://localhost:1234',
+        appGuid: 'appGuid',
+        source: source
+      });
+
+      expect(validOriginClient).to.exist;
+    });
+
     it('Should instantiate client for support production domain(subdomain.zendesk.com)', function() {
       var validOriginClient = new Client({
         origin: 'https://sub1.zendesk.com',
