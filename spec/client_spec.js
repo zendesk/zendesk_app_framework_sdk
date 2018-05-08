@@ -46,6 +46,8 @@ describe('Client', function() {
         'http://localhost:1234',
         'https://localhost:1234',
         'https://sub1.zendesk.com',
+        'https://sub-1.zendesk.com',
+        'https://sub_1.zendesk.com',
         'https://sub1.zd-staging.com',
         'https://sub1.zendesk-staging.com',
         'https://sub1.zd-master.com',
