@@ -39,6 +39,10 @@ describe('Client', function() {
   }
 
   describe('isOriginValid', function() {
+    beforeEach(function() {
+      sandbox.stub(console, 'error');
+    });
+
     it('instantiates the client when the domain is valid', function() {
       var validDomains = [
         'http://127.0.0.1',
@@ -81,13 +85,12 @@ describe('Client', function() {
       ];
 
       invalidDomains.forEach(function(domain) {
-        expect(function() {
-          new Client({
-            origin: domain,
-            appGuid: 'appGuid',
-            source: source
-          });
-        }).to.throw(Error);
+        new Client({
+          origin: domain,
+          appGuid: 'appGuid',
+          source: source
+        });
+        expect(console.error).to.have.been.calledWith('Invalid domain: ' + domain);
       });
     });
   });
