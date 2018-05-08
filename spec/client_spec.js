@@ -50,6 +50,7 @@ describe('Client', function() {
         'https://sub1.zendesk-staging.com',
         'https://sub1.zd-master.com',
         'https://dashboard.zopim.com',
+        'https://hoanglocal.zopim.com:8080',
         'https://dashboard.zopim.org'
       ];
 
