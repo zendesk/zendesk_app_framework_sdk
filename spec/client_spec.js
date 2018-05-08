@@ -39,74 +39,54 @@ describe('Client', function() {
   }
 
   describe('isOriginValid', function() {
-    it('Should instantiate client for support production domain(subdomain.zendesk.com)', function() {
-      var validOriginClient = new Client({
-        origin: 'https://sub1.zendesk.com',
-        appGuid: 'appGuid',
-        source: source
-      });
+    it('instantiates the client when the domain is valid', function() {
+      var validDomains = [
+        'http://127.0.0.1',
+        'http://localhost',
+        'http://localhost:1234',
+        'https://localhost:1234',
+        'https://sub1.zendesk.com',
+        'https://sub1.zd-staging.com',
+        'https://sub1.zendesk-staging.com',
+        'https://sub1.zd-master.com',
+        'https://dashboard.zopim.com',
+        'https://hoanglocal.zopim.com:8080',
+        'https://dashboard.zopim.org'
+      ];
 
-      expect(validOriginClient).to.exist;
-    });
-
-    it('Should instantiate client for support old staging domain(subdomain.zd-staging.com)', function() {
-      var validOriginClient = new Client({
-        origin: 'https://sub1.zd-staging.com',
-        appGuid: 'appGuid',
-        source: source
-      });
-
-      expect(validOriginClient).to.exist;
-    });
-
-    it('Should instantiate client for support new staging domain(subdomain.zendesk-staging.com)', function() {
-      var validOriginClient = new Client({
-        origin: 'https://sub1.zendesk-staging.com',
-        appGuid: 'appGuid',
-        source: source
-      });
-
-      expect(validOriginClient).to.exist;
-    });
-
-    it('Should instantiate client for support master stage domain(subdomain.zd-master.com)', function() {
-      var validOriginClient = new Client({
-        origin: 'https://sub1.zd-master.com',
-        appGuid: 'appGuid',
-        source: source
-      });
-
-      expect(validOriginClient).to.exist;
-    });
-
-    it('Should instantiate client for chat production domain(dashboard.zopim.com)', function() {
-      var validOriginClient = new Client({
-        origin: 'https://dashboard.zopim.com',
-        appGuid: 'appGuid',
-        source: source
-      });
-
-      expect(validOriginClient).to.exist;
-    });
-
-    it('Should instantiate client for chat staging domain(dashboard.zopim.org)', function() {
-      var validOriginClient = new Client({
-        origin: 'https://dashboard.zopim.org',
-        appGuid: 'appGuid',
-        source: source
-      });
-
-      expect(validOriginClient).to.exist;
-    });
-
-    it('Should throw when domain is invalid', function() {
-      expect(function() {
-        new Client({
-          origin: 'https://invalid-domain.com',
+      validDomains.forEach(function(domain) {
+        var validOriginClient = new Client({
+          origin: domain,
           appGuid: 'appGuid',
           source: source
         });
-      }).to.throw(Error);
+
+        expect(validOriginClient).to.exist;
+      });
+    });
+
+    it('throws when domain is invalid', function() {
+      var invalidDomains = [
+        'https://localhost.com',
+        'http://fakelocalhost',
+        'http://fakelocalhost:1234',
+        'https://sub1.fakezendesk.com',
+        'https://sub1.fakezd-staging.com',
+        'https://sub1.fakezendesk-staging.com',
+        'https://sub1.fakezd-master.com',
+        'https://dashboard.fakezopim.com',
+        'https://dashboard.fakezopim.org'
+      ];
+
+      invalidDomains.forEach(function(domain) {
+        expect(function() {
+          new Client({
+            origin: domain,
+            appGuid: 'appGuid',
+            source: source
+          });
+        }).to.throw(Error);
+      });
     });
   });
 
