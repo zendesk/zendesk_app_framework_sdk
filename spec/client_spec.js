@@ -57,7 +57,8 @@ describe('Client', function() {
         'https://sub1.zd-master.com',
         'https://dashboard.zopim.com',
         'https://hoanglocal.zopim.com:8080',
-        'https://dashboard.zopim.org'
+        'https://dashboard.zopim.org',
+        'https://123.app.zdusercontent.com'
       ];
 
       validDomains.forEach(function(domain) {
@@ -82,6 +83,7 @@ describe('Client', function() {
         'https://sub1.fakezd-master.com',
         'https://dashboard.fakezopim.com',
         'https://dashboard.fakezopim.org'
+        'https://123.app.fakezdusercontent.com'
       ];
 
       invalidDomains.forEach(function(domain) {
