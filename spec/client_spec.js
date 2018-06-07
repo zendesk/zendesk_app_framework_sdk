@@ -82,7 +82,7 @@ describe('Client', function() {
         'https://sub1.fakezendesk-staging.com',
         'https://sub1.fakezd-master.com',
         'https://dashboard.fakezopim.com',
-        'https://dashboard.fakezopim.org'
+        'https://dashboard.fakezopim.org',
         'https://123.app.fakezdusercontent.com'
       ];
 
