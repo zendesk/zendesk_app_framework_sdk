@@ -85,13 +85,12 @@ describe('Client', function() {
       ];
 
       invalidDomains.forEach(function(domain) {
-        expect(function() {
-          new Client({
-            origin: domain,
-            appGuid: 'appGuid',
-            source: source
-          });
-        }).to.throw(Error);
+        new Client({
+          origin: domain,
+          appGuid: 'appGuid',
+          source: source
+        });
+        expect(console.error).to.have.been.calledWith('Invalid domain: ' + domain);
       });
     });
   });
