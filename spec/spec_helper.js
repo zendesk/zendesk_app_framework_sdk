@@ -1,8 +1,8 @@
-window.expect = chai.expect;
+/* global chai */
+import sinonChai from 'sinon-chai'
+import chaiAsPromised from 'chai-as-promised'
+import dirtyChai from 'dirty-chai'
 
-if (self.title === 'node') {
-  var sinonChai = require("sinon-chai");
-  var chaiAsPromised = require("chai-as-promised");
-  chai.use(sinonChai);
-  chai.use(chaiAsPromised);
-}
+chai.use(sinonChai)
+chai.use(chaiAsPromised)
+chai.use(dirtyChai)
