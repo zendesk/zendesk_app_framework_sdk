@@ -3,16 +3,16 @@
 import ZAFClient from '../lib/index'
 import sinon from 'sinon'
 
-describe('ZAFClient', function () {
+describe('ZAFClient', () => {
   const sandbox = sinon.createSandbox()
 
-  afterEach(function () {
+  afterEach(() => {
     sandbox.restore()
   })
 
-  describe('.init', function () {
-    describe('given origin and app_guid are missing', function () {
-      it("won't create a Client instance", function () {
+  describe('.init', () => {
+    describe('given origin and app_guid are missing', () => {
+      it("won't create a Client instance", () => {
         expect(ZAFClient.init()).to.equal(false)
       })
     })
