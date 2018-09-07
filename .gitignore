@@ -1,7 +1,7 @@
 .bundle
-/node_modules/
-/bower_components/
-/build
+node_modules/
+bower_components/
+dist/
 vendor/bundle
 npm-debug.log
-/tmp
+tmp
