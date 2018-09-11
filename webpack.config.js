@@ -14,7 +14,7 @@ function config (env = {}) {
 
     output: {
       filename: '[name].js',
-      path: path.resolve(__dirname, 'dist')
+      path: path.resolve(__dirname, 'build')
     },
 
     externals: {
@@ -22,7 +22,7 @@ function config (env = {}) {
     },
 
     devServer: {
-      contentBase: path.join(__dirname, 'dist'),
+      contentBase: path.join(__dirname, 'build'),
       compress: true,
       port: 9001
     }
