@@ -76,7 +76,7 @@ describe('Utils', () => {
     })
 
     describe('with one or more promises passed in', () => {
-      var allDone
+      let allDone
       beforeEach(() => {
         allDone = false
       })

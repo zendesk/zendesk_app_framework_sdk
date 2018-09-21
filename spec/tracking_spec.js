@@ -18,7 +18,7 @@ describe('App Tracking', () => {
   })
 
   context('when the mouseout event is triggered', () => {
-    var clock
+    let clock
 
     beforeEach(() => {
       clock = sinon.useFakeTimers()

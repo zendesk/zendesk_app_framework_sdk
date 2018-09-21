@@ -1,9 +1,10 @@
 const path = require('path')
 const packageJson = require('./package.json')
 
-function config (env = {}) {
+module.exports = function (env = {}) {
   const config = {
     mode: env.production ? 'production' : 'development',
+    devtool: 'cheap-module-source-map',
 
     entry: {
       zaf_sdk: [
@@ -11,6 +12,12 @@ function config (env = {}) {
         './lib/index.js'
       ]
     },
+
+    module: {
+      rules: []
+    },
+
+    plugins: [],
 
     output: {
       filename: '[name].js',
@@ -28,7 +35,12 @@ function config (env = {}) {
     }
   }
 
+  if (env.production) {
+    config.module.rules.push({
+      test: /\.js$/,
+      use: { loader: 'babel-loader', options: { plugins: [], presets: ['babel-preset-env'] } }
+    })
+  }
+
   return config
 }
-
-module.exports = config

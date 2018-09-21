@@ -25,7 +25,7 @@ describe('Client', () => {
   })
 
   function triggerEvent (client, name, data) {
-    var evt = {
+    const evt = {
       origin: client._origin,
       source: client._source,
       data: {
@@ -44,7 +44,7 @@ describe('Client', () => {
     })
 
     it('instantiates the client when the domain is valid', () => {
-      var validDomains = [
+      const validDomains = [
         'http://127.0.0.1',
         'http://localhost',
         'http://localhost:1234',
@@ -61,7 +61,7 @@ describe('Client', () => {
       ]
 
       validDomains.forEach((domain) => {
-        var validOriginClient = new Client({
+        const validOriginClient = new Client({
           origin: domain,
           appGuid: 'appGuid',
           source: source
@@ -72,7 +72,7 @@ describe('Client', () => {
     })
 
     it('throws when domain is invalid', () => {
-      var invalidDomains = [
+      const invalidDomains = [
         'https://localhost.com',
         'http://fakelocalhost',
         'http://fakelocalhost:1234',
@@ -110,12 +110,12 @@ describe('Client', () => {
     })
 
     it('defaults to the window.top source', () => {
-      var client = new Client({ origin: origin, appGuid: appGuid })
+      const client = new Client({ origin: origin, appGuid: appGuid })
       expect(client).to.have.property('_source', window.top)
     })
 
     it('posts an "iframe.handshake" message when initialised', () => {
-      var data = {
+      const data = {
         key: 'iframe.handshake',
         message: { version: version },
         appGuid: appGuid,
@@ -126,7 +126,7 @@ describe('Client', () => {
     })
 
     it('listens for app.registered to mark the client as ready', () => {
-      var data = {
+      const data = {
         metadata: {
           appId: 1,
           installationId: 1
@@ -145,7 +145,7 @@ describe('Client', () => {
     })
 
     it('listens for context.updated to update the client context', () => {
-      var context = {
+      const context = {
         foo: 123
       }
 
@@ -155,7 +155,7 @@ describe('Client', () => {
     })
 
     describe('with a parent client', () => {
-      var childClient
+      let childClient
 
       beforeEach(() => {
         subject.ready = true
@@ -189,7 +189,7 @@ describe('Client', () => {
     })
 
     describe('when a message is received', () => {
-      var message, evt, handler
+      let message, evt, handler
 
       beforeEach(() => {
         handler = sandbox.stub()
@@ -239,7 +239,7 @@ describe('Client', () => {
           })
 
           it('calls the handler and sends back the response', () => {
-            var retval = window.addEventListener.lastCall.args[1].call(subject, evt)
+            const retval = window.addEventListener.lastCall.args[1].call(subject, evt)
             return retval.then(() => {
               expect(handler).to.have.been.called()
               expect(source.postMessage).to.have.been.calledWith(
@@ -255,7 +255,7 @@ describe('Client', () => {
             })
 
             it('calls the handler and sends back the error', () => {
-              var retval = window.addEventListener.lastCall.args[1].call(subject, evt)
+              const retval = window.addEventListener.lastCall.args[1].call(subject, evt)
               return retval.then(() => {
                 expect(handler).to.have.been.called()
                 expect(source.postMessage).to.have.been.calledWith(
@@ -272,7 +272,7 @@ describe('Client', () => {
             })
 
             it('calls the handler and sends back the error', () => {
-              var retval = window.addEventListener.lastCall.args[1].call(subject, evt)
+              const retval = window.addEventListener.lastCall.args[1].call(subject, evt)
               return retval.then(() => {
                 expect(handler).to.have.been.called()
                 expect(source.postMessage).to.have.been.calledWith(
@@ -289,7 +289,7 @@ describe('Client', () => {
             })
 
             it('calls the handler and sends back the string as an error', () => {
-              var retval = window.addEventListener.lastCall.args[1].call(subject, evt)
+              const retval = window.addEventListener.lastCall.args[1].call(subject, evt)
               return retval.then(() => {
                 expect(handler).to.have.been.called()
                 expect(source.postMessage).to.have.been.calledWith(
@@ -306,7 +306,7 @@ describe('Client', () => {
             })
 
             it('calls the handler and sends back the rejection value as an error', () => {
-              var retval = window.addEventListener.lastCall.args[1].call(subject, evt)
+              const retval = window.addEventListener.lastCall.args[1].call(subject, evt)
               return retval.then(() => {
                 expect(handler).to.have.been.called()
                 expect(source.postMessage).to.have.been.calledWith(
@@ -329,7 +329,7 @@ describe('Client', () => {
     })
 
     describe('#postMessage', () => {
-      var oldReady
+      let oldReady
 
       beforeEach(() => {
         oldReady = subject.ready
@@ -436,7 +436,7 @@ describe('Client', () => {
     })
 
     describe('#trigger', () => {
-      var data = {
+      const data = {
         bar: 2
       }
 
@@ -475,7 +475,7 @@ describe('Client', () => {
       })
 
       describe('promise', () => {
-        var response = { responseArgs: [ {} ] }
+        const response = { responseArgs: [ {} ] }
 
         it('resolves when the request succeeds', (done) => {
           triggerEvent(subject, 'request:' + requestsCount + '.done', response)
@@ -497,8 +497,8 @@ describe('Client', () => {
   })
 
   describe('v2 methods', () => {
-    var promise
-    var requestsCount = 1
+    let promise
+    let requestsCount = 1
 
     afterEach(() => {
       promise && promise.catch(() => {})
@@ -550,7 +550,7 @@ describe('Client', () => {
       })
 
       it('resolves with errors when bulk requesting', (done) => {
-        var promise = subject.get(['ticket.subj'])
+        const promise = subject.get(['ticket.subj'])
 
         expect(promise).to.become({ errors: { 'ticket.subj': { message: 'No such Api' } } }).and.notify(done)
 
@@ -569,7 +569,7 @@ describe('Client', () => {
       })
 
       it('rejects the promise after 5 seconds', (done) => {
-        var clock = sinon.useFakeTimers()
+        const clock = sinon.useFakeTimers()
         promise = subject.get('ticket.subject')
         clock.tick(5000)
         clock.restore()
@@ -645,7 +645,7 @@ describe('Client', () => {
       })
 
       it('resolves with errors when bulk requesting', (done) => {
-        var promise = subject.set({ 'ticket.foo': 'bar' })
+        const promise = subject.set({ 'ticket.foo': 'bar' })
 
         expect(promise).to.become({ errors: { 'ticket.foo': { message: 'No such Api' } } }).and.notify(done)
 
@@ -657,7 +657,7 @@ describe('Client', () => {
       })
 
       it('rejects the promise after 5 seconds', (done) => {
-        var clock = sinon.useFakeTimers()
+        const clock = sinon.useFakeTimers()
         promise = subject.set('ticket.subject', 'test')
         clock.tick(5000)
         clock.restore()
@@ -716,7 +716,7 @@ describe('Client', () => {
       })
 
       it('rejects the promise after 5 seconds', (done) => {
-        var clock = sinon.useFakeTimers()
+        const clock = sinon.useFakeTimers()
         promise = subject.invoke('ticket.subject', 'test')
         clock.tick(5000)
         clock.restore()
@@ -724,7 +724,7 @@ describe('Client', () => {
       })
 
       it('doesnt reject whitelisted promises after 5 seconds', (done) => {
-        var clock = sinon.useFakeTimers()
+        const clock = sinon.useFakeTimers()
         promise = subject.invoke('instances.create')
         clock.tick(10000)
         clock.restore()
@@ -738,7 +738,7 @@ describe('Client', () => {
     })
 
     describe('#context', () => {
-      var context = { location: 'top_bar' }
+      const context = { location: 'top_bar' }
 
       it('resolves with the cached context if ready', () => {
         subject.ready = true
@@ -772,7 +772,7 @@ describe('Client', () => {
       })
 
       it('returns a client for the instance', () => {
-        var instanceClient = subject.instance('def-321')
+        const instanceClient = subject.instance('def-321')
         expect(instanceClient).to.be.an.instanceof(Client)
         expect(instanceClient).to.have.property('_instanceGuid').that.equals('def-321')
       })
@@ -786,7 +786,7 @@ describe('Client', () => {
       })
 
       describe('with the returned client', () => {
-        var childClient
+        let childClient
 
         beforeEach(() => {
           childClient = subject.instance('def-321')
@@ -802,7 +802,7 @@ describe('Client', () => {
         })
 
         describe('#context', () => {
-          var context = { location: 'top_bar' }
+          const context = { location: 'top_bar' }
 
           it('delegates to instances api', () => {
             sandbox.stub(childClient, 'get').withArgs('instances.def-321').returns(
@@ -818,7 +818,7 @@ describe('Client', () => {
           it('includes the instanceGuid in the message', () => {
             childClient.postMessage('foo.bar', { bar: 'foo' })
             expect(source.postMessage).to.have.been.called()
-            var lastCall = JSON.parse(source.postMessage.lastCall.args[0])
+            const lastCall = JSON.parse(source.postMessage.lastCall.args[0])
             expect(lastCall.key).to.equal('foo.bar')
             expect(lastCall.message).to.deep.equal({ bar: 'foo' })
             expect(lastCall.appGuid).to.equal('ABC123')
@@ -829,7 +829,7 @@ describe('Client', () => {
         describe('#get', () => {
           it('makes a call with the instanceGuid set', () => {
             promise = childClient.get('foo.bar')
-            var lastCall = JSON.parse(source.postMessage.lastCall.args[0])
+            const lastCall = JSON.parse(source.postMessage.lastCall.args[0])
             expect(lastCall.request).to.equal('get')
             expect(lastCall.params).to.deep.equal(['foo.bar'])
             expect(lastCall.appGuid).to.equal('ABC123')
@@ -840,7 +840,7 @@ describe('Client', () => {
         describe('#set', () => {
           it('makes a call with the instanceGuid set', () => {
             promise = childClient.set('foo.bar', 'baz')
-            var lastCall = JSON.parse(source.postMessage.lastCall.args[0])
+            const lastCall = JSON.parse(source.postMessage.lastCall.args[0])
             expect(lastCall.request).to.equal('set')
             expect(lastCall.params).to.deep.equal({'foo.bar': 'baz'})
             expect(lastCall.appGuid).to.equal('ABC123')
@@ -851,7 +851,7 @@ describe('Client', () => {
         describe('#invoke', () => {
           it('makes a call with the instanceGuid set', () => {
             promise = childClient.invoke('popover', 'hide')
-            var lastCall = JSON.parse(source.postMessage.lastCall.args[0])
+            const lastCall = JSON.parse(source.postMessage.lastCall.args[0])
             expect(lastCall.request).to.equal('invoke')
             expect(lastCall.params).to.deep.equal({popover: ['hide']})
             expect(lastCall.appGuid).to.equal('ABC123')
@@ -860,7 +860,7 @@ describe('Client', () => {
 
           it('makes a call with an object', () => {
             promise = childClient.invoke({popover: ['hide']})
-            var lastCall = JSON.parse(source.postMessage.lastCall.args[0])
+            const lastCall = JSON.parse(source.postMessage.lastCall.args[0])
             expect(lastCall.request).to.equal('invoke')
             expect(lastCall.params).to.deep.equal({popover: ['hide']})
             expect(lastCall.appGuid).to.equal('ABC123')
@@ -887,7 +887,7 @@ describe('Client', () => {
         })
 
         describe('when a message is received for a child client', () => {
-          var message, handler
+          let message, handler
 
           beforeEach(() => {
             handler = sandbox.stub()
