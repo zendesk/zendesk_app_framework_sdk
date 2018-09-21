@@ -11,3 +11,9 @@ cache:
     - node_modules
 branches:
   only: [master]
+jobs:
+  include:
+    - stage: Tests
+      script: npm test
+    - env: Lint
+      script: npm run lint
