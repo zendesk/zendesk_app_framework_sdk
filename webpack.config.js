@@ -42,5 +42,12 @@ module.exports = function (env = {}) {
     })
   }
 
+  if (env.stats) {
+    const Visualizer = require('webpack-visualizer-plugin')
+    config.plugins.push(new Visualizer({
+      filename: './statistics.html'
+    }))
+  }
+
   return config
 }
