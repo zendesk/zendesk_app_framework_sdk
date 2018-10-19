@@ -1,5 +1,5 @@
 describe('App Tracking', function() {
-  var tracking = require('tracking'),
+  var tracking = require('../lib/tracking'),
       Tracker  = tracking.Tracker,
       sandbox  = sinon.sandbox.create(),
       client   = { invoke: function() {} },

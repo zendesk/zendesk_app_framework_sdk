@@ -1,7 +1,7 @@
 describe('Utils', function() {
 
-  var Promise = window.Promise || require('../vendor/native-promise-only'),
-      Utils = require('utils'),
+  var Promise = window.Promise || require('native-promise-only'),
+      Utils = require('../lib/utils'),
       params;
 
   describe('.queryParameters', function() {
