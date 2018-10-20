@@ -89,11 +89,11 @@ describe('Utils', function () {
 
       it('should resolve only when all promises have resolved', function (done) {
         Utils.when([
-          new Promise(function (res) { setTimeout(res, 10) }),
-          new Promise(function (res) {
+          new Promise(function (resolve) { setTimeout(resolve, 10) }),
+          new Promise(function (resolve) {
             setTimeout(function () {
               allDone = true
-              res()
+              resolve()
             }, 20)
           })
         ]).then(function () {
@@ -104,8 +104,8 @@ describe('Utils', function () {
 
       it('should resolve with the data for all of the promises', function (done) {
         Utils.when([
-          new Promise(function (res) { setTimeout(function () { res('a') }, 10) }),
-          new Promise(function (res) { setTimeout(function () { res(42) }, 20) })
+          new Promise(function (resolve) { setTimeout(function () { resolve('a') }, 10) }),
+          new Promise(function (resolve) { setTimeout(function () { resolve(42) }, 20) })
         ]).then(function (data) {
           expect(data).to.eql(['a', 42])
           done()
@@ -114,11 +114,11 @@ describe('Utils', function () {
 
       it('should reject when the first promise rejects', function (done) {
         Utils.when([
-          new Promise(function (_, rej) { rej() }),
-          new Promise(function (res) {
+          new Promise(function (resolve, reject) { reject(new Error()) }),
+          new Promise(function (resolve) {
             setTimeout(function () {
               allDone = true
-              res()
+              resolve()
             }, 100)
           })
         ]).catch(function () {
@@ -129,11 +129,11 @@ describe('Utils', function () {
 
       it('should reject with the value the first promise rejects with', function (done) {
         Utils.when([
-          new Promise(function (_, rej) {
-            rej('boo')
+          new Promise(function (resolve, reject) {
+            reject(new Error('boo'))
           }),
-          new Promise(function (_, rej) {
-            rej('boo 2')
+          new Promise(function (resolve, reject) {
+            reject(new Error('boo 2'))
           })
         ]).catch(function (msg) {
           expect(msg).to.eql('boo')

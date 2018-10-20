@@ -314,7 +314,7 @@ describe('Client', function () {
 
           describe('when the handler rejects a promise', function () {
             beforeEach(function () {
-              handler.returns(Promise.reject('The third party API is broken.'))
+              handler.returns(Promise.reject(new Error('The third party API is broken.')))
             })
 
             it('calls the handler and sends back the rejection value as an error', function () {
