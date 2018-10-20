@@ -1,3 +1,5 @@
+/* eslint-env mocha */
+/* global expect sinon */
 describe('Client', function () {
   var Client = require('../lib/client')
 

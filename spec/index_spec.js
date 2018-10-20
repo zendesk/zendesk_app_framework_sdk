@@ -1,3 +1,5 @@
+/* eslint-env mocha */
+/* global expect sinon */
 describe('ZAFClient', function () {
   var sandbox = sinon.sandbox.create()
 

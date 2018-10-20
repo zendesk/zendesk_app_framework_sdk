@@ -1,3 +1,5 @@
+/* eslint-env mocha */
+/* global sinon */
 describe('App Tracking', function () {
   var tracking = require('../lib/tracking')
 

@@ -1,3 +1,5 @@
+/* eslint-env mocha */
+/* global chai self */
 window.expect = chai.expect
 
 if (self.title === 'node') {

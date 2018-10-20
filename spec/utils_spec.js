@@ -1,3 +1,5 @@
+/* eslint-env mocha */
+/* global expect */
 describe('Utils', function () {
   var Promise = window.Promise || require('native-promise-only')
 
