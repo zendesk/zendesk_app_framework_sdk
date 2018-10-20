@@ -28,10 +28,6 @@ describe('Utils', function () {
   })
 
   describe('.when', function () {
-    it('should return a promise when called', function () {
-      expect(Utils.when()).to.be.a.promise()
-    })
-
     it('should resolve the promise when called with no arguments', function (done) {
       expect(Utils.when()).to.eventually.be.fulfilled.and.notify(done)
     })
@@ -135,8 +131,8 @@ describe('Utils', function () {
           new Promise(function (resolve, reject) {
             reject(new Error('boo 2'))
           })
-        ]).catch(function (msg) {
-          expect(msg).to.eql('boo')
+        ]).catch(function (err) {
+          expect(err.message).to.eql('boo')
           done()
         })
       })
