@@ -98,11 +98,12 @@ describe('Client', function () {
       ]
 
       invalidDomains.forEach(function (domain) {
-        new Client({
+        var client = new Client({
           origin: domain,
           appGuid: 'appGuid',
           source: source
         })
+        expect(client).to.be.an('object')
         expect(console.error).to.have.been.calledWith('Invalid domain: ' + domain)
       })
     })
