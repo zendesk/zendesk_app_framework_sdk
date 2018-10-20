@@ -80,7 +80,7 @@ describe('Client', function () {
           source: source
         })
 
-        expect(validOriginClient).to.exist
+        expect(validOriginClient).to.exist()
       })
     })
 
@@ -110,7 +110,7 @@ describe('Client', function () {
 
   describe('initialisation', function () {
     it('can be instantiated', function () {
-      expect(subject).to.exist
+      expect(subject).to.exist()
     })
 
     it('adds a listener for the message event', function () {
@@ -118,7 +118,7 @@ describe('Client', function () {
     })
 
     it('sets up tracking', function () {
-      expect(trackerStub).to.have.been.called
+      expect(trackerStub).to.have.been.called()
     })
 
     it('defaults to the window.top source', function () {
@@ -182,7 +182,7 @@ describe('Client', function () {
       })
 
       it('does not post a handshake', function () {
-        expect(source.postMessage).not.to.have.been.called
+        expect(source.postMessage).not.to.have.been.called()
       })
 
       it('does not add a listener for the message event', function () {
@@ -240,7 +240,7 @@ describe('Client', function () {
           it('does not pass the message to the client', function () {
             evt.data.key = 'hello'
             window.addEventListener.callArgWith(1, evt)
-            expect(handler).to.not.have.been.called
+            expect(handler).to.not.have.been.called()
           })
         })
 
@@ -253,7 +253,7 @@ describe('Client', function () {
           it('calls the handler and sends back the response', function () {
             var retval = window.addEventListener.lastCall.args[1].call(subject, evt)
             return retval.then(function () {
-              expect(handler).to.have.been.called
+              expect(handler).to.have.been.called()
               expect(source.postMessage).to.have.been.calledWith(
                 { appGuid: 'ABC123', key: 'iframe.reply:hello' },
                 'https://foo.zendesk.com'
@@ -269,7 +269,7 @@ describe('Client', function () {
             it('calls the handler and sends back the error', function () {
               var retval = window.addEventListener.lastCall.args[1].call(subject, evt)
               return retval.then(function () {
-                expect(handler).to.have.been.called
+                expect(handler).to.have.been.called()
                 expect(source.postMessage).to.have.been.calledWith(
                   { appGuid: 'ABC123', error: { msg: 'Error' }, key: 'iframe.reply:hello' },
                   'https://foo.zendesk.com'
@@ -286,7 +286,7 @@ describe('Client', function () {
             it('calls the handler and sends back the error', function () {
               var retval = window.addEventListener.lastCall.args[1].call(subject, evt)
               return retval.then(function () {
-                expect(handler).to.have.been.called
+                expect(handler).to.have.been.called()
                 expect(source.postMessage).to.have.been.calledWith(
                   { appGuid: 'ABC123', error: { msg: false }, key: 'iframe.reply:hello' },
                   'https://foo.zendesk.com'
@@ -303,7 +303,7 @@ describe('Client', function () {
             it('calls the handler and sends back the string as an error', function () {
               var retval = window.addEventListener.lastCall.args[1].call(subject, evt)
               return retval.then(function () {
-                expect(handler).to.have.been.called
+                expect(handler).to.have.been.called()
                 expect(source.postMessage).to.have.been.calledWith(
                   { appGuid: 'ABC123', error: { msg: 'Oh no! [object Object]' }, key: 'iframe.reply:hello' },
                   'https://foo.zendesk.com'
@@ -320,7 +320,7 @@ describe('Client', function () {
             it('calls the handler and sends back the rejection value as an error', function () {
               var retval = window.addEventListener.lastCall.args[1].call(subject, evt)
               return retval.then(function () {
-                expect(handler).to.have.been.called
+                expect(handler).to.have.been.called()
                 expect(source.postMessage).to.have.been.calledWith(
                   { appGuid: 'ABC123', error: { msg: 'The third party API is broken.' }, key: 'iframe.reply:hello' },
                   'https://foo.zendesk.com'
@@ -335,7 +335,7 @@ describe('Client', function () {
         it('does not pass the message to the client', function () {
           evt.origin = 'https://foo.com'
           window.addEventListener.callArgWith(1, evt)
-          expect(handler).to.not.have.been.called
+          expect(handler).to.not.have.been.called()
         })
       })
     })
@@ -369,7 +369,7 @@ describe('Client', function () {
     describe('#on', function () {
       it('registers a handler for a given event', function () {
         subject.on('foo', callback)
-        expect(subject._messageHandlers.foo).to.exist
+        expect(subject._messageHandlers.foo).to.exist()
       })
 
       it('registers multiple handlers for the same event', function () {
@@ -380,7 +380,7 @@ describe('Client', function () {
 
       it('only registers when handler is a function', function () {
         subject.on('foo', 2)
-        expect(subject._messageHandlers.foo).to.not.exist
+        expect(subject._messageHandlers.foo).to.not.exist()
       })
 
       it('notifies the framework of the handler registration', function () {
@@ -404,7 +404,7 @@ describe('Client', function () {
       })
 
       it('returns false if no handler was found', function () {
-        expect(subject.off('foo', callback)).to.be.false
+        expect(subject.off('foo', callback)).to.be.false()
       })
 
       it('notifies the framework of the handler removal', function () {
@@ -435,15 +435,15 @@ describe('Client', function () {
     describe('#has', function () {
       it('returns true if the given handler is registered for the given event', function () {
         subject.on('foo', callback)
-        expect(subject.has('foo', callback)).to.be.true
+        expect(subject.has('foo', callback)).to.be.true()
       })
 
       it('returns false if the given handler is not registered for the given event', function () {
-        expect(subject.has('foo', callback)).to.be.false
+        expect(subject.has('foo', callback)).to.be.false()
       })
 
       it("returns false if the given event isn't registered", function () {
-        expect(subject.has('bar')).to.be.false
+        expect(subject.has('bar')).to.be.false()
       })
     })
 
@@ -830,7 +830,7 @@ describe('Client', function () {
         describe('#postMessage', function () {
           it('includes the instanceGuid in the message', function () {
             childClient.postMessage('foo.bar', { bar: 'foo' })
-            expect(source.postMessage).to.have.been.called
+            expect(source.postMessage).to.have.been.called()
             var lastCall = JSON.parse(source.postMessage.lastCall.args[0])
             expect(lastCall.key).to.equal('foo.bar')
             expect(lastCall.message).to.deep.equal({ bar: 'foo' })

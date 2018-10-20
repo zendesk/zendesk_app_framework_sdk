@@ -29,7 +29,7 @@ describe('Utils', function () {
 
   describe('.when', function () {
     it('should return a promise when called', function () {
-      expect(Utils.when()).to.be.a.promise
+      expect(Utils.when()).to.be.a.promise()
     })
 
     it('should resolve the promise when called with no arguments', function (done) {
@@ -97,7 +97,7 @@ describe('Utils', function () {
             }, 20)
           })
         ]).then(function () {
-          expect(allDone).to.be.true
+          expect(allDone).to.be.true()
           done()
         })
       })
@@ -122,7 +122,7 @@ describe('Utils', function () {
             }, 100)
           })
         ]).catch(function () {
-          expect(allDone).to.be.false
+          expect(allDone).to.be.false()
           done()
         })
       })
