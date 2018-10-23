@@ -1,8 +1,8 @@
 describe('Client', function() {
-  var Client   = require('client'),
-      Tracking = require('tracking'),
+  var Client   = require('../lib/client'),
+      Tracking = require('../lib/tracking'),
       Tracker  = Tracking.Tracker,
-      Promise  = window.Promise || require('../vendor/native-promise-only'),
+      Promise  = window.Promise || require('native-promise-only'),
       sandbox  = sinon.sandbox.create(),
       origin   = 'https://foo.zendesk.com',
       appGuid  = 'ABC123',

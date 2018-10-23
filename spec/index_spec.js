@@ -1,8 +1,8 @@
 describe('ZAFClient', function() {
   var sandbox   = sinon.sandbox.create(),
-      ZAFClient = require('index'),
-      Client    = require('client'),
-      Utils     = require('utils');
+      ZAFClient = require('../lib/index'),
+      Client    = require('../lib/client'),
+      Utils     = require('../lib/utils');
 
   beforeEach(function() {
     sandbox.stub(Utils, 'queryParameters');
