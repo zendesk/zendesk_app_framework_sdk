@@ -2,27 +2,16 @@
 /* global expect sinon */
 describe('Client', function () {
   var Client = require('../lib/client')
-
   var Tracking = require('../lib/tracking')
-
   var Tracker = Tracking.Tracker
-
   var Promise = window.Promise || require('native-promise-only')
-
   var sandbox = sinon.sandbox.create()
-
   var origin = 'https://foo.zendesk.com'
-
   var appGuid = 'ABC123'
-
   var version = require('version')
-
   var subject
-
   var source
-
   var trackerStub
-
   var callback
 
   beforeEach(function () {

@@ -2,13 +2,9 @@
 /* global sinon */
 describe('App Tracking', function () {
   var tracking = require('../lib/tracking')
-
   var Tracker = tracking.Tracker
-
   var sandbox = sinon.sandbox.create()
-
   var client = { invoke: function () {} }
-
   var tracker = null
 
   beforeEach(function () {

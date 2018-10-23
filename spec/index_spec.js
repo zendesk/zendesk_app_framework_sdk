@@ -2,11 +2,8 @@
 /* global expect sinon */
 describe('ZAFClient', function () {
   var sandbox = sinon.sandbox.create()
-
   var ZAFClient = require('../lib/index')
-
   var Client = require('../lib/client')
-
   var Utils = require('../lib/utils')
 
   beforeEach(function () {

@@ -2,9 +2,7 @@
 /* global expect */
 describe('Utils', function () {
   var Promise = window.Promise || require('native-promise-only')
-
   var Utils = require('../lib/utils')
-
   var params
 
   describe('.queryParameters', function () {
