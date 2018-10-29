@@ -15,13 +15,24 @@ You will need:
 
 * [Node.js](http://nodejs.org/)
 * [npm](https://www.npmjs.org/)
-* [Grunt](http://gruntjs.com/) - `npm install -g grunt-cli`
 
 Then run:
 
 `npm install` - Install dependencies
 
-`grunt server` - Serve the [public](./public) directory at [http://localhost:9001](http://localhost:9001)
+`npm run build` - Build
+
+`npm run server` - Serve the [public](./public) directory at [http://localhost:9001](http://localhost:9001)
+
+#### Linting
+`npm run lint`
+
+#### Stats
+`npm run stats`
+
+#### Testing
+
+`npm run test`
 
 ## Copyright and license
 
