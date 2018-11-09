@@ -1,5 +1,6 @@
 const path = require('path')
 const packageJson = require('./package.json')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = function (env = {}) {
   const config = {
@@ -7,21 +8,26 @@ module.exports = function (env = {}) {
     devtool: 'cheap-module-source-map',
 
     entry: {
-      zaf_sdk: [
+      'zaf_sdk': [
+        'native-promise-only',
+        './lib/index.js'
+      ],
+      'zaf_sdk.min': [
         'native-promise-only',
         './lib/index.js'
       ]
     },
 
-    module: {
-      rules: []
-    },
-
-    plugins: [],
-
     output: {
       filename: '[name].js',
       path: path.resolve(__dirname, 'build')
+    },
+
+    optimization: {
+      minimize: true,
+      minimizer: [new UglifyJsPlugin({
+        include: /\.min\.js$/
+      })]
     },
 
     externals: {
