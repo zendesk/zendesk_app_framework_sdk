@@ -1,11 +1,11 @@
 const path = require('path')
 const packageJson = require('./package.json')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = function (env = {}) {
   const config = {
     mode: env.production ? 'production' : 'development',
-    devtool: 'cheap-module-source-map',
+    devtool: 'source-map',
 
     entry: {
       'zaf_sdk': [
@@ -26,7 +26,8 @@ module.exports = function (env = {}) {
     optimization: {
       minimize: true,
       minimizer: [new UglifyJsPlugin({
-        include: /\.min\.js$/
+        include: /\.min\.js$/,
+        sourceMap: true
       })]
     },
 
@@ -34,6 +35,8 @@ module.exports = function (env = {}) {
       version: `"${packageJson.version}"`
     },
 
+    // Note: devServer does not serve from build/, but from cache. It also doesn't respect mode
+    // so outputed files are very different from server/build/build:dev
     devServer: {
       contentBase: path.join(__dirname, 'build'),
       compress: true,

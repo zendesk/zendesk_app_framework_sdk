@@ -30,7 +30,7 @@
   ],
   "dependencies": {
     "native-promise-only": "^0.8.1",
-    "webpack": "^4.19.0",
+    "webpack": "^4.25.1",
     "webpack-cli": "^3.1.0"
   },
   "devDependencies": {
@@ -47,9 +47,13 @@
     "sinon": "^6.3.3",
     "sinon-chai": "^3.2.0",
     "uglifyjs-webpack-plugin": "^2.0.1",
+    "version-bump-prompt": "^4.2.1",
     "webpack-dev-server": "^3.1.5"
   },
   "scripts": {
+    "bump": "bump --patch --tag --commit",
+    "bump:minor": "bump --minor --tag --commit",
+    "bump:major": "bump --major --tag --commit",
     "test": "karma start --single-run",
     "server": "webpack-dev-server",
     "build:dev": "webpack",

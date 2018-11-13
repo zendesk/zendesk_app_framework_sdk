@@ -19,20 +19,27 @@ You will need:
 Then run:
 
 `npm install` - Install dependencies
-
-`npm run build` - Build
-
+`npm run build` - Build production
+`npm run build:dev` - Build development version of the SDK, omitting minification
 `npm run server` - Serve the [public](./public) directory at [http://localhost:9001](http://localhost:9001)
 
 #### Linting
+
 `npm run lint`
 
 #### Stats
+
 `npm run stats`
 
 #### Testing
 
 `npm run test`
+
+#### Version bumping
+
+`npm run bump` - Bump patch version, e.g. `1.1.1 => 1.1.2`
+`npm run bump:minor`
+`npm run bump:major`
 
 ## Copyright and license
 
