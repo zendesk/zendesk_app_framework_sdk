@@ -51,9 +51,9 @@
     "webpack-dev-server": "^3.1.5"
   },
   "scripts": {
-    "bump": "bump --patch --tag --commit",
-    "bump:minor": "bump --minor --tag --commit",
-    "bump:major": "bump --major --tag --commit",
+    "bump": "bump --patch --tag --commit ' '",
+    "bump:minor": "bump --minor --tag --commit ' '",
+    "bump:major": "bump --major --tag --commit ' '",
     "test": "karma start --single-run",
     "server": "webpack-dev-server",
     "build:dev": "webpack",
