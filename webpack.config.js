@@ -19,6 +19,7 @@ module.exports = function (env = {}) {
     },
 
     output: {
+      library: 'ZAFClient',
       filename: '[name].js',
       path: path.resolve(__dirname, 'build')
     },
