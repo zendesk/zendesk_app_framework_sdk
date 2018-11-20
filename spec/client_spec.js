@@ -5,6 +5,7 @@ describe('Client', function () {
   var Tracking = require('../lib/tracking')
   var Tracker = Tracking.Tracker
   var Promise = window.Promise || require('native-promise-only')
+  var PROMISE_TIMEOUT = 10000
   var sandbox = sinon.sandbox.create()
   var origin = 'https://foo.zendesk.com'
   var appGuid = 'ABC123'
@@ -571,10 +572,10 @@ describe('Client', function () {
         }).to.throw(Error)
       })
 
-      it('rejects the promise after 5 seconds', function (done) {
+      it('rejects the promise after 10 seconds', function (done) {
         var clock = sinon.useFakeTimers()
         promise = subject.get('ticket.subject')
-        clock.tick(5000)
+        clock.tick(PROMISE_TIMEOUT)
         clock.restore()
         expect(promise).to.be.rejectedWith(Error, 'Invocation request timeout').and.notify(done)
       })
@@ -659,10 +660,10 @@ describe('Client', function () {
         })
       })
 
-      it('rejects the promise after 5 seconds', function (done) {
+      it('rejects the promise after 10 seconds', function (done) {
         var clock = sinon.useFakeTimers()
         promise = subject.set('ticket.subject', 'test')
-        clock.tick(5000)
+        clock.tick(PROMISE_TIMEOUT)
         clock.restore()
         expect(promise).to.be.rejectedWith(Error, 'Invocation request timeout').and.notify(done)
       })
@@ -718,18 +719,18 @@ describe('Client', function () {
         }).to.throw(Error, 'Invoke supports string arguments or an object with array of strings.')
       })
 
-      it('rejects the promise after 5 seconds', function (done) {
+      it('rejects the promise after 10 seconds', function (done) {
         var clock = sinon.useFakeTimers()
         promise = subject.invoke('ticket.subject', 'test')
-        clock.tick(5000)
+        clock.tick(PROMISE_TIMEOUT)
         clock.restore()
         expect(promise).to.be.rejectedWith(Error, 'Invocation request timeout').and.notify(done)
       })
 
-      it('doesnt reject whitelisted promises after 5 seconds', function (done) {
+      it('doesnt reject whitelisted promises after 10 seconds', function (done) {
         var clock = sinon.useFakeTimers()
         promise = subject.invoke('instances.create')
-        clock.tick(10000)
+        clock.tick(15000)
         clock.restore()
         expect(promise).to.eventually.become({ errors: {}, 'instances.create': { url: 'http://a.b' } }).and.notify(done)
         window.addEventListener.callArgWith(1, {
