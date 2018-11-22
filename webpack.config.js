@@ -18,18 +18,16 @@ module.exports = function (env = {}) {
       ]
     },
 
+    module: {
+      rules: []
+    },
+
+    plugins: [],
+
     output: {
       library: 'ZAFClient',
       filename: '[name].js',
       path: path.resolve(__dirname, 'build')
-    },
-
-    optimization: {
-      minimize: true,
-      minimizer: [new UglifyJsPlugin({
-        include: /\.min\.js$/,
-        sourceMap: true
-      })]
     },
 
     externals: {
@@ -43,6 +41,29 @@ module.exports = function (env = {}) {
       compress: true,
       port: 9001
     }
+  }
+
+  // For everything execpt tests we add optimization and babel
+  if (!env.test) {
+    config.optimization = {
+      minimize: true,
+      minimizer: [new UglifyJsPlugin({
+        include: /\.min\.js$/,
+        sourceMap: true
+      })]
+    }
+
+    config.module.rules.push({
+      test: /\.js$/,
+      use: { loader: 'babel-loader', options: { plugins: [], presets: ['babel-preset-env'] } }
+    })
+  }
+
+  if (env.stats) {
+    const Visualizer = require('webpack-visualizer-plugin')
+    config.plugins.push(new Visualizer({
+      filename: './statistics.html'
+    }))
   }
 
   return config

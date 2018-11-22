@@ -1,6 +1,6 @@
 // Karma configuration
 // Generated on Thu Mar 01 2018 11:31:45 GMT+1100 (AEDT)
-const webpackConfig = require('./webpack.config')()
+const webpackConfig = require('./webpack.config')({ test: true })
 
 module.exports = function (config) {
   config.set({
@@ -11,10 +11,6 @@ module.exports = function (config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'node_modules/sinon/pkg/sinon.js',
-      'node_modules/sinon-chai/lib/sinon-chai.js',
-      'node_modules/chai-as-promised/lib/chai-as-promised.js',
-      'node_modules/dirty-chai/lib/dirty-chai.js',
       'spec/spec_helper.js',
       'spec/*_spec.js'
     ],
