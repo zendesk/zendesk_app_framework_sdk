@@ -1,30 +1,30 @@
 /* eslint-env mocha */
-/* global sinon */
-describe('App Tracking', function () {
-  var tracking = require('../lib/tracking')
-  var Tracker = tracking.Tracker
-  var sandbox = sinon.sandbox.create()
-  var client = { invoke: function () {} }
-  var tracker = null
+import Tracker from '../lib/tracker'
+import sinon from 'sinon'
 
-  beforeEach(function () {
+describe('App Tracking', () => {
+  const sandbox = sinon.createSandbox()
+  const client = { invoke: () => {} }
+  let tracker = null
+
+  beforeEach(() => {
     sandbox.stub(client, 'invoke')
     tracker = new Tracker(client)
     tracker.setup()
   })
 
-  afterEach(function () {
+  afterEach(() => {
     sandbox.restore()
   })
 
-  context('when the mouseout event is triggered', function () {
-    var clock
+  context('when the mouseout event is triggered', () => {
+    let clock
 
-    beforeEach(function () {
+    beforeEach(() => {
       clock = sinon.useFakeTimers()
     })
 
-    afterEach(function () {
+    afterEach(() => {
       clock.restore()
     })
 
@@ -34,20 +34,20 @@ describe('App Tracking', function () {
       tracker.handleMouseLeave()
     }
 
-    context('when < 200ms between mouseover and mouseout', function () {
-      it('does not invoke the track callback', function () {
+    context('when < 200ms between mouseover and mouseout', () => {
+      it('does not invoke the track callback', () => {
         causeMouseEvents(150)
         sinon.assert.notCalled(client.invoke)
       })
     })
 
-    context('when >= 200ms between mouseover and mouseout', function () {
-      it('invokes the track callback at 200', function () {
+    context('when >= 200ms between mouseover and mouseout', () => {
+      it('invokes the track callback at 200', () => {
         causeMouseEvents(200)
         sinon.assert.calledOnce(client.invoke)
       })
 
-      it('invokes the track callback at > 200', function () {
+      it('invokes the track callback at > 200', () => {
         causeMouseEvents(300)
         sinon.assert.calledOnce(client.invoke)
       })

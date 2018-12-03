@@ -1,39 +1,29 @@
 /* eslint-env mocha */
-/* global expect sinon */
-describe('ZAFClient', function () {
-  var sandbox = sinon.sandbox.create()
-  var ZAFClient = require('../lib/index')
-  var Client = require('../lib/client')
-  var Utils = require('../lib/utils')
+/* global expect */
+import ZAFClient from '../lib/index'
+import Client from '../lib/client'
+import sinon from 'sinon'
 
-  beforeEach(function () {
-    sandbox.stub(Utils, 'queryParameters')
-  })
+describe('ZAFClient', () => {
+  const sandbox = sinon.createSandbox()
 
-  afterEach(function () {
+  afterEach(() => {
     sandbox.restore()
   })
 
-  describe('.init', function () {
-    describe('given origin and app_guid exist', function () {
-      beforeEach(function () {
-        Utils.queryParameters.returns({
-          origin: 'https://subdomain.zendesk.com',
-          app_guid: 'A2'
-        })
-      })
-
-      describe('when a callback is passed', function () {
-        var callback = function () { return 'abcxyz' }
+  describe('.init', () => {
+    describe('given origin and app_guid exist', () => {
+      describe('when a callback is passed', () => {
+        const callback = function () { return 'abcxyz' }
         callback.bind = function () { return callback }
 
-        beforeEach(function () {
+        beforeEach(() => {
           sandbox.spy(Client.prototype, 'on')
-          ZAFClient.init(callback)
+          ZAFClient.init(callback, { hash: 'origin=https://subdomain.zendesk.com&app_guid=A2' })
         })
 
-        it('binds the callback to app.registered', function () {
-          var callbackMatcher = sinon.match(function (cb) {
+        it('binds the callback to app.registered', () => {
+          const callbackMatcher = sinon.match((cb) => {
             // performs an identity check, meaning that bind must be stubbed to return the same method
             return cb === callback
           }, 'wrong callback')
@@ -42,9 +32,8 @@ describe('ZAFClient', function () {
       })
     })
 
-    describe('given origin and app_guid are missing', function () {
-      it("won't create a Client instance", function () {
-        Utils.queryParameters.returns({})
+    describe('given origin and app_guid are missing', () => {
+      it("won't create a Client instance", () => {
         expect(ZAFClient.init()).to.equal(false)
       })
     })
