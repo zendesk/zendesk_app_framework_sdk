@@ -20,6 +20,7 @@ const commonConfig = {
 
   output: {
     library: 'ZAFClient',
+    libraryExport: 'default',
     filename: '[name].js',
     path: path.resolve(__dirname, 'build')
   },
