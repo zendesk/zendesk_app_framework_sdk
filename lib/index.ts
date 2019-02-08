@@ -29,8 +29,8 @@ import { queryParameters } from './utils'
 const ZAFClient = {
   init: function (callback, loc) {
     loc = loc || window.location
-    const queryParams = queryParameters(loc.search)
-    const hashParams = queryParameters(loc.hash)
+    const queryParams: any = queryParameters(loc.search)
+    const hashParams: any = queryParameters(loc.hash)
     const origin = queryParams.origin || hashParams.origin
     const appGuid = queryParams.app_guid || hashParams.app_guid
     if (!origin || !appGuid) { return false }

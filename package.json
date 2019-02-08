@@ -29,6 +29,7 @@
     "sdk"
   ],
   "dependencies": {
+    "@types/es6-promise": "^3.3.0",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
     "babel-preset-env": "^1.7.0",
@@ -38,6 +39,12 @@
     "webpack-merge": "^4.1.4"
   },
   "devDependencies": {
+    "@babel/cli": "^7.2.0",
+    "@babel/core": "^7.2.0",
+    "@babel/plugin-proposal-class-properties": "^7.2.1",
+    "@babel/plugin-proposal-object-rest-spread": "^7.2.0",
+    "@babel/preset-env": "^7.2.0",
+    "@babel/preset-typescript": "^7.1.0",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "dirty-chai": "^2.0.1",
@@ -50,6 +57,7 @@
     "sinon": "^6.3.3",
     "sinon-chai": "^3.2.0",
     "standard": "^12.0.1",
+    "typescript": "^3.2.2",
     "uglifyjs-webpack-plugin": "^2.0.1",
     "version-bump-prompt": "^4.2.1",
     "webpack-dev-server": "^3.1.14",
@@ -64,6 +72,10 @@
     "build:dev": "webpack",
     "build": "webpack --env.production -p",
     "stats": "node ./stats.js",
-    "lint": "standard"
+    "lint": "standard",
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "npm run type-check -- --watch",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:js": "babel lib --out-dir dist --extensions \".ts\" --source-maps inline"
   }
 }

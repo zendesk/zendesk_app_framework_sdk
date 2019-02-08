@@ -64,7 +64,7 @@ export function when (items) {
   })
 
   let remaining = 0
-  const settledWith = []
+  const settledWith: any[] = []
   const itemsCopy = Array.isArray(items) ? items.slice() : [items]
 
   function resolveWith (data, index) {

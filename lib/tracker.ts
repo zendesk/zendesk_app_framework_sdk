@@ -1,4 +1,7 @@
 export default class Tracker {
+  startTime: any
+  client: any
+  MIN_HOVER_TIME: any
   constructor (client) {
     this.startTime = Date.now()
     this.client = client
@@ -21,7 +24,7 @@ export default class Tracker {
   }
 
   setup () {
-    const $html = document.querySelector('html')
+    const $html: any = document.querySelector('html')
     $html.addEventListener('click', this.handleClick.bind(this))
     $html.addEventListener('mouseleave', this.handleMouseLeave.bind(this))
     $html.addEventListener('mouseenter', this.handleMouseEnter.bind(this))

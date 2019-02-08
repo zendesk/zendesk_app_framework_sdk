@@ -1,8 +1,14 @@
+
+
 /* global URL */
 import version from 'version'
 import { when, isObject, isString } from './utils'
 import Tracker from './tracker'
 import NativePromise from 'native-promise-only'
+
+declare global {
+  interface Window { Promise: any; }
+}
 
 const Promise = window.Promise || NativePromise
 const PROMISE_TIMEOUT = 10000
@@ -72,7 +78,7 @@ function nextIdFor (name) {
 // Post a message to the hosting frame.
 // If the client is not ready and forceReady is not specified, it will wait for client registration.
 //
-function rawPostMessage (client, msg, forceReady) {
+function rawPostMessage (client, msg, forceReady?) {
   if (client.ready || forceReady) {
     client._source.postMessage(msg, client._origin)
   } else {
@@ -91,12 +97,12 @@ function rawPostMessage (client, msg, forceReady) {
 //   * `name` the name of the request to make (get/set/invoke)
 //   * `params` parameters of the request (an array for get, and an object for set/invoke)
 //
-function wrappedPostMessage (name, params) {
+function wrappedPostMessage (client, name, params) {
   const id = nextIdFor('promise')
   let timeoutId
   const promise = new Promise((resolve, reject) => {
     // Time out the promise to ensure it will be garbage collected if nobody responds
-    timeoutId = timeoutReject(reject, name, this, Array.isArray(params) ? params : Object.keys(params))
+    timeoutId = timeoutReject(reject, name, client, Array.isArray(params) ? params : Object.keys(params))
 
     pendingPromises[id] = { resolve: resolve, reject: reject }
 
@@ -104,10 +110,10 @@ function wrappedPostMessage (name, params) {
       id: id,
       request: name,
       params: params,
-      appGuid: this._appGuid,
-      instanceGuid: this._instanceGuid
+      appGuid: client._appGuid,
+      instanceGuid: client._instanceGuid
     })
-    rawPostMessage(this, msg)
+    rawPostMessage(client, msg)
   })
 
   // ensure promise is cleaned up when resolved
@@ -256,6 +262,18 @@ function isOriginValid (origin) {
 }
 
 export default class Client {
+  _parent: any
+  _origin: any
+  _source: any
+  _appGuid: any
+  _instanceGuid: any
+  _messageHandlers: any
+  _repliesPending: any
+  _instanceClients: any
+  _metadata: any
+  _context: any
+  ready: boolean
+
   constructor (options) {
     this._parent = options.parent
     this._origin = options.origin || (this._parent && this._parent._origin)
@@ -354,7 +372,7 @@ export default class Client {
    * `app.registered` event. You can add as many handlers to `app.registered` as you like. They're
    * called immediately after the `init` callback
    */
-  on (name, handler, context) {
+  on (name, handler, context?) {
     if (typeof handler === 'function') {
       handler = context
         ? handler.bind(context)
@@ -556,7 +574,7 @@ export default class Client {
       throw new Error('The get method accepts a string or array of strings.')
     }
 
-    return wrappedPostMessage.call(this, 'get', paths).then(processResponse.bind(null, path))
+    return wrappedPostMessage(this, 'get', paths).then(processResponse.bind(null, path))
   }
 
   set (key, val) {
@@ -574,7 +592,7 @@ export default class Client {
       throw new Error('The set method accepts a key and value pair, or an object of key and value pairs.')
     }
 
-    return wrappedPostMessage.call(this, 'set', obj).then(processResponse.bind(null, key))
+    return wrappedPostMessage(this, 'set', obj).then(processResponse.bind(null, key))
   }
 
   invoke (keyOrObject) {
@@ -597,6 +615,6 @@ export default class Client {
       throw new Error('Invoke supports string arguments or an object with array of strings.')
     }
 
-    return wrappedPostMessage.call(this, 'invoke', obj).then(processResponse.bind(null, keyOrObject))
+    return wrappedPostMessage(this, 'invoke', obj).then(processResponse.bind(null, keyOrObject))
   }
 }
