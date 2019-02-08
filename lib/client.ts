@@ -7,7 +7,7 @@ import Tracker from './tracker'
 import NativePromise from 'native-promise-only'
 
 declare global {
-  interface Window { Promise: any; }
+  interface Window { z: any; }
 }
 
 const Promise = window.Promise || NativePromise
