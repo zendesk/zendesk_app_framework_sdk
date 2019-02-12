@@ -11,14 +11,16 @@ describe('Client', () => {
   const sandbox = sinon.createSandbox()
   const origin = 'http://localhost:9876'
   const appGuid = 'ABC123'
-  let subject, source, trackerStub, callback
+  let subject, source, trackerStub, callback, client
 
   beforeEach(() => {
     trackerStub = sandbox.stub(Tracker.prototype, 'setup')
     sandbox.stub(window, 'addEventListener')
     sandbox.stub(window, 'postMessage')
     source = { postMessage: sandbox.stub() }
-    subject = new Client({ origin, appGuid, source })
+    client = new Client({ origin, appGuid, source })
+
+    client.get()
   })
 
   afterEach(() => {

@@ -1,11 +1,13 @@
 
 
 /* global URL */
-import version from 'version'
+// import version from 'version'
 import { when, isObject, isString } from './utils'
 import Tracker from './tracker'
 import NativePromise from 'native-promise-only'
+import { SupportGet } from './models/client'
 
+const version = 123
 declare global {
   interface Window { Promise: any; }
 }
@@ -552,7 +554,7 @@ export default class Client {
     } else {
       if (this._instanceGuid && this._instanceGuid !== this._appGuid) {
         const key = 'instances.' + this._instanceGuid
-        return this.get(key).then((data) => {
+        return this.get(key as SupportGet).then((data) => {
           this._context = data[key]
           return this._context
         })
@@ -566,8 +568,10 @@ export default class Client {
     }
   }
 
+
+
   // Accepts string or array of strings.
-  get (path) {
+  get <T extends SupportGet>(path: T): Promise<{ errors: {} } & {[K in T]: {}}> {
     const paths = Array.isArray(path) ? path : [path]
 
     if (arguments.length > 1 || paths.some((path) => { return !isString(path) })) {
