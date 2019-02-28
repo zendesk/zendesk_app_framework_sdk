@@ -23,8 +23,8 @@ describe('#stripActionArgs', () => {
     expect(stripActionArgs(action)).to.equal('invoke-ticketfields:arg.hide')
   })
 
-  it('should replace arguments containing file extensions', () => {
-    const action = 'get-asseturl:logo.png'
+  it('should replace arguments containing escaped file extensions', () => {
+    const action = 'get-asseturl:logo\\.png'
     expect(stripActionArgs(action)).to.equal('get-asseturl:arg')
   })
 
