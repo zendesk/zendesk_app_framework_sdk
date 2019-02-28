@@ -9,30 +9,30 @@ const PROMISE_TIMEOUT = 10000
 
 describe('#stripActionArgs', () => {
   it('should replace a single argument following a colon', () => {
-    const action = 'get-ticket.customfield:custom_field_24378895';
+    const action = 'get-ticket.customfield:custom_field_24378895'
     expect(stripActionArgs(action)).to.equal('get-ticket.customfield:arg')
-  });
+  })
 
   it('should replace multiple comma delimited arguments following a colon', () => {
-    const action = 'get-currentuser.customfield:partner,manager';
+    const action = 'get-currentuser.customfield:partner,manager'
     expect(stripActionArgs(action)).to.equal('get-currentuser.customfield:arg')
-  });
+  })
 
   it('should retain trailing field modifiers', () => {
-    const action = 'invoke-ticketfields:custom_field_24049313.hide';
-    expect(stripActionArgs(action)).to.equal('invoke-ticketfields:arg.hide');
-  });
+    const action = 'invoke-ticketfields:custom_field_24049313.hide'
+    expect(stripActionArgs(action)).to.equal('invoke-ticketfields:arg.hide')
+  })
 
   it('should replace arguments containing file extensions', () => {
-    const action = 'get-asseturl:logo.png';
+    const action = 'get-asseturl:logo.png'
     expect(stripActionArgs(action)).to.equal('get-asseturl:arg')
-  });
+  })
 
   it('should leave actions not containing arguments unchanged', () => {
-    const action = 'get-comment.attachments';
-    expect(stripActionArgs(action)).to.equal(action);
-  });
-});
+    const action = 'get-comment.attachments'
+    expect(stripActionArgs(action)).to.equal(action)
+  })
+})
 
 describe('Client', () => {
   const sandbox = sinon.createSandbox()
