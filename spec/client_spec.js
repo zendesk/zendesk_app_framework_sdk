@@ -1,11 +1,38 @@
 /* eslint-env mocha */
 /* global expect Promise */
-import Client from '../lib/client'
+import Client, { stripActionArgs } from '../lib/client'
 import Tracker from '../lib/tracker'
 import version from 'version'
 import sinon from 'sinon'
 
 const PROMISE_TIMEOUT = 10000
+
+describe('#stripActionArgs', () => {
+  it('should replace a single argument following a colon', () => {
+    const action = 'get-ticket.customfield:custom_field_24378895'
+    expect(stripActionArgs(action)).to.equal('get-ticket.customfield:arg')
+  })
+
+  it('should replace multiple comma delimited arguments following a colon', () => {
+    const action = 'get-currentuser.customfield:partner,manager'
+    expect(stripActionArgs(action)).to.equal('get-currentuser.customfield:arg')
+  })
+
+  it('should retain trailing field modifiers', () => {
+    const action = 'invoke-ticketfields:custom_field_24049313.hide'
+    expect(stripActionArgs(action)).to.equal('invoke-ticketfields:arg.hide')
+  })
+
+  it('should replace arguments containing escaped file extensions', () => {
+    const action = 'get-asseturl:logo\\.png'
+    expect(stripActionArgs(action)).to.equal('get-asseturl:arg')
+  })
+
+  it('should leave actions not containing arguments unchanged', () => {
+    const action = 'get-comment.attachments'
+    expect(stripActionArgs(action)).to.equal(action)
+  })
+})
 
 describe('Client', () => {
   const sandbox = sinon.createSandbox()
