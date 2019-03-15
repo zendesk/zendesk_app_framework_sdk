@@ -1,36 +1,76 @@
 /* eslint-env mocha */
 /* global expect Promise */
-import Client, { stripActionArgs } from '../lib/client'
+import Client, * as clientUtils from '../lib/client'
 import Tracker from '../lib/tracker'
 import version from 'version'
 import sinon from 'sinon'
 
-const PROMISE_TIMEOUT = 10000
+describe('#collateActions', () => {
+  it('should combine action names and arguments into readable strings', () => {
+    expect(clientUtils.collateActions('get', ['ticket', 'currentUser']))
+      .to.eql(['get-ticket', 'get-currentUser'])
+    expect(clientUtils.collateActions('set', ['ticket.assignee']))
+      .to.eql(['set-ticket.assignee'])
+  })
+})
 
 describe('#stripActionArgs', () => {
   it('should replace a single argument following a colon', () => {
     const action = 'get-ticket.customfield:custom_field_24378895'
-    expect(stripActionArgs(action)).to.equal('get-ticket.customfield:arg')
+    expect(clientUtils.stripActionArgs(action)).to.equal('get-ticket.customfield:arg')
   })
 
   it('should replace multiple comma delimited arguments following a colon', () => {
     const action = 'get-currentuser.customfield:partner,manager'
-    expect(stripActionArgs(action)).to.equal('get-currentuser.customfield:arg')
+    expect(clientUtils.stripActionArgs(action)).to.equal('get-currentuser.customfield:arg')
   })
 
   it('should retain trailing field modifiers', () => {
     const action = 'invoke-ticketfields:custom_field_24049313.hide'
-    expect(stripActionArgs(action)).to.equal('invoke-ticketfields:arg.hide')
+    expect(clientUtils.stripActionArgs(action)).to.equal('invoke-ticketfields:arg.hide')
   })
 
   it('should replace arguments containing escaped file extensions', () => {
     const action = 'get-asseturl:logo\\.png'
-    expect(stripActionArgs(action)).to.equal('get-asseturl:arg')
+    expect(clientUtils.stripActionArgs(action)).to.equal('get-asseturl:arg')
   })
 
   it('should leave actions not containing arguments unchanged', () => {
     const action = 'get-comment.attachments'
-    expect(stripActionArgs(action)).to.equal(action)
+    expect(clientUtils.stripActionArgs(action)).to.equal(action)
+  })
+})
+
+describe('#timeMsToSecondsRange', () => {
+  describe('should return an appropriate range in seconds as a string', () => {
+    it('when given a time value in ms lower than the default upper limit', () => {
+      expect(clientUtils.timeMsToSecondsRange(12345)).to.equal('10-20')
+    })
+
+    it('when given a time value in ms higher than the default upper limit', () => {
+      expect(clientUtils.timeMsToSecondsRange(345678)).to.equal('300-')
+    })
+
+    it('when given a time value in ms higher than the custom upper limit', () => {
+      expect(clientUtils.timeMsToSecondsRange(345678, 400000)).to.equal('340-350')
+    })
+  })
+})
+
+describe('#trackSDKRequestTimeout', () => {
+  const client = { postMessage: sinon.spy() }
+  const actions = ['get-asseturl:logo\\.png', 'get-currentUser']
+  const requestResponseTime = 12345
+  const expectedPostMessageOptions = {
+    data: 1,
+    event_name: 'sdk_request_timeout',
+    event_type: 'increment',
+    tags: ['action:get-asseturl:arg', 'action:get-currentUser', 'request_response_time:10-20']
+  }
+
+  it('should have the client fire a tracking postmessage with the correct tags', () => {
+    clientUtils.trackSDKRequestTimeout(client, actions, requestResponseTime)
+    expect(client.postMessage).to.have.been.calledWith('__track__', expectedPostMessageOptions)
   })
 })
 
@@ -597,12 +637,15 @@ describe('Client', () => {
         }).to.throw(Error)
       })
 
-      it('rejects the promise after 10 seconds', (done) => {
+      it('rejects the promise after the timeout length and tracks the timeout', (done) => {
         const clock = sinon.useFakeTimers()
+        sinon.spy(subject, 'postMessage')
         promise = subject.get('ticket.subject')
-        clock.tick(PROMISE_TIMEOUT)
+        clock.tick(clientUtils.PROMISE_TIMEOUT_LONG)
         clock.restore()
         expect(promise).to.be.rejectedWith(Error, 'Invocation request timeout').and.notify(done)
+        expect(subject.postMessage).to.have.been.calledWith('__track__')
+        subject.postMessage.restore()
       })
 
       it('returns an error when not passing in strings', () => {
@@ -685,12 +728,15 @@ describe('Client', () => {
         })
       })
 
-      it('rejects the promise after 10 seconds', (done) => {
+      it('rejects the promise after the timeout length and tracks the timeout', (done) => {
         const clock = sinon.useFakeTimers()
+        sinon.spy(subject, 'postMessage')
         promise = subject.set('ticket.subject', 'test')
-        clock.tick(PROMISE_TIMEOUT)
+        clock.tick(clientUtils.PROMISE_TIMEOUT_LONG)
         clock.restore()
         expect(promise).to.be.rejectedWith(Error, 'Invocation request timeout').and.notify(done)
+        expect(subject.postMessage).to.have.been.calledWith('__track__')
+        subject.postMessage.restore()
       })
 
       it('throws on invalid input', () => {
@@ -744,18 +790,21 @@ describe('Client', () => {
         }).to.throw(Error, 'Invoke supports string arguments or an object with array of strings.')
       })
 
-      it('rejects the promise after 10 seconds', (done) => {
+      it('rejects the promise after the timeout length and tracks the timeout', (done) => {
         const clock = sinon.useFakeTimers()
+        sinon.spy(subject, 'postMessage')
         promise = subject.invoke('ticket.subject', 'test')
-        clock.tick(PROMISE_TIMEOUT)
+        clock.tick(clientUtils.PROMISE_TIMEOUT_LONG)
         clock.restore()
         expect(promise).to.be.rejectedWith(Error, 'Invocation request timeout').and.notify(done)
+        expect(subject.postMessage).to.have.been.calledWith('__track__')
+        subject.postMessage.restore()
       })
 
-      it('doesnt reject whitelisted promises after 10 seconds', (done) => {
+      it('doesnt reject whitelisted promises after the timeout length', (done) => {
         const clock = sinon.useFakeTimers()
         promise = subject.invoke('instances.create')
-        clock.tick(15000)
+        clock.tick(clientUtils.PROMISE_TIMEOUT_LONG + 5000)
         clock.restore()
         expect(promise).to.eventually.become({ errors: {}, 'instances.create': { url: 'http://a.b' } }).and.notify(done)
         window.addEventListener.callArgWith(1, {
