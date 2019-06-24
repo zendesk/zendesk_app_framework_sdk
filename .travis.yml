@@ -13,10 +13,9 @@ branches:
   only: [master]
 matrix:
   include:
-    - stage: Tests
-      env: Tests
+    - env: TASK=test
       script: npm test
-    - env: Lint
+    - env: TASK=lint
       script: npm run lint
     - env: TASK=fossa # nice label for UI
       before_script:
