@@ -11,9 +11,16 @@ cache:
     - node_modules
 branches:
   only: [master]
-jobs:
+matrix:
   include:
     - stage: Tests
       script: npm test
     - env: Lint
       script: npm run lint
+    - env: TASK=fossa # nice label for UI
+      before_script:
+        - curl -H 'Cache-Control:no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | BINDIR=$(pwd) bash
+      script:
+        - ./fossa # analyze dependencies and upload them (fails when missing api key)
+  allow_failures:
+    - env: TASK=fossa

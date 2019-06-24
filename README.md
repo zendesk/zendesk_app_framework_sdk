@@ -4,6 +4,8 @@ Zendesk App Framework SDK
 =========================
 
 [![Build Status](https://travis-ci.org/zendesk/zendesk_app_framework_sdk.svg?branch=master)](https://travis-ci.org/zendesk/zendesk_app_framework_sdk)
+[![FOSSA Status](https://app.fossa.io/api/projects/custom%2B4071%2Fgithub.com%2Fzendesk%2Fzendesk_app_framework_sdk.svg?type=shield)](https://app.fossa.io/projects/custom%2B4071%2Fgithub.com%2Fzendesk%2Fzendesk_app_framework_sdk?ref=badge_shield)
+
 
 ## What is it?
 
