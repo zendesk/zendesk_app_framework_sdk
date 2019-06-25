@@ -13,7 +13,7 @@ The Zendesk App Framework (ZAF) SDK is a JavaScript library that simplifies cros
 
 ## For development...
 
-You will need:
+You will need
 
 * [Node.js](http://nodejs.org/)
 * [npm](https://www.npmjs.org/)
