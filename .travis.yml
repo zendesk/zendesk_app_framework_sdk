@@ -21,6 +21,6 @@ matrix:
       before_script:
         - curl -H 'Cache-Control:no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | BINDIR=$(pwd) bash
       script:
-        - ./fossa # analyze dependencies and upload them (fails when missing api key)
+        - ./fossa && ./fossa test # analyze and scan dependencies (fails when missing api key)
   allow_failures:
     - env: TASK=fossa
