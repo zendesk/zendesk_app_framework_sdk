@@ -1,0 +1,13 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    ffi (1.9.25)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  ffi (~> 1.9.18)
+
+BUNDLED WITH
+   1.17.3
