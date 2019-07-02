@@ -125,7 +125,16 @@ describe('Client', () => {
         'https://sub1.zd-master.com',
         'https://dashboard.zopim.com',
         'https://hoanglocal.zopim.com:8080',
-        'https://dashboard.zopim.org'
+        'https://dashboard.zopim.org',
+        'https://app.futuresimple.com',
+        'https://app.idealwith.com',
+        'https://app.cloudhatchery.com',
+        'https://app.local.futuresimple.com',
+        'https://app.local.idealwith.com',
+        'https://app.local.cloudhatchery.com',
+        'https://app-master.frontends.futuresimple.com',
+        'https://app-sandbox.frontends.idealwith.com',
+        'https://app-staging.frontends.cloudhatchery.com'
       ]
 
       validDomains.forEach((domain) => {
@@ -149,7 +158,8 @@ describe('Client', () => {
         'https://sub1.fakezendesk-staging.com',
         'https://sub1.fakezd-master.com',
         'https://dashboard.fakezopim.com',
-        'https://dashboard.fakezopim.org'
+        'https://dashboard.fakezopim.org',
+        'https://app.fakefuturesimple.com'
       ]
 
       invalidDomains.forEach((domain) => {
