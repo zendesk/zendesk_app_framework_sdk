@@ -9,7 +9,7 @@ Zendesk App Framework SDK
 
 ## What is it?
 
-The Zendesk App Framework (ZAF) SDK is a JavaScript library that simplifies cross-frame communication between iframed apps and [ZAF](http://developer.zendesk.com/documentation/apps/). See [App Framework v2](https://developer.zendesk.com/apps/docs/apps-v2/getting_started) to learn more.
+The Zendesk App Framework (ZAF) SDK is a JavaScript library that simplifies cross-frame communication between iframed apps and [ZAF](https://developer.zendesk.com/apps/docs/core-api/client_api). See [App Framework v2](https://developer.zendesk.com/apps/docs/apps-v2/getting_started) to learn more.
 
 ## For development...
 
