@@ -168,8 +168,12 @@ describe('Client', () => {
           appGuid: 'appGuid',
           source: source
         })
+        const ACTUAL_ERROR_MSG = document.querySelector('h3').innerText
+        const EXPECTED_ERROR_MSG = `Invalid domain ${domain}`
+
         expect(client).to.be.an('object')
-        expect(console.error).to.have.been.calledWith('Invalid domain: ' + domain)
+        expect(document.head).to.equal(null)
+        expect(ACTUAL_ERROR_MSG).to.equal(EXPECTED_ERROR_MSG)
       })
     })
   })
