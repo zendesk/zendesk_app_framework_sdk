@@ -148,7 +148,7 @@ describe('Client', () => {
       })
     })
 
-    it('clear iframe and append error msg to body when domain is invalid', () => {
+    it('clears iframe and appends error msg to body when domain is invalid', () => {
       const invalidDomains = [
         'https://localhost.com',
         'http://fakelocalhost',
