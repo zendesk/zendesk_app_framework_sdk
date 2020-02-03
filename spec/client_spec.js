@@ -148,7 +148,7 @@ describe('Client', () => {
       })
     })
 
-    it('clears iframe and appends error msg to body when domain is invalid', () => {
+    it('throws when domain is invalid', () => {
       const invalidDomains = [
         'https://localhost.com',
         'http://fakelocalhost',
@@ -168,12 +168,8 @@ describe('Client', () => {
           appGuid: 'appGuid',
           source: source
         })
-        const ACTUAL_ERROR_MSG = document.querySelector('h3').innerText
-        const EXPECTED_ERROR_MSG = `Invalid domain ${domain}`
-
         expect(client).to.be.an('object')
-        expect(document.head).to.equal(null)
-        expect(ACTUAL_ERROR_MSG).to.equal(EXPECTED_ERROR_MSG)
+        expect(console.error).to.have.been.calledWith('Invalid domain: ' + domain)
       })
     })
   })
