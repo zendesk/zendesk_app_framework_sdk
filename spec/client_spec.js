@@ -134,7 +134,8 @@ describe('Client', () => {
         'https://app.local.cloudhatchery.com',
         'https://app-master.frontends.futuresimple.com',
         'https://app-sandbox.frontends.idealwith.com',
-        'https://app-staging.frontends.cloudhatchery.com'
+        'https://app-staging.frontends.cloudhatchery.com',
+        'https://test-case.ourtesco.com'
       ]
 
       validDomains.forEach((domain) => {
