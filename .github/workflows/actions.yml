@@ -1,0 +1,31 @@
+name: main
+
+on:
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  main-job:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - env:
+              TASK: lint
+            command: npm run lint
+
+          - env:
+              TASK: test
+            command: npm test
+
+    steps:
+      - uses: zendesk/checkout@v2
+      - uses: zendesk/setup-node@v2.0.0
+        with:
+          node-version: 12.10.0
+      - name: install npm modules
+        run: |
+          npm install standardx
+      - name: ${{ matrix.env.TASK }}
+        run: TASK=${{ matrix.env.TASK }} ${{ matrix.command }}
