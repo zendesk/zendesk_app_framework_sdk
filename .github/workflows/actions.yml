@@ -27,5 +27,8 @@ jobs:
       - uses: zendesk/setup-node@v2.0.0
         with:
           node-version: 12.10.0
+      - name: install npm modules
+        run: |
+          npm install standardx
       - name: ${{ matrix.env.TASK }}
         run: TASK=${{ matrix.env.TASK }} ${{ matrix.command }}
