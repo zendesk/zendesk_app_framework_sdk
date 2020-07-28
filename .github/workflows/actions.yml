@@ -9,17 +9,14 @@ jobs:
   main-job:
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: true
       matrix:
         include:
           - env:
               TASK: lint
-            allow_failures: false
             command: npm run lint
 
           - env:
               TASK: test
-            allow_failures: false
             command: npm test
 
     steps:
