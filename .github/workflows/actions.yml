@@ -22,10 +22,10 @@ jobs:
             allow_failures: false
             command: npm test
 
-      steps:
-        - uses: zendesk/checkout@v2
-        - uses: zendesk/setup-node@v2.0.0
-          with:
-            node-version: 12.10.0
-        - name: ${{ matrix.env.TASK }}
-          run: TASK=${{ matrix.env.TASK }} ${{ matrix.command }}
+    steps:
+      - uses: zendesk/checkout@v2
+      - uses: zendesk/setup-node@v2.0.0
+        with:
+          node-version: 12.10.0
+      - name: ${{ matrix.env.TASK }}
+        run: TASK=${{ matrix.env.TASK }} ${{ matrix.command }}
