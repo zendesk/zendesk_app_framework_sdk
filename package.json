@@ -39,7 +39,7 @@
     "babel-preset-env": "^1.7.0",
     "native-promise-only": "^0.8.1",
     "webpack": "^4.44.1",
-    "webpack-cli": "^3.3.11",
+    "webpack-cli": "^3.3.12",
     "webpack-merge": "^4.2.2"
   },
   "devDependencies": {
