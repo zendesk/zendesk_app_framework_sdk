@@ -40,7 +40,8 @@
     "native-promise-only": "^0.8.1",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12",
-    "webpack-merge": "^4.2.2"
+    "webpack-merge": "^4.2.2",
+    "snyk": "^1.392.1"
   },
   "devDependencies": {
     "chai": "^4.1.2",
@@ -69,6 +70,9 @@
     "build:dev": "webpack",
     "build": "webpack --env.production -p",
     "stats": "node ./stats.js",
-    "lint": "standard"
-  }
+    "lint": "standard",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
+  },
+  "snyk": true
 }
