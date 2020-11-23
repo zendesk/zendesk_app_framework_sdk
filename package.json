@@ -41,7 +41,7 @@
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12",
     "webpack-merge": "^4.2.2",
-    "snyk": "^1.392.1"
+    "snyk": "^1.393.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",
