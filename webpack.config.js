@@ -25,10 +25,6 @@ const commonConfig = {
     path: path.resolve(__dirname, 'build')
   },
 
-  externals: {
-    version: `"${packageJson.version}"`
-  },
-
   // Note: devServer does not serve from build/, but from cache. It also doesn't respect mode
   // so outputed files are very different from server/build/build:dev
   devServer: {
