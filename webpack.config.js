@@ -54,6 +54,27 @@ const commonConfig = {
   }
 }
 
+const plugins = [
+  new UglifyJsPlugin({
+    uglifyOptions: {
+      include: /\.min\.js$/,
+      mangle: true,
+      warnings: false,
+      sourceMap: true,
+      screwIE8: true,
+      compress: {
+        collapse_vars: true,
+        pure_getters: true,
+        unsafe: true,
+        unsafe_comps: true,
+      },
+      output: {
+        comments: false,
+      },
+    }
+  })
+]
+
 // For everything execpt tests we add optimization and babel
 const nonTestConfig = {
   optimization: {
@@ -102,6 +123,8 @@ const nonTestConfig = {
       }
     ]
   },
+
+  plugins,
 
   resolve: {
     modules: [resolve('lib'), resolve('spec'), resolve('node_modules')],
