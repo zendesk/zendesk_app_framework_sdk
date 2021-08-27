@@ -20,6 +20,27 @@ const resolve = (__path = '.') => {
   return resolved
 }
 
+const plugins = [
+  new UglifyJsPlugin({
+    uglifyOptions: {
+      include: /\.min\.js$/,
+      mangle: true,
+      warnings: false,
+      sourceMap: true,
+      screwIE8: true,
+      compress: {
+        collapse_vars: true,
+        pure_getters: true,
+        unsafe: true,
+        unsafe_comps: true
+      },
+      output: {
+        comments: false
+      }
+    }
+  })
+]
+
 const commonConfig = {
   devtool: 'source-map',
 
@@ -51,40 +72,6 @@ const commonConfig = {
     contentBase: path.join(__dirname, 'build'),
     compress: true,
     port: 9001
-  }
-}
-
-const plugins = [
-  new UglifyJsPlugin({
-    uglifyOptions: {
-      include: /\.min\.js$/,
-      mangle: true,
-      warnings: false,
-      sourceMap: true,
-      screwIE8: true,
-      compress: {
-        collapse_vars: true,
-        pure_getters: true,
-        unsafe: true,
-        unsafe_comps: true,
-      },
-      output: {
-        comments: false,
-      },
-    }
-  })
-]
-
-// For everything execpt tests we add optimization and babel
-const nonTestConfig = {
-  optimization: {
-    minimize: true,
-    minimizer: [
-      new UglifyJsPlugin({
-        include: /\.min\.js$/,
-        sourceMap: true
-      })
-    ]
   },
 
   module: {
@@ -129,7 +116,20 @@ const nonTestConfig = {
   resolve: {
     modules: [resolve('lib'), resolve('spec'), resolve('node_modules')],
     extensions: ['.ts', '.js', '.hdbs', '.scss', '.css']
-  },
+  }
+}
+
+// For everything execpt tests we add optimization and babel
+const nonTestConfig = {
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new UglifyJsPlugin({
+        include: /\.min\.js$/,
+        sourceMap: true
+      })
+    ]
+  }
 }
 
 const statsConfig = {
