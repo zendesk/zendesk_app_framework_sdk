@@ -73,7 +73,7 @@
     "test": "karma start --single-run",
     "server": "webpack serve",
     "build:dev": "webpack",
-    "build": "webpack --env.production -p",
+    "build": "webpack --env production",
     "stats": "node ./stats.js",
     "lint": "standard",
     "snyk-protect": "snyk protect",
