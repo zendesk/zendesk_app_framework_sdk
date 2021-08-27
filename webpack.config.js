@@ -3,6 +3,22 @@ const packageJson = require('./package.json')
 const webpackMerge = require('webpack-merge')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const Visualizer = require('webpack-visualizer-plugin')
+const fs = require('fs')
+
+const _resolveCache = new Map()
+const resolve = (__path = '.') => {
+  if (_resolveCache.has(__path)) {
+    return _resolveCache.get(__path)
+  }
+  const resolved = path.resolve(__dirname, __path)
+  if (fs.existsSync(resolved)) {
+    const followed = fs.realpathSync(resolved)
+    _resolveCache.set(__path, followed)
+    return followed
+  }
+  _resolveCache.set(__path, resolved)
+  return resolved
+}
 
 const commonConfig = {
   devtool: 'source-map',
@@ -52,6 +68,25 @@ const nonTestConfig = {
 
   module: {
     rules: [
+      {
+        test: /\.ts$/,
+        enforce: 'pre',
+        include: [resolve('lib'), resolve('spec'), resolve('node_modules')],
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              extends: resolve('.babelrc')
+            }
+          },
+          {
+            loader: 'ts-loader',
+            options: {
+              configFile: resolve('tsconfig.json')
+            }
+          }
+        ]
+      },
       {
         test: /\.js$/,
         use: { loader: 'babel-loader', options: { plugins: [], presets: ['babel-preset-env'] } }
