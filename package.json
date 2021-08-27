@@ -37,6 +37,8 @@
     "native-promise-only": "^0.8.1"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.29.3",
+    "@typescript-eslint/parser": "^4.29.3",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
     "babel-preset-env": "^1.7.0",
@@ -51,15 +53,17 @@
     "mocha": "^5.2.0",
     "sinon": "^6.3.3",
     "sinon-chai": "^3.2.0",
+    "snyk": "^1.425.4",
     "standard": "^12.0.1",
+    "ts-loader": "^9.2.5",
+    "typescript": "^4.4.2",
     "uglifyjs-webpack-plugin": "^2.0.1",
     "version-bump-prompt": "^4.2.1",
-    "webpack-dev-server": "^3.1.14",
-    "webpack-visualizer-plugin": "^0.1.11",
-    "snyk": "^1.425.4",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12",
-    "webpack-merge": "^4.2.2"
+    "webpack-dev-server": "^3.1.14",
+    "webpack-merge": "^4.2.2",
+    "webpack-visualizer-plugin": "^0.1.11"
   },
   "scripts": {
     "bump": "bump --patch --tag --commit ' '",
