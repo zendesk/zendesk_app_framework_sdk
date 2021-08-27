@@ -94,14 +94,19 @@ const nonTestConfig = {
           resolve('spec/factories') // Factories are included raw in Lotus
         ],
         enforce: 'post',
-        use: { loader: 'babel-loader', options: { plugins: [], presets: ['babel-preset-env'] } },
+        loader: 'babel-loader',
         options: {
           cacheDirectory: true,
           babelrc: true
         }
       }
     ]
-  }
+  },
+
+  resolve: {
+    modules: [resolve('lib'), resolve('spec'), resolve('node_modules')],
+    extensions: ['.ts', '.js', '.hdbs', '.scss', '.css']
+  },
 }
 
 const statsConfig = {
