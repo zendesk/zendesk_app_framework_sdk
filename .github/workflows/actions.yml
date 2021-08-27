@@ -22,10 +22,6 @@ jobs:
           - env:
               TASK: build
             command: npm run build
-          
-          - env:
-              TASK: server
-            command: npm run server
 
     steps:
       - uses: zendesk/checkout@v2
