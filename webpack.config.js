@@ -119,19 +119,6 @@ const commonConfig = {
   }
 }
 
-// For everything execpt tests we add optimization and babel
-const nonTestConfig = {
-  optimization: {
-    minimize: true,
-    minimizer: [
-      new UglifyJsPlugin({
-        include: /\.min\.js$/,
-        sourceMap: true
-      })
-    ]
-  }
-}
-
 const statsConfig = {
   plugins: [
     new Visualizer({
@@ -144,10 +131,6 @@ module.exports = function (env = {}) {
   let config = webpackMerge(commonConfig, {
     mode: env.production ? 'production' : 'development'
   })
-
-  if (!env.test) {
-    config = webpackMerge(config, nonTestConfig)
-  }
 
   if (env.stats) {
     config = webpackMerge(config, statsConfig)
