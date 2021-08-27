@@ -89,7 +89,16 @@ const nonTestConfig = {
       },
       {
         test: /\.js$/,
-        use: { loader: 'babel-loader', options: { plugins: [], presets: ['babel-preset-env'] } }
+        include: [resolve('lib'), resolve('spec')],
+        exclude: [
+          resolve('spec/factories') // Factories are included raw in Lotus
+        ],
+        enforce: 'post',
+        use: { loader: 'babel-loader', options: { plugins: [], presets: ['babel-preset-env'] } },
+        options: {
+          cacheDirectory: true,
+          babelrc: true
+        }
       }
     ]
   }
