@@ -60,8 +60,6 @@ import { isTest } from './environment';
 export const STATE_ACTIVE = 'active';
 export const STATE_IDLE = 'idle';
 
-const DEFAULT_IDLE_TIMEOUT = 3 * 60 * 1000;
-
 const USER_EVENTS = ['mousemove', 'keydown', 'wheel', 'mousedown', 'touchstart', 'touchmove'];
 // list of user events to ignore when window hasn't focus as string, i.e. 'mousemove touchmove'
 const IGNORED_USER_EVENTS = 'mousemove';
@@ -91,7 +89,7 @@ class IdleState {
   observers?: Observers;
   setState?: (state: 'active' | 'idle') => void;
 
-  constructor(timeout = DEFAULT_IDLE_TIMEOUT) {
+  constructor(timeout) {
     // if we already have an IdleState for the specified timeout, let's return it
     const idleState = _idleStateObjects[timeout];
 
