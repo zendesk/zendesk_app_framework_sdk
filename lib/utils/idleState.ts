@@ -64,12 +64,6 @@ const USER_EVENTS = ['mousemove', 'keydown', 'wheel', 'mousedown', 'touchstart',
 // list of user events to ignore when window hasn't focus as string, i.e. 'mousemove touchmove'
 const IGNORED_USER_EVENTS = 'mousemove';
 
-interface IdleStateCache {
-  [key: number]: IdleState;
-}
-
-const _idleStateObjects: IdleStateCache = {};
-
 const stateProperty = Symbol('state');
 
 const setState = (idleState: IdleState, state: 'active' | 'idle') => {
@@ -90,14 +84,6 @@ class IdleState {
   setState?: (state: 'active' | 'idle') => void;
 
   constructor(timeout) {
-    // if we already have an IdleState for the specified timeout, let's return it
-    const idleState = _idleStateObjects[timeout];
-
-    if (idleState) {
-      idleState.refcount && idleState.refcount++;
-      return idleState;
-    }
-
     this.timeout = timeout;
     this[stateProperty] = STATE_ACTIVE;
     this.hasActiveEvent = true;
@@ -131,9 +117,6 @@ class IdleState {
         setState(this, state);
       };
     }
-
-    // Let's cache the idleState
-    _idleStateObjects[timeout] = this;
   }
 
   delete(): void {
@@ -150,7 +133,6 @@ class IdleState {
 
       this.clearTimer();
       delete this.observers;
-      this.timeout !== undefined && delete _idleStateObjects[this.timeout];
     }
   }
 
