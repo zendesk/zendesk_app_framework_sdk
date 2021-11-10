@@ -56,6 +56,7 @@
     "sinon-chai": "^3.2.0",
     "snyk": "^1.425.4",
     "standard": "^12.0.1",
+    "terser-webpack-plugin": "^5.2.5",
     "ts-loader": "^8.3.0",
     "typescript": "^4.4.2",
     "uglifyjs-webpack-plugin": "^2.2.0",
