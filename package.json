@@ -47,7 +47,6 @@
     "babel-preset-env": "^1.7.0",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
-    "core-js": "^3.19.1",
     "dirty-chai": "^2.0.1",
     "karma": "^4.0.1",
     "karma-chai": "^0.1.0",
