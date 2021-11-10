@@ -1,7 +1,7 @@
 const path = require('path')
 const packageJson = require('./package.json')
 const webpackMerge = require('webpack-merge')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const TerserPlugin = require("terser-webpack-plugin");
 const Visualizer = require('webpack-visualizer-plugin')
 const fs = require('fs')
 
@@ -20,26 +20,10 @@ const resolve = (__path = '.') => {
   return resolved
 }
 
-const plugins = [
-  new UglifyJsPlugin({
-    uglifyOptions: {
-      include: /\.min\.js$/,
-      mangle: true,
-      warnings: false,
-      sourceMap: true,
-      screwIE8: true,
-      compress: {
-        collapse_vars: true,
-        pure_getters: true,
-        unsafe: true,
-        unsafe_comps: true
-      },
-      output: {
-        comments: false
-      }
-    }
-  })
-]
+const optimization = {
+  minimize: true,
+  minimizer: [new TerserPlugin()],
+}
 
 const commonConfig = {
   devtool: 'source-map',
@@ -112,7 +96,7 @@ const commonConfig = {
     ]
   },
 
-  plugins,
+  optimization,
 
   resolve: {
     modules: [resolve('lib'), resolve('spec'), resolve('node_modules')],
