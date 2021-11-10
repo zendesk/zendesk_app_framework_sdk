@@ -1,18 +1,6 @@
 {
-  "plugins": [
-    ["transform-runtime", {
-      "polyfill": false,
-      "regenerator": true
-    }]
-  ],
+  "plugins": ["@babel/plugin-transform-runtime"],
   "presets": [
-    ["env", {
-      "targets": {
-        "browsers": [
-          "last 2 versions",
-          "last 1 ie version"
-        ]
-      }
-    }]
+    "@babel/preset-env"
   ]
 }
