@@ -1,0 +1,33 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "types": [
+      "node"
+    ],
+    "target": "es2015",
+    "lib": [
+      "dom",
+      "es2015",
+      "es2016",
+      "es2017"
+    ],
+    "allowSyntheticDefaultImports": true,
+    "importHelpers": true,
+    "noEmitHelpers": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "allowJs": true,
+    "sourceMap": true,
+    "pretty": true
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "tmp"
+  ],
+  "include": [
+    "lib/**/*",
+    "spec/**/*"
+  ]
+}

@@ -18,6 +18,10 @@ jobs:
           - env:
               TASK: test
             command: npm test
+          
+          - env:
+              TASK: build
+            command: npm run build
 
     steps:
       - uses: zendesk/checkout@v2
