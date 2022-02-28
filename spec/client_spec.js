@@ -177,6 +177,17 @@ describe('Client', () => {
         expect(ACTUAL_ERROR_MSG).to.equal(EXPECTED_ERROR_MSG)
       })
     })
+
+    it('does not clear the iframe and append an error msg when allowOrigin is true', () => {
+      const validOriginClient = new Client({
+        origin: 'https://hostmapped.com',
+        appGuid: 'appGuid',
+        source: source,
+        allowOrigin: true
+      })
+
+      expect(validOriginClient).to.exist()
+    })
   })
 
   describe('initialisation', () => {
