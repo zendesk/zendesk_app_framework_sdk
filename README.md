@@ -23,7 +23,7 @@ Then run:
 `npm install` - Install dependencies
 `npm run build` - Build production
 `npm run build:dev` - Build development version of the SDK, omitting minification
-`npm run server` - Serve the [public](./public) directory at [http://localhost:9001](http://localhost:9001)
+`npm run server` - Serve compiled JavaScript files at [http://localhost:9001](http://localhost:9001)
 
 #### Linting
 

@@ -55,6 +55,8 @@ const commonConfig = {
   // so outputed files are very different from server/build/build:dev
   devServer: {
     contentBase: path.join(__dirname, 'build'),
+    hot: false,
+    inline: false,
     compress: true,
     port: 9001
   },
