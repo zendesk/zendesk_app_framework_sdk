@@ -8,7 +8,6 @@ const IGNORED_USER_EVENTS = 'mousemove';
 
 class IdleState {
   refcount?: number;
-  timer?: number | null;
   hasFocus?: boolean;
   userEventListenerAdded?: boolean;
   observers?: Observers;
