@@ -1,6 +1,4 @@
 import Observers, { ListenerFunction } from './listeners';
-export const STATE_ACTIVE = 'active';
-export const STATE_IDLE = 'idle';
 
 const USER_EVENTS = ['mousemove', 'keydown', 'wheel', 'mousedown', 'touchstart', 'touchmove'];
 // list of user events to ignore when window hasn't focus as string, i.e. 'mousemove touchmove'
