@@ -4,6 +4,7 @@ import Client, * as clientUtils from '../lib/client'
 import Tracker from '../lib/tracker'
 import version from 'version'
 import sinon from 'sinon'
+import IdleState from '../lib/utils/idleState'
 
 describe('#collateActions', () => {
   it('should combine action names and arguments into readable strings', () => {
@@ -225,6 +226,31 @@ describe('Client', () => {
       expect(subject.ready).to.equal(true)
       expect(subject._metadata).to.equal(data.metadata)
       expect(subject._context).to.equal(data.context)
+    })
+
+    it('listens for app.registered and sets up idle state logic', () => {
+      const clock = sinon.useFakeTimers()
+      const mockObserver = (callbackFn) => callbackFn()
+      sinon.replace(IdleState.prototype, 'addObserver', mockObserver)
+      sandbox.spy(subject, 'postMessage')
+
+      const data = {
+        metadata: {
+          appId: 1,
+          installationId: 1
+        },
+        context: {
+          product: 'support',
+          location: 'ticket_sidebar'
+        }
+      }
+
+      triggerEvent(subject, 'app.registered', data)
+      clock.tick(1000)
+      clock.restore()
+
+      expect(subject._idleState).to.be.an.instanceof(IdleState)
+      expect(subject.postMessage).to.have.been.calledWith('session.live')
     })
 
     it('listens for context.updated to update the client context', () => {
