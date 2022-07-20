@@ -251,6 +251,8 @@ describe('Client', () => {
 
       expect(subject._idleState).to.be.an.instanceof(IdleState)
       expect(subject.postMessage).to.have.been.calledWith('session.live')
+
+      sinon.restore()
     })
 
     it('listens for context.updated to update the client context', () => {
