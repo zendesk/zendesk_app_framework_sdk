@@ -40,8 +40,11 @@ const commonConfig = {
   },
 
   output: {
-    library: 'ZAFClient',
-    libraryExport: 'default',
+    library: {
+      name: 'ZAFClient',
+      type: 'var',
+      export: 'default',
+    },
     filename: '[name].js',
     sourceMapFilename: '[name].js.map',
     path: path.resolve(__dirname, 'build')
