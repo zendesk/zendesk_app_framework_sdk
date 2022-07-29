@@ -42,7 +42,7 @@ const commonConfig = {
   output: {
     library: {
       name: 'ZAFClient',
-      type: 'var',
+      type: 'umd',
       export: 'default',
     },
     filename: '[name].js',
