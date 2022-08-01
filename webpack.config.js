@@ -1,5 +1,4 @@
 const path = require('path')
-const packageJson = require('./package.json')
 const webpackMerge = require('webpack-merge')
 const TerserPlugin = require('terser-webpack-plugin')
 const Visualizer = require('webpack-visualizer-plugin')
@@ -43,7 +42,7 @@ const commonConfig = {
     library: {
       name: 'ZAFClient',
       type: 'umd',
-      export: 'default',
+      export: 'default'
     },
     filename: '[name].js',
     sourceMapFilename: '[name].js.map',

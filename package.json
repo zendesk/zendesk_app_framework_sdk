@@ -80,5 +80,10 @@
     "snyk-protect": "snyk protect",
     "prepare": "npm run snyk-protect"
   },
+  "standard": {
+    "ignore": [
+      "/dist/"
+    ]
+  },
   "snyk": true
 }
