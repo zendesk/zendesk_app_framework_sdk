@@ -1,5 +1,4 @@
 const path = require('path')
-const packageJson = require('./package.json')
 const webpackMerge = require('webpack-merge')
 const TerserPlugin = require('terser-webpack-plugin')
 const Visualizer = require('webpack-visualizer-plugin')
@@ -40,21 +39,20 @@ const commonConfig = {
   },
 
   output: {
-    library: 'ZAFClient',
-    libraryExport: 'default',
+    library: {
+      name: 'ZAFClient',
+      type: 'umd',
+      export: 'default'
+    },
     filename: '[name].js',
     sourceMapFilename: '[name].js.map',
-    path: path.resolve(__dirname, 'build')
+    path: path.resolve(__dirname, 'dist')
   },
 
-  externals: {
-    version: `"${packageJson.version}"`
-  },
-
-  // Note: devServer does not serve from build/, but from cache. It also doesn't respect mode
+  // Note: devServer does not serve from dist/, but from cache. It also doesn't respect mode
   // so outputed files are very different from server/build/build:dev
   devServer: {
-    contentBase: path.join(__dirname, 'build'),
+    contentBase: path.join(__dirname, 'dist'),
     hot: false,
     inline: false,
     compress: true,

@@ -2,7 +2,7 @@
 /* global expect Promise */
 import Client, * as clientUtils from '../lib/client'
 import Tracker from '../lib/tracker'
-import version from 'version'
+import pkgJson from '../package.json'
 import sinon from 'sinon'
 
 describe('#collateActions', () => {
@@ -200,7 +200,7 @@ describe('Client', () => {
     it('posts an "iframe.handshake" message when initialised', () => {
       const data = {
         key: 'iframe.handshake',
-        message: { version: version },
+        message: { version: pkgJson.version },
         appGuid: appGuid,
         instanceGuid: appGuid
       }
