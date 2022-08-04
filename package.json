@@ -82,7 +82,7 @@
   },
   "standard": {
     "ignore": [
-      "/dist/"
+      "/build/"
     ]
   },
   "snyk": true
