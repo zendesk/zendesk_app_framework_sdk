@@ -46,13 +46,13 @@ const commonConfig = {
     },
     filename: '[name].js',
     sourceMapFilename: '[name].js.map',
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, 'build')
   },
 
-  // Note: devServer does not serve from dist/, but from cache. It also doesn't respect mode
+  // Note: devServer does not serve from build/, but from cache. It also doesn't respect mode
   // so outputed files are very different from server/build/build:dev
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
+    contentBase: path.join(__dirname, 'build'),
     hot: false,
     inline: false,
     compress: true,
