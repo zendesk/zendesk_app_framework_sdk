@@ -9,12 +9,12 @@ jobs:
   dependency-guard:
     runs-on: ubuntu-latest
     steps:
+      - uses: zendesk/checkout@v2
       - name: Block dependencies from being added to package.json
         run: |
           IFS=' ' read -r allowed <<< "native-promise-only zendesk_app_framework_sdk"
-          dependencies=$(npm ls --production --depth=0 --parseable | awk '{gsub(/\/.*\//,"",$1); print}')
-
-          for dep in $dependencies; do
+          dependencies=$(jq -r .dependencies package.json | jq  'keys' | jq .[] | sed 's/"//g')
+          for dep in "${dependencies[@]}"; do
             if [[ ! ${allowed[*]} =~ (^|[[:space:]])"$dep"($|[[:space:]]) ]]; then
               echo "::error ZAP SDK does not allow external dependencies, please remove \"${dep}\" dependency from package.json"
               exit 1
