@@ -9,6 +9,7 @@ Describe the original problem and the changes made on this PR.
 - [ ] Include comments/inline docs where appropriate
 - [ ] Add [unit tests](/spec)
 - [ ] Update changelog [here](https://github.com/zendesk/zaf_docs/blob/master/doc/v2/dev_guide/changelog.md)
+- [ ] Add label from one of 'patch'/'minor'/'major' if you want to create a release when merged
 
 ### References
 * JIRA: https://zendesk.atlassian.net/browse/VEG-XXX
