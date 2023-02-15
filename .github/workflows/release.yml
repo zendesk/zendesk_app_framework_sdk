@@ -1,0 +1,96 @@
+name: release
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  patch-release:
+    name: Create Patch Release
+    if: (github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'patch') )
+    runs-on: ubuntu-latest
+    steps:
+      # Check out the `master` branch
+      - uses: zendesk/checkout@v3
+      # Compute the next semantic version
+      - name: Compute release tag
+        id: compute_tag
+        uses: zendesk/compute-tag@v10
+        with:
+          github_token: ${{ github.token }}
+          version_scheme: semantic
+          version_type: patch
+      # Create a new GitHub release
+      - name: Create release
+        id: create_release
+        uses: zendesk/create-release@v1.1.4
+        with:
+          tag_name: ${{ steps.compute_tag.outputs.next_tag }}
+          release_name: ${{ steps.compute_tag.outputs.next_tag }}
+          commitish: ${{ github.git_ref }}
+          body: |
+            See [changes since last release](https://github.com/${{ github.repository }}/compare/${{ steps.compute_tag.outputs.previous_tag }}..${{ steps.compute_tag.outputs.next_tag }}) for full release details.
+          prerelease: false
+          draft: false
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+  minor-release:
+    name: Create Minor Release
+    runs-on: ubuntu-latest
+    # only run this job on a merge to master and with the corresponding sem ver label
+    if: (github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'minor') )
+    steps:
+      # Check out the `master` branch
+      - uses: zendesk/checkout@v3
+      # Compute the next semantic version
+      - name: Compute release tag
+        id: compute_tag
+        uses: zendesk/compute-tag@v10
+        with:
+          github_token: ${{ github.token }}
+          version_scheme: semantic
+          version_type: minor
+      # Create a new GitHub release
+      - name: Create release
+        id: create_release
+        uses: zendesk/create-release@v1.1.4
+        with:
+          tag_name: ${{ steps.compute_tag.outputs.next_tag }}
+          release_name: ${{ steps.compute_tag.outputs.next_tag }}
+          commitish: ${{ github.git_ref }}
+          body: |
+            See [changes since last release](https://github.com/${{ github.repository }}/compare/${{ steps.compute_tag.outputs.previous_tag }}..${{ steps.compute_tag.outputs.next_tag }}) for full release details.
+          prerelease: false
+          draft: false
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+  major-release:
+    name: Create Major Release
+    runs-on: ubuntu-latest
+    # only run this job on a merge to master and with the corresponding sem ver label
+    if: (github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'major') )
+    steps:
+      # Check out the `master` branch
+      - uses: zendesk/checkout@v3
+      # Compute the next semantic version
+      - name: Compute release tag
+        id: compute_tag
+        uses: zendesk/compute-tag@v10
+        with:
+          github_token: ${{ github.token }}
+          version_scheme: semantic
+          version_type: major
+      # Create a new GitHub release
+      - name: Create release
+        id: create_release
+        uses: zendesk/create-release@v1.1.4
+        with:
+          tag_name: ${{ steps.compute_tag.outputs.next_tag }}
+          release_name: ${{ steps.compute_tag.outputs.next_tag }}
+          commitish: ${{ github.git_ref }}
+          body: |
+            See [changes since last release](https://github.com/${{ github.repository }}/compare/${{ steps.compute_tag.outputs.previous_tag }}..${{ steps.compute_tag.outputs.next_tag }}) for full release details.
+          prerelease: false
+          draft: false
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
