@@ -1,0 +1,20 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: zendesk_app_framework_sdk
+  description: ''
+  tags: []
+  annotations:
+    github.com/project-slug: Hotmart-Org/zendesk_app_framework_sdk
+    backstage.io/techdocs-ref: dir:.
+  links: []
+spec:
+  type: service
+  lifecycle: production
+  owner: Archived
+  heimdall:
+    reportable: false
+    pci: false
+    products: []
+    squads: []
+    impact: ''
