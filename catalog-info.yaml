@@ -2,6 +2,7 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: zendesk_app_framework_sdk
+  namespace: usefedora
   description: ''
   tags: []
   annotations:
