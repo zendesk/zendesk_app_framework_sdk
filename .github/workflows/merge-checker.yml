@@ -1,0 +1,14 @@
+name: Merge Checker
+
+on:
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  merge-checker:
+    uses: Hotmart-Org/actions/.github/workflows/merge-checker.yaml@master
+    secrets: inherit
+    with:
+      runs-on: "staging-iac"
