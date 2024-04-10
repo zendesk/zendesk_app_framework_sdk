@@ -1,0 +1,26 @@
+name: Run CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+env:
+  GH_PACKAGE_USERNAME: ${{ secrets.GH_PACKAGE_USERNAME }}
+  GH_PACKAGE_TOKEN: ${{ secrets.GH_PACKAGE_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+jobs:
+  ci:
+    runs-on: [ staging-iac ]
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 16
+      - run: |
+          npm install
