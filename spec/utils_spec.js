@@ -165,7 +165,7 @@ describe('Utils', () => {
       beforeEach(() => {
         appId = '1'
       })
-      
+
       it('should append the app id to the user agent', () => {
         const headers = { 'User-Agent': 'Mozilla/5.0' }
         const updatedHeaders = Utils.updateUserAgentWithAppId(headers, appId)
