@@ -1,6 +1,7 @@
 /* eslint-env mocha */
 /* global expect Promise */
 import * as Utils from '../lib/utils'
+import pkgJson from '../package.json'
 
 describe('Utils', () => {
   let params
@@ -149,6 +150,21 @@ describe('Utils', () => {
     })
     it('returns true for arrays', () => {
       expect(Utils.isObject(['a'])).to.equal(true)
+    })
+  })
+
+  describe('.updateUserAgentWithAppId', () => {
+    before(() => {
+      // Mock pkgJson
+      global.pkgJson = { version: '1.0.0' }
+    })
+
+    it('should append the app id to the user agent', () => {
+      const headers = { 'User-Agent': 'Mozilla/5.0' }
+      const appId = '1'
+      const updatedHeaders = Utils.updateUserAgentWithAppId(headers, appId)
+      const expectedUserAgent = `Mozilla/5.0 zendesk_app_framework_sdk/sdk_version:${pkgJson.version}/app_id:${appId}`
+      expect(updatedHeaders['User-Agent']).to.equal(expectedUserAgent)
     })
   })
 })
