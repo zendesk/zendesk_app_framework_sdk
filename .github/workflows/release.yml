@@ -1,10 +1,40 @@
 name: release
 
 on:
+  workflow_dispatch:
   pull_request:
     types: [closed]
 
 jobs:
+  pre-release:
+    name: Create Pre Release
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      # Check out the `master` branch
+      - uses: zendesk/checkout@v3
+      # Compute the next semantic version
+      - name: Compute release tag
+        id: compute_tag
+        uses: zendesk/compute-tag@v10
+        with:
+          github_token: ${{ github.token }}
+          version_scheme: semantic
+          version_type: prerelease
+      - name: Create release
+        id: create_release
+        uses: zendesk/create-release@v1.1.4
+        with:
+          tag_name: ${{ steps.compute_tag.outputs.next_tag }}
+          release_name: ${{ steps.compute_tag.outputs.next_tag }}
+          commitish: ${{ github.git_ref }}
+          body: |
+            This is a pre-release.
+            See [changes since last release](https://github.com/${{ github.repository }}/compare/${{ steps.compute_tag.outputs.previous_tag }}..${{ steps.compute_tag.outputs.next_tag }}) for full release details.
+          prerelease: true
+          draft: false
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
   patch-release:
     name: Create Patch Release
     if: (github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'patch') )
