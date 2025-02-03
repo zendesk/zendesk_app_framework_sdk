@@ -18,6 +18,12 @@ You will need:
 * [Node.js](http://nodejs.org/)
 * [npm](https://www.npmjs.org/)
 
+If you are on Apple Silicon, switch to Rosetta mode first:
+`env /usr/bin/arch -x86_64 /bin/zsh --login`
+
+You should then be able to install node:
+`asdf install nodejs 12.10.0`
+
 Then run:
 
 `npm install` - Install dependencies
