@@ -10,7 +10,7 @@ To roll back to a previous version, use the [App Framework SDK deploys](https://
 
 _Note: This pipeline should **only** be used to respond to incidents._
 
-1. Notify @vegemite on #ask-vegemite of any ongoing incidents and whether you intend to rollback a deploy.
+1. Notify @wattle on #wattle-team of any ongoing incidents and whether you intend to rollback a deploy.
 1. Look at recent [App Framework SDK deploys](https://samson.zende.sk/projects/zendesk_app_framework_sdk/stages/static-assets-switch-major) to production.
 1. Deploy the previous tag.
-1. Notify @vegemite on #ask-vegemite once the rollback is complete.
+1. Notify @wattle on #wattle-team once the rollback is complete.
