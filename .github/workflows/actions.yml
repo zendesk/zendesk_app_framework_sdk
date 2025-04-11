@@ -40,11 +40,11 @@ jobs:
 
     steps:
       - uses: zendesk/checkout@v2
-      - uses: zendesk/setup-node@v2.1.2
+      - uses: zendesk/setup-node@v3
         with:
-          node-version: 12.10.0
+          node-version-file: '.node-version'
       - name: install npm modules
         run: |
-          npm install standardx
+          npm install
       - name: ${{ matrix.env.TASK }}
         run: TASK=${{ matrix.env.TASK }} ${{ matrix.command }}
