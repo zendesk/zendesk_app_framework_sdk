@@ -6,7 +6,7 @@ const zlib = require('zlib')
 const FILE_PATH = './build'
 
 new Promise((resolve, reject) => {
-  exec('npm run build -- --env.stats', (error, stdout, stderr) => {
+  exec('npm run build -- --stats', (error, stdout, stderr) => {
     if (error) reject(stderr)
     resolve()
   })
