@@ -52,10 +52,10 @@ const commonConfig = {
   // Note: devServer does not serve from build/, but from cache. It also doesn't respect mode
   // so outputed files are very different from server/build/build:dev
   devServer: {
-    contentBase: path.join(__dirname, 'build'),
+    static: {
+      directory: path.join(__dirname, 'build')
+    },
     hot: false,
-    inline: false,
-    compress: true,
     port: 9001
   },
 
