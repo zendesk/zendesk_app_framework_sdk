@@ -1,6 +1,7 @@
 /* eslint-env mocha */
 /* global expect Promise */
 import * as Utils from '../lib/utils'
+import pkgJson from '../package.json'
 
 describe('Utils', () => {
   let params
@@ -149,6 +150,60 @@ describe('Utils', () => {
     })
     it('returns true for arrays', () => {
       expect(Utils.isObject(['a'])).to.equal(true)
+    })
+  })
+
+  describe('.updateUserAgentWithAppId', () => {
+    before(() => {
+      // Mock pkgJson
+      global.pkgJson = { version: '1.0.0' }
+    })
+
+    describe('with a valid app id', () => {
+      let appId
+
+      beforeEach(() => {
+        appId = '1'
+      })
+
+      it('should append the app id to the user agent', () => {
+        const headers = { 'User-Agent': 'Mozilla/5.0' }
+        const updatedHeaders = Utils.updateUserAgentWithAppId(headers, appId)
+        const expectedUserAgent = `Mozilla/5.0 zendesk_app_framework_sdk/sdk_version:${pkgJson.version}/app_id:${appId}`
+        expect(updatedHeaders['User-Agent']).to.equal(expectedUserAgent)
+      })
+
+      it('should handle an undefined headers object', () => {
+        const updatedHeaders = Utils.updateUserAgentWithAppId(undefined, appId)
+        const expectedUserAgent = `zendesk_app_framework_sdk/sdk_version:${pkgJson.version}/app_id:${appId}`
+        expect(updatedHeaders['User-Agent']).to.equal(expectedUserAgent)
+      })
+
+      it('should handle a headers object with no User-Agent', () => {
+        const headers = {}
+        const updatedHeaders = Utils.updateUserAgentWithAppId(headers, appId)
+        const expectedUserAgent = `zendesk_app_framework_sdk/sdk_version:${pkgJson.version}/app_id:${appId}`
+        expect(updatedHeaders['User-Agent']).to.equal(expectedUserAgent)
+      })
+    })
+
+    describe('with an undefined app id', () => {
+      it('should not append the app id to the user agent', () => {
+        const headers = { 'User-Agent': 'Mozilla/5.0' }
+        const updatedHeaders = Utils.updateUserAgentWithAppId(headers)
+        expect(updatedHeaders['User-Agent']).to.equal('Mozilla/5.0')
+      })
+
+      it('should handle an undefined headers object', () => {
+        const updatedHeaders = Utils.updateUserAgentWithAppId()
+        expect(updatedHeaders).to.be.undefined()
+      })
+
+      it('should handle a headers object with no User-Agent', () => {
+        const headers = {}
+        const updatedHeaders = Utils.updateUserAgentWithAppId(headers)
+        expect(updatedHeaders['User-Agent']).to.equal(undefined)
+      })
     })
   })
 })
