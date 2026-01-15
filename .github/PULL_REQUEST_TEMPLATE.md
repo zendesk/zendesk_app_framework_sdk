@@ -1,7 +1,3 @@
-:v:
-
-/cc @zendesk/vegemite
-
 ### Description
 Describe the original problem and the changes made on this PR.
 
@@ -12,7 +8,7 @@ Describe the original problem and the changes made on this PR.
 - [ ] Add label from one of 'patch'/'minor'/'major' if you want to create a release when merged
 
 ### References
-* JIRA: https://zendesk.atlassian.net/browse/VEG-XXX
+* JIRA: https://zendesk.atlassian.net/browse/
 
 ### DevQA Steps
 
