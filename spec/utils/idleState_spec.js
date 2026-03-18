@@ -1,5 +1,5 @@
 /* eslint-env mocha, browser */
-/* global expect Promise */
+/* global expect */
 import IdleState from '../../lib/utils/idleState'
 import sinon from 'sinon'
 
