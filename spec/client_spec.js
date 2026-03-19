@@ -143,7 +143,7 @@ describe('Client', () => {
         const validOriginClient = new Client({
           origin: domain,
           appGuid: 'appGuid',
-          source: source
+          source
         })
 
         expect(validOriginClient).to.exist()
@@ -168,7 +168,7 @@ describe('Client', () => {
         const client = new Client({
           origin: domain,
           appGuid: 'appGuid',
-          source: source
+          source
         })
         const ACTUAL_ERROR_MSG = document.querySelector('h3').innerText
         const EXPECTED_ERROR_MSG = `Invalid domain ${domain}`
@@ -194,7 +194,7 @@ describe('Client', () => {
     })
 
     it('defaults to the window.top source', () => {
-      const client = new Client({ origin: origin, appGuid: appGuid })
+      const client = new Client({ origin, appGuid })
       expect(client).to.have.property('_source', window.top)
     })
 
@@ -202,7 +202,7 @@ describe('Client', () => {
       const data = {
         key: 'iframe.handshake',
         message: { version: pkgJson.version },
-        appGuid: appGuid,
+        appGuid,
         instanceGuid: appGuid
       }
 
@@ -309,7 +309,7 @@ describe('Client', () => {
         evt = {
           data: {
             key: 'zaf.hello',
-            message: message
+            message
           }
         }
 
@@ -586,7 +586,7 @@ describe('Client', () => {
       })
 
       describe('promise', () => {
-        const response = { responseArgs: [ {} ] }
+        const response = { responseArgs: [{}] }
 
         it('resolves when the request succeeds', (done) => {
           triggerEvent(subject, 'request:' + requestsCount + '.done', response)
@@ -652,7 +652,8 @@ describe('Client', () => {
         window.addEventListener.callArgWith(1, {
           origin: subject._origin,
           source: subject._source,
-          data: { id: requestsCount,
+          data: {
+            id: requestsCount,
             result: {
               'ticket.subject': 'test',
               'ticket.requester': 'test'
@@ -751,11 +752,13 @@ describe('Client', () => {
         window.addEventListener.callArgWith(1, {
           origin: subject._origin,
           source: subject._source,
-          data: { id: requestsCount,
+          data: {
+            id: requestsCount,
             result: {
               'ticket.subject': 'value',
               'ticket.requester': 'value'
-            } }
+            }
+          }
         })
       })
 
@@ -870,7 +873,7 @@ describe('Client', () => {
 
       it('waits for the app to be registered before resolving', () => {
         promise = subject.context()
-        triggerEvent(subject, 'app.registered', { metadata: {}, context: context })
+        triggerEvent(subject, 'app.registered', { metadata: {}, context })
         return expect(promise).to.eventually.eq(context)
       })
     })

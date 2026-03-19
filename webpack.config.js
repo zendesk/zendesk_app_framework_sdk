@@ -28,7 +28,7 @@ const commonConfig = {
   devtool: 'source-map',
 
   entry: {
-    'zaf_sdk': [
+    zaf_sdk: [
       'native-promise-only',
       './lib/index.js'
     ],
