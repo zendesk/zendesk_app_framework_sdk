@@ -34,6 +34,9 @@
   "dependencies": {
     "native-promise-only": "^0.8.1"
   },
+  "overrides": {
+    "serialize-javascript": "7.0.4"
+  },
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/plugin-transform-runtime": "^7.16.0",
