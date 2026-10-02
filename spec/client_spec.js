@@ -605,6 +605,53 @@ describe('Client', () => {
         })
       })
     })
+
+    describe('#graphql', () => {
+      beforeEach(() => {
+        sandbox.spy(subject, 'postMessage')
+      })
+
+      it('asks ZAF to make a request with graphql defaults', () => {
+        subject.graphql({ data: { query: '{ currentUser { name } }' } })
+
+        expect(subject.postMessage).to.have.been.calledWithMatch(/request:\d+/, {
+          type: 'POST',
+          url: '/api/graphql',
+          contentType: 'application/json',
+          headers: {
+            'apollographql-client-name': 'ZAF',
+            'apollographql-client-version': '1'
+          },
+          data: { query: '{ currentUser { name } }' }
+        })
+      })
+
+      it('merges caller headers with the default headers', () => {
+        subject.graphql({
+          data: { query: '{ currentUser { name } }' },
+          headers: { 'x-custom': 'foo' }
+        })
+
+        expect(subject.postMessage).to.have.been.calledWithMatch(/request:\d+/, {
+          headers: {
+            'apollographql-client-name': 'ZAF',
+            'apollographql-client-version': '1',
+            'x-custom': 'foo'
+          }
+        })
+      })
+
+      it('allows the caller to override the default url', () => {
+        subject.graphql({
+          data: { query: '{ currentUser { name } }' },
+          url: '/api/lotus/graphql'
+        })
+
+        expect(subject.postMessage).to.have.been.calledWithMatch(/request:\d+/, {
+          url: '/api/lotus/graphql'
+        })
+      })
+    })
   })
 
   describe('v2 methods', () => {
