@@ -37,15 +37,9 @@ Then run:
 
 `npm run test`
 
-#### Version bumping
-
-`npm run bump` - Bump patch version, e.g. `1.1.1 => 1.1.2`
-`npm run bump:minor`
-`npm run bump:major`
-
 ## Copyright and license
 
-Copyright 2014 Zendesk
+Copyright 2026 Zendesk
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
 

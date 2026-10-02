@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-/* global expect Promise */
+/* global expect */
 import Listeners from '../../lib/utils/listeners'
 import sinon from 'sinon'
 
